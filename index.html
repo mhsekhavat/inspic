@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="colorPicker.css">
+    <!--------------------------------------TEMPLATES:BEGIN--------------------------------->
+    <script type="text/template" inspic_tem="label">
+      <label for="<%=id%>">
+	<% if (data.icon) { %>
+	<img src="<%=data.icon%>" title="<%=data.text%>" alt="<%=data.text%>:">
+	<% } else if(data.text) { %>
+	<%=data.text%>
+	<% } %>
+      </label>
+    </script>
+
+    <script type="text/template" inspic_tem="text">
+      <%=label%>
+      <input id="<%=id%>" type="text">
+    </script>
+
+    <script type="text/template" inspic_tem="select">
+      <%=label%>
+      <select id="<%=id%>">
+	<%_.each(data.options, function(val,key){%>
+	<option value="<%=val%>"><%=key%></option>
+	<%})%>
+      </select>
+    </script>
+
+    <script type="text/template" inspic_tem="checkbox">
+      <input id="<%=id%>" type="checkbox">
+      <%=label%>
+    </script>
+    
+    <script type="text/template" id="inspic_tem_selectItem">
+      <span class="iconSelect">
+	<%var first=true;_.each(items, function(val,key){%><span class="iconSelectItem<%if(first){first=false;%> first<%}%>" value="<%=key%>" title="<%=val%>">&nbsp;</span><%});%>
+      </span>
+    </script>
+    
+    <!-------------------------------------TEMPLATES:END--------------------------------->
+    <script type="text/javascript" src="script/include/jquery.js"></script>
+    <script type="text/javascript" src="script/include/underscore.js"></script>
+    <script type="text/javascript" src="script/include/backbone.js"></script>
+    <script type="text/javascript" src="script/jquery.colorPicker.js"></script>
+    <script src="script/inspic.js"></script>
+    <script src="script/model.js"></script>
+    <script src="script/controller.js"></script>
+    <script src="script/view.js"></script>
+    <script src="script/output.js"></script>
+  </head>
+  <body>
+    <div id="insertPicture">
+
+      <fieldset id="inspic_src">
+	<legend>مشخصات تصویر</legend>
+	<div id="inspic_monitor" class="inspic_preview">
+	  <img src="images/monitor-screen-2.png">
+	  <div class="inspic_screen">
+	    <img class="inspic_img">
+	    <img class="inspic_loading" src="images/loading.gif">
+	  </div>
+	</div>
+      </fieldset>
+
+
+      <fieldset id="inspic_position">
+	<legend>محل تصویر</legend>
+	<div class="inspic_preview">
+	  بیان بیان بیان بیان بیان بیان بیان بیان بیان بیان بیان بیان بیان بیان بیان
+	  <span class="inspic_clearfix"><span class="pic_margin"><span class="pic_wrapper"><img src="images/sample.gif" width="50px"></span></span></span>
+	  کشتم شپش شپش کش شش پا را کشتم شپش شپش کش شش پا را کشتم شپش شپش کش شش پا را کشتم شپش شپش کش شش پا را
+	</div>
+      </fieldset>
+
+      <fieldset id="inspic_border">
+	<legend>کادر</legend>
+	<div class="inspic_preview">
+	  <span class="pic_wrapper">
+	    <span class="pic_border">
+	      <span class="pic_inner">
+		<span class="pic_caption_inner"></span>
+		<img src="car.jpg" width="320px">
+	      </span>
+	    </span>
+	    <span class="pic_caption_outer">
+	    </span>
+	  </span>
+	</div>
+      </fieldset>
+      
+      <fieldset id="inspic_caption">
+	<legend></legend>
+      </fieldset>
+
+    </div>
+
+
+  </body>
+</html>
