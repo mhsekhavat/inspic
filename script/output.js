@@ -53,7 +53,6 @@
 		    g('caption.inner.hpos').match(/left|full/) && caption.inspic('css','left', '0');
 		    g('caption.inner.hpos').match(/right|full/) && caption.inspic('css','right', '0');
 		    caption.inspic('css','background-color', g('caption.inner.background'));
-		    caption.inspic('css','color', g('caption.inner.forecolor'));
 		    caption.inspic('css','border-radius', g('caption.inner.radius'));
 		    
 		    inner.append(caption);

@@ -554,9 +554,6 @@
 	    model.subscribe('caption.inner.background', function(val){
 		$el.css('background-color', val);
 	    })();
-	    model.subscribe('caption.inner.forecolor', function(val){
-		$el.css('color', val);
-	    })();
 	    model.subscribe('caption.inner.radius', function(val){
 		$el.css('border-radius', val);
 	    })();
@@ -578,9 +575,6 @@
 	    })();
 	    model.subscribe('caption', function(content){
 		$el.html(content.trim() || '{زیرنویس}');
-	    })();
-	    model.subscribe('caption.outer.forecolor', function(val){
-		$el.css('color', val);
 	    })();
 	    model.subscribe('`caption.outer.enable` && `caption.outer.border`', function(val){
 		$wrapper.css('border', inspicEval(val) || '');
@@ -677,7 +671,7 @@
 		icon: 'transparency.png'
 	    })
 	)(
-	    new InputField('caption.inner.forecolor','text', {
+/*	    new InputField('caption.inner.forecolor','text', {
 		visibilityCriteria:'caption.inner.enable',
 		//		text:'رنگ متن:',
 		initialize: function(){
@@ -694,7 +688,7 @@
 		    this.$('.colorPicker-picker').addClass('picker-arrow-text');
 		}
 	    })
-	)(	    
+	)(	    */
 	    '<br>'
 	)(
 	    new InputField('caption.h1.type', 'select', {
