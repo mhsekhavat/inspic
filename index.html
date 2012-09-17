@@ -40,7 +40,14 @@
 	<%var first=true;_.each(items, function(val,key){%><span class="iconSelectItem<%if(first){first=false;%> first<%}%>" value="<%=key%>" title="<%=val%>">&nbsp;</span><%});%>
       </span>
     </script>
-    
+
+    <script type="text/template" id="inspic_tem_spinner">
+      <span class="inspic_spinner">
+	&nbsp;
+	<img class="inspic_up" src="images/icon/bullet_arrow_up.png">
+	<img class="inspic_dn" src="images/icon/bullet_arrow_down.png">
+      </span>
+    </script>
     <!-------------------------------------TEMPLATES:END--------------------------------->
     <script type="text/javascript" src="script/include/jquery.js"></script>
     <script type="text/javascript" src="script/include/underscore.js"></script>

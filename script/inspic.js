@@ -93,10 +93,51 @@ function inspicEval(expr){
 		$el.find('[value="'+$select.val()+'"]').addClass('selected');
 	    });
 	    $select.change();
-
 	});
     }
 
+    var spinnerTem=$('#inspic_tem_spinner').html();
+    function spinner(args){
+	args=_.extend({
+	    step:1,
+	    min:NaN,
+	    max:50
+	}, args);
+
+	$.each(this, function(){
+	    var $text=$(this);
+
+	    function changeStep(inc){
+		var step=args.step;
+		var delta=(inc ? step : -step);
+		var val=parseFloat($text.val())+delta;
+		var min=args.min, max=args.max;
+		if (_.isNaN(val))
+		    return;
+		_.isNaN(min) || (val=Math.max(val, min));
+		_.isNaN(max) || (val=Math.min(val, max));
+		(val%1===0) || (val=val.toFixed(2));
+	    	$text.val(val).change();
+	    }
+
+	    $text.keyup(function(e){
+		if (e.keyCode!=38 && e.keyCode!=40)
+		    return;
+		changeStep(e.keyCode==38);
+	    });
+
+	    $text.width($text.width()-11);
+	    var $spinner=$(spinnerTem);
+	    $text.after($spinner);
+	    $spinner.find('.inspic_up').click(function(){
+		changeStep(true);
+	    });
+	    $spinner.find('.inspic_dn').click(function(){
+		changeStep(false);
+	    });
+	});
+    }
+    
     var jQueryFunctions = {
 	val : function(value) {
 	    if (_.isUndefined(value)) {
@@ -129,11 +170,13 @@ function inspicEval(expr){
 	},
 	
 	'iconSelect': iconSelect,
+	'spinner': spinner,
 	css: function(val,key){
 	    if (_.isUndefined(key) || _.isNull(key))
 		return;
 	    var ret=this.attr('style');
-	    ret=(ret ? ret+' ' : '').concat(val+':'+key.trim()+';');
+	    ret=(ret ? ret+' ' : '');
+	    ret=ret+(_.isUndefined(key) ? val : val+':'+key.trim()+';');
 	    return this.attr('style', ret);
 	}
     };

@@ -33,7 +33,7 @@
 	    
 	    !args.events || (this.events = args.events);
 
-	    this.render(template, args);
+	    this.render(field, template, args);
 	    
 	    field && model.subscribe(field, this.updateValue, this)();
 
@@ -63,7 +63,7 @@
 
 	iconsDir: 'images/icon/',
 
-	render : function(template, args) {
+	render : function(field, template, args) {
 	    var data=_.pick(args, 'text', 'icon', 'options');
 	    !data.icon || (data.icon=this.iconsDir+data.icon);
 	    var variables = {
@@ -75,10 +75,15 @@
 	    this.$el.attr('field',this.field);
 
 	    var width=args.width || 30;
-	    if (width=='long')
-		this.$('input[type="text"]').css('text-align','left');
+
 	    (width=='long') && (width=250);
-	    this.$('input[type="text"]').css('width',width+'px');
+	    this.$('input[type="text"]').css({
+		'width':width+'px',
+		'text-align': args.textAlign || 'center',
+		'direction': (args.textAlign=='right' ? 'rtl' : 'ltr')
+	    });
+	    
+	    typeof(this.model.defaults[field])!="number" || args.noSpinner || this.$el.find('input').inspic('spinner', args.spinnerArgs);
 	},
 
 	onChange : function(e) {
@@ -144,6 +149,7 @@
 	    new InputField('src', 'text', {
 		text : 'آدرس:',
 		width: 'long',
+		textAlign: 'left',
 		events : {
 		    "change input" : "onChange"
 		}
@@ -202,6 +208,7 @@
 	)(
 	    new InputField('href.url', 'text', {
 		width: 'long',
+		textAlign: 'left',
 		subscribe: {
 		    '`href.type`': function(substituted){
 			substituted=='"url"' ? this.$('input').css('display','inline-block').focus().select() : this.$('input').hide();
@@ -211,6 +218,7 @@
 	)(
 	    new InputField('href', 'text', {
 		width: 'long',
+		textAlign: 'left',
 		alwaysEnabled: true,
 		visibilityCriteria: '`href.type`!="url" && `href.type`!="none"',
 		initialize: function(){ this.$('input').inspic('disabled',true); }
@@ -220,7 +228,8 @@
 	)(
 	    new InputField('title', 'text', {
 		text: 'عنوان:',
-		width: 'long'
+		width: 'long',
+		textAlign: 'right'
 	    })
 	); 
     }
@@ -284,7 +293,7 @@
 	)( 
 	    new InputField('margin.base', 'text', {
 		text: 'فاصله از متن:',
-		visibilityCriteria: '!`margin.adv`'
+		visibilityCriteria: '!`margin.adv`',
 	    })
 	)(
 	    new InputField('margin.top', 'text', {
@@ -444,9 +453,42 @@
 	
     }
     
+    function textFormattingFields(prefix, advField, advs){
+	var vis='`'+prefix+'enable`';
+	var visAdv=vis+' && `'+advField+'`';
+	return {
+	    bold: new InputField(prefix+'bold', 'checkbox', {
+		visibilityCriteria: visAdv,
+		text: 'bold'
+	    }),
+	    italic: new InputField(prefix+'italic', 'checkbox', {
+		visibilityCriteria: visAdv,
+		text: 'italic'
+	    }),
+	    colorInner: new InputField(prefix+'color.inner', 'text', {
+		visibilityCriteria: visAdv+' && `caption.inner.enable`',
+		initialize: function(){
+		    this.$('input').colorPicker();
+		    this.$('.colorPicker-picker').addClass('picker-arrow-text');
+		}
+	    }),
+	    colorOuter: new InputField(prefix+'color.outer', 'text', {
+		visibilityCriteria: visAdv+' && `caption.outer.enable`',
+		initialize: function(){
+		    this.$('input').colorPicker();
+		    this.$('.colorPicker-picker').addClass('picker-arrow-text');
+		}
+	    }),
+	    size: new InputField(prefix+'size', 'text', {
+		visibilityCriteria: visAdv,
+		text: 'اندازه فونت',
+		icon: 'fontsize.gif'
+	    })
+	}
+    }
+
     function borderFields(prefix, advField, advs){
 	var vis='`'+prefix+'enable`';
-	//vis=advField;
 	var visAdv=vis+' && `'+advField+'`';
 	function crit(field){
 	    return (_.include(advs, field) ? visAdv : vis);
@@ -496,7 +538,8 @@
 	    alpha: new InputField(prefix+'alpha', 'text', {
 		visibilityCriteria: crit('alpha'),
 		text: 'شفافیت',
-		icon: 'transparency.png'
+		icon: 'transparency.png',
+		spinnerArgs:{ step: 0.1, min: 0, max: 1 }
 	    }),
 	    y: new InputField(prefix+'y', 'text', {
 		visibilityCriteria: crit('y'),
@@ -511,7 +554,7 @@
 	    blur: new InputField(prefix+'blur', 'text', {
 		visibilityCriteria: crit('blur'),
 		text: 'بزرگی سایه',
-		icon: 'shadow-radius.png'
+		icon: 'shadow-radius.png',
 	    }), 
 	    color: new InputField(prefix+'color', 'text', {
 		visibilityCriteria: crit('color'),
@@ -595,6 +638,7 @@
 	}
     });
 
+
     function addCaptionElements(){
 	new InnerCaptionPreview({
 	    el: $('#inspic_border .pic_caption_inner')
@@ -604,10 +648,19 @@
 	});
 	
 	var outerBorder=borderFields('caption.outer.border.','caption.adv',[]);
+	var h1Format=textFormattingFields('caption.h1.', 'caption.adv', []);
+	var pFormat=textFormattingFields('caption.p.', 'caption.adv', []);
 
 	appendTo('#inspic_caption legend')(
 	    new InputField('caption.enable', 'checkbox', {
 		text: 'زیر نویس'
+	    })
+	)(
+	    new InputField('caption.adv', 'checkbox', {
+		text: 'پیشرفته',
+		initialize: function(){
+		    this.$el.css('float','left');
+		}
 	    })
 	);
 
@@ -668,27 +721,10 @@
 	    new InputField('caption.inner.background.alpha', 'text', {
 		visibilityCriteria:'caption.inner.enable',
 		text: 'شفافیت رنگ داخل',
-		icon: 'transparency.png'
+		icon: 'transparency.png',
+		spinnerArgs:{ step: 0.1, min: 0, max: 1 }
 	    })
 	)(
-/*	    new InputField('caption.inner.forecolor','text', {
-		visibilityCriteria:'caption.inner.enable',
-		//		text:'رنگ متن:',
-		initialize: function(){
-		    this.$('input').colorPicker();
-		    this.$('.colorPicker-picker').addClass('picker-arrow-text');
-		}
-	    })
-	)(
-	    new InputField('caption.outer.forecolor','text', {
-		visibilityCriteria:'caption.outer.enable',
-		//		text:'رنگ متن:',
-		initialize: function(){
-		    this.$('input').colorPicker();
-		    this.$('.colorPicker-picker').addClass('picker-arrow-text');
-		}
-	    })
-	)(	    */
 	    '<br>'
 	)(
 	    new InputField('caption.h1.type', 'select', {
@@ -702,8 +738,19 @@
 	)(
 	    new InputField('caption.h1.text', 'text', {
 		visibilityCriteria:'`caption.h1.type`=="text"',
-		width: 'long'
+		width: 'long',
+		textAlign: 'right'
 	    })
+	)(
+	    h1Format.colorInner
+	)(
+	    h1Format.colorOuter
+	)(
+	    h1Format.size
+	)(
+	    h1Format.bold
+	)(
+	    h1Format.italic
 	)(
 	    '<br>'
 	)(
@@ -713,21 +760,31 @@
 	)(
 	    new InputField('caption.p.text', 'text', {
 		visibilityCriteria:'caption.p.enable',
-		width:'long'
+		width:'long',
+		textAlign: 'right'
 	    })
 	)(
+	    pFormat.colorInner
+	)(
+	    pFormat.colorOuter
+	)(
+	    pFormat.size
+	)(
+	    pFormat.bold
+	)(
+	    pFormat.italic
 	)(
 	    '<br>'
-	)(
-	    outerBorder.enable
 	)(
 	    appendTo((function(){
 		var ret=$('<span>');
 		inspic.model.mainModel.subscribe('caption.outer.enable', function(val){
-		    ret[(val ? 'show' : 'hide')]();
+		    ret.css('display',val ? 'inline-block' : 'none');
 		})();
 		return ret;
 	    })())(
+		outerBorder.enable
+	    )(
 		outerBorder.style
 	    )(
 		outerBorder.color
@@ -759,7 +816,8 @@
 		new InputField('caption.outer.background.alpha', 'text', {
 		    visibilityCriteria:'caption.outer.enable',
 		    text: 'شفافیت رنگ داخل',
-		    icon: 'transparency.png'
+		    icon: 'transparency.png',
+		    spinnerArgs:{ step: 0.1, min: 0, max: 1 }
 		})
 	    ).container
 	);

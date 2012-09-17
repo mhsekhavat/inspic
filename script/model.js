@@ -135,18 +135,25 @@
 	    'caption.enable':true,
 	    'caption.pos':'inner_top',
 	    'caption.textAlign':'center',
+	    'caption.h1.enable': 'true',
 	    'caption.h1.text':'',
 	    'caption.h1.type':'text',
+	    'caption.h1.bold':false,
+	    'caption.h1.italic':false,
+	    'caption.h1.color.inner':'#eee',
+	    'caption.h1.color.outer':'#000',
+	    'caption.h1.size':14,
 	    'caption.p.text':'',
 	    'caption.p.enable':'',
 	    'caption.p.bold':false,
 	    'caption.p.italic':false,
+	    'caption.p.color.inner':'#eee',
+	    'caption.p.color.outer':'#000',
+	    'caption.p.size':10,
 	    'caption.adv':true,
 	    'caption.inner.hpos':'full',
 	    'caption.inner.background.color':'#000',
 	    'caption.inner.background.alpha':0.7,
-	    'caption.inner.forecolor':'#eee',
-	    'caption.outer.forecolor':'#000',
 	    'caption.outer.background.color':'#fff',
 	    'caption.outer.background.alpha':1,
 	    'caption.outer.forecolor':'#000',
@@ -211,20 +218,27 @@
 			return radius;
 		    return (radius<6 ? Math.round(radius/2) : radius-3);
 		}),
+	    'caption.h1.style': textFormattingField('caption.h1.'),
+	    'caption.h1.enable': new ComputedField(
+		['caption.h1.type'],
+		function(type){
+		    return (type!='');
+		}),
 	    'caption.h1': new ComputedField(
-		['caption.h1.type', 'caption.h1.text', 'title'],
-		function(    type,              text,   title){
+		['caption.h1.type', 'caption.h1.text', 'title', 'caption.h1.style'],
+		function(    type,              text,   title,              style){
 		    var ret='';
 		    if (type=='text')
 			ret=text;
 		    else if (type=='title')
 			ret=title;
-		    return (ret ? '<h1>'+ret+'</h1>' : '');
+		    return (ret ? '<h1 style="'+style+'">'+ret+'</h1>' : '');
 		}),
+	    'caption.p.style': textFormattingField('caption.p.'),
 	    'caption.p': new ComputedField(
-		['caption.p.enable', 'caption.p.text'],
-		function(enable,                text){
-		    return (enable && text ? '<p>'+text+'</p>' : '');
+		['caption.p.enable', 'caption.p.text', 'caption.p.style'],
+		function(enable,                text,             style){
+		    return (enable && text ? '<p style="'+style+'">'+text+'</p>' : '');
 		}),
 	    'caption': new ComputedField(
 		['caption.p', 'caption.h1'],
@@ -262,8 +276,18 @@
 		}),
 	    'caption.inner.background': colorField('caption.inner.background.'),
 	    'caption.outer.background': colorField('caption.outer.background.'),
-	    'caption.outer.border': borderField('caption.outer.border.')
-	    
+	    'caption.outer.border': borderField('caption.outer.border.'),
+	    'caption.p.color': new ComputedField(
+		['caption.type', 'caption.p.color.inner', 'caption.p.color.outer'],
+		function(type,                  inner,                 outer){
+		    return (type=='inner' ? inner : outer);
+		}),
+	    'caption.h1.color': new ComputedField(
+		['caption.type', 'caption.h1.color.inner', 'caption.h1.color.outer'],
+		function(type,                  inner,                 outer){
+		    return (type=='inner' ? inner : outer);
+		})
+
 	}
     });
 
@@ -314,6 +338,22 @@
 	);
     }
     
+    function textFormattingField(prefix){
+	return new ComputedField(
+	    _.map(
+		['bold','italic','color','size'],
+		function(field){ return prefix+field; }
+	    ),
+	    function(bold,italic,color,size){
+		bold=(bold ? 'bold' : 'normal');
+		italic=(italic ? 'italic' : 'normal');
+		color=color || '#000';
+		size=inspic.pixelize(size || 10);
+		return "font-weight:"+bold+"; font-style:"+italic+"; color:"+color+"; font-size:"+size;
+	    }
+	);
+    }
+
     inspic.model.MainModel = MainModel;
     inspic.model.mainModel = new MainModel();
 })(jQuery);

@@ -25,6 +25,7 @@
 
 #insertPicture input{
     margin:0;
+    vertical-align: middle;
 }
 
 #insertPicture input[type="text"] {
@@ -253,6 +254,27 @@
 	background-image:url("images/icon/arrow-text.png")!important;
     }
 }
+
+.inspic_spinner{
+    position:relative;
+    width:11px;
+    height: 3px;
+    display:inline-block;
+    vertical-align:middle;
+    img{
+	position:absolute;
+	right:0;
+	padding:2px;
+	cursor:pointer;
+	&.inspic_dn{
+	    top:2px;
+	}
+	&.inspic_up{
+	    bottom:2px;
+	}
+    }
+}
+
 /*#insertPicture fieldset fieldset {
     border-width: 0;
 }
