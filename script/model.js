@@ -165,7 +165,6 @@
 	    'caption.outer.radius':0
 	},
 	
-	
 	computed: {
 	    'href': new ComputedField(
 		['src','href.type','href.url'],

@@ -79,20 +79,6 @@
 
 	    g('outerShadow.enable') && ph.inspic('css', 'box-shadow', g('outerShadow'));
 
-/*	    // OuterShadow and BorderLine
-	    if (g('borderline.enable') || g('outerShadow.enable')) {
-		var border;
-		if (g('borderline.enable')) {
-		    border.inspic('css','border', g('borderline'));
-		    border.inspic('css','background-color', g('border.background'));
-		}
-		border.inspic('css','padding', p(g('border.padding')));
-		g('border.radius') && border.inspic('css', 'border-radius',p(g('border.radius')));
-
-		g('outerShadow.enable') && border.inspic('css', 'box-shadow',g('outerShadow'));
-		ph = border;
-	    }*/
-
 	    // OuterCaption
 	    if (g('caption.outer.enable') && g('caption').trim()) {
 		var wrapper = $('<span class="pic_wrapper">');

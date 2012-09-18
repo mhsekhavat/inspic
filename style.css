@@ -11,6 +11,16 @@
   padding: 0;
   background-color: #EDEDED;
 }
+#insertPicture input, #insertPicture img {
+  vertical-align: middle;
+}
+#insertPicture input {
+  margin: 0;
+}
+#insertPicture input[type="text"] {
+  direction: ltr;
+  text-align: center;
+}
 #insertPicture > fieldset {
   border: 1px solid #fff;
   background-color: #fdfdfd;
@@ -21,20 +31,9 @@
 #insertPicture > fieldset > legend {
   width: 100%;
 }
-#insertPicture input {
-  margin: 0;
-  vertical-align: middle;
-}
-#insertPicture input[type="text"] {
-  direction: ltr;
-  text-align: center;
-}
 .inspic_inputfield {
   display: inline-block;
   padding: 5px;
-}
-#insertPicture img {
-  vertical-align: middle;
 }
 .inspic_preview {
   position: relative;
@@ -65,6 +64,9 @@
   background-color: white;
   padding: 2px;
 }
+.pic_clearfix {
+  display: block !important;
+}
 .pic_clearfix:after {
   content: ".";
   display: block;
@@ -72,15 +74,10 @@
   clear: both;
   visibility: hidden;
 }
-.pic_clearfix {
-  display: block !important;
-}
 #inspic_border .inspic_preview {
   overflow-x: hidden !important;
   overflow-y: auto !important;
   text-align: center;
-}
-#inspic_border .inspic_preview {
   width: 370px;
 }
 .pic_margin,
@@ -126,7 +123,7 @@
   background-color: #eee;
   border: 1px solid #ddd;
 }
-.iconSelectItem {
+.iconSelect .iconSelectItem {
   display: inline-block;
   vertical-align: middle;
   height: 16px;
@@ -137,14 +134,14 @@
   border-right: 1px solid #ddd;
   padding: 3px;
 }
-.iconSelectItem.first {
+.iconSelect .iconSelectItem.first {
   border: 0;
 }
-.iconSelectItem:hover {
+.iconSelect .iconSelectItem:hover {
   cursor: pointer;
   background-color: #f4f4f4;
 }
-.iconSelectItem.selected {
+.iconSelect .iconSelectItem.selected {
   background-color: white;
 }
 .iconSelect[field="borderline.style"] .iconSelectItem[value="solid"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="solid"] {
