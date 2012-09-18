@@ -93,41 +93,6 @@
 
     /***************************************************************************************************************/
 
-    var MonitorPreview = Backbone.View.extend({
-	initialize : function() {
-	    var model = this.model = mainModel;
-	    var img = this.$('img.inspic_img');
-	    var loading = this.$('img.inspic_loading');
-
-	    model.on('change:src', function() {
-		var src = model.get('src');
-		var el = $('<img>').attr('src', src);
-		img.replaceWith(el);
-		img = el;// update img variable
-		updateDimensions();
-	    }, this);
-
-	    function updateDimensions() {
-		var width = model.get('width');
-		var height = model.get('height');
-		_.isUndefined(width) || (img.css('width', _.isNumber(width) ? width / 5 + 'px' : 'auto'));
-		_.isUndefined(height) || (img.css('height', _.isNumber(height) ? height / 5 + 'px' : 'auto'));
-	    }
-	    model.on('change:width change:height', updateDimensions, this);
-
-	    model.on('change:isLoading', function() {
-		var isLoading = model.get('isLoading');
-		if (isLoading) {
-		    img.hide();
-		    loading.show();
-		} else {
-		    img.show();
-		    loading.hide();
-		}
-	    });
-	}
-    });
-
     function appendTo(container){
 	return function ret(element){
 	    ret.container=container;
@@ -140,9 +105,6 @@
     }
 
     function addSrcElements() {
-	new MonitorPreview({
-	    el : $('#inspic_monitor .inspic_screen')
-	});
 
 	appendTo('#inspic_src')
 	(
@@ -153,6 +115,12 @@
 		events : {
 		    "change input" : "onChange"
 		}
+	    })
+	)(
+	    new InputField('title', 'text', {
+		text: 'عنوان:',
+		width: 'long',
+		textAlign: 'right'
 	    })
 	)(
 	    new InputField('src.bayan.size', 'select', {
@@ -223,55 +191,20 @@
 		visibilityCriteria: '`href.type`!="url" && `href.type`!="none"',
 		initialize: function(){ this.$('input').inspic('disabled',true); }
 	    })
-	)(
-	    '<br>'
-	)(
-	    new InputField('title', 'text', {
-		text: 'عنوان:',
-		width: 'long',
-		textAlign: 'right'
-	    })
 	); 
     }
-
-    var PositionPreview = Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=mainModel;
-	    var $clearfix=this.$('.inspic_clearfix');
-	    var $margin=this.$('.pic_margin');
-	    var $wrapper=this.$('.pic_wrapper');
-	    var $img=this.$('img');
-	    model.subscribe('position.clearfix', function(val){
-		$clearfix[val ? 'addClass' : 'removeClass']('pic_clearfix');
-	    })();
-	    model.subscribe('position.float', function(val){
-		$margin.css('float', val);
-	    })();
-	    model.subscribe('position.textAlign', function(val){
-		$clearfix.css('text-align', val);
-	    })();
-	    model.subscribe('margin', function(val){
-		$wrapper.css('margin', val);
-	    })();
-	    model.subscribe('outerShadow', function(val){
-		$img.css('box-shadow', val);
-	    })();
-	}
-    });
+/***********************************************************************/
 
     function addPositionElements(){
-	new PositionPreview({
-	    el: $('#inspic_position')
-	});
 
-	appendTo('#inspic_position>legend')(
+/*	appendTo('#inspic_position>legend')(
 	    new InputField('margin.adv', 'checkbox', {
 		text: 'پیشرفته',
 		initialize: function(){
 		    this.$el.css('float','left');
 		}
 	    })
-	);
+	);*/
 
 	appendTo('#inspic_position')(
 	    new InputField('position', 'select', {
@@ -330,125 +263,81 @@
 
     }
     
-    var BorderPreview=Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=inspic.model.mainModel;
-	    var $wrapper=this.$('.pic_wrapper');
-	    var $border=this.$('.pic_border');
-	    var $inner=this.$('.pic_inner');
-	    var $img=this.$('img');
-	    var p=inspic.pixelize;
-	    model.subscribe('innerShadow', function(val){
-		$inner.css('box-shadow', val);
-	    })();
-	    model.subscribe('borderline', function(val){
-		$border.css('border', val);
-	    })();
-	    model.subscribe('outerShadow', function(val){
-		$border.css('box-shadow', val);
-	    })();
-	    model.subscribe('border.padding', function(val){
-		$border.css('padding', p(val));
-	    })();
-	    model.subscribe('border.background', function(val){
-		$border.css('background-color', val);
-	    })();
-	    /*model.subscribe('margin', function(val){
-		$wrapper.css('margin', val);
-	    })();*/
-	    model.subscribe('border.radius', function(val){
-		$border.css('border-radius', p(val));
-	    })();
-	    model.subscribe('border.radius.inner', function(val){
-		$inner.css('border-radius', p(val));
-		$img.css('border-radius', p(val));
-	    })();
-	}
-    });
+/**********************************************************************************/
+
 
     function addBorderElements(){
-	new BorderPreview({
-	    el: '#inspic_border .inspic_preview'
-	});
 
-	new InputField('border.adv', 'checkbox', {
+	/*new InputField('border.adv', 'checkbox', {
 	    text: 'پیشرفته',
 	    initialize: function(){
 		this.$el.css('float','left');
 	    }
-	}).$el.appendTo('#inspic_border>legend');
+	}).$el.appendTo('#inspic_border>legend');*/
 
 	var inner=shadowFields('سایه داخلی:','innerShadow.', 'border.adv','x,y,alpha'.split(','));
 	var borderline=borderFields('borderline.', 'border.adv', ['width']);
 	var outer=shadowFields('سایه خارجی:','outerShadow.', 'border.adv', 'x,y,alpha'.split(','));
 
 	appendTo('#inspic_border')(
-	    appendTo($('<fieldset>'))(
-		appendTo($('<legend>'))(
-		    inner.enable
-		).container
-	    )(
-		inner.color
-	    )(
-		inner.blur
-	    )(
-		inner.x
-	    )(
-		inner.y
-	    )(
-		inner.alpha
-	    ).container
+	    inner.enable
 	)(
-	    appendTo($('<fieldset>'))(
-		appendTo($('<legend>'))(
-		    borderline.enable
-		).container
-	    )(
-		borderline.style
-	    )(
-		borderline.color
-	    )(
-		new InputField('border.padding.raw', 'text', {
-		    text: 'فاصله کادر بیرونی با تصویر',
-		    icon: 'padding.png',
-		    visibilityCriteria: '`outerShadow.enable` || `borderline.style`'
-		})
-	    )(
-		new InputField('border.background', 'text', {
-		    //		    text: 'رنگ بین کادر و تصویر',
-		    //		    icon: 'paint-can-left.png',
-		    initialize: function(){
-			this.$('input').colorPicker();
-			this.$('.colorPicker-picker').addClass('picker-arrow-paint');
-		    },
-		    visibilityCriteria: '`border.adv` && (`outerShadow.enable` || `borderline.style`)'
-		})
-	    )(
-		borderline.width
-	    )(
-		new InputField('border.radius', 'text', {
-		    text: 'شعاع انحنای لبه ها',
-		    icon: 'radius.resized.png',
-		    visibilityCriteria: 'border.adv'
-
-		})
-	    ).container
+	    inner.color
 	)(
-	    appendTo($('<fieldset>'))(
-		appendTo($('<legend>'))(
-		    outer.enable
-		).container
-	    )(
-		outer.color
-	    )(
-		outer.blur
-	    )(
-		outer.x
-	    )(
-		outer.y
-	    )(
-		outer.alpha
-	    ).container
+	    inner.blur
+	)(
+	    inner.x
+	)(
+	    inner.y
+	)(
+	    inner.alpha
+	)(
+	    '<br>'
+	)(
+	    borderline.enable
+	)(
+	    borderline.style
+	)(
+	    borderline.color
+	)(
+	    new InputField('border.padding.raw', 'text', {
+		text: 'فاصله کادر بیرونی با تصویر',
+		icon: 'padding.png',
+		visibilityCriteria: '`outerShadow.enable` || `borderline.style`'
+	    })
+	)(
+	    new InputField('border.background', 'text', {
+		//		    text: 'رنگ بین کادر و تصویر',
+		//		    icon: 'paint-can-left.png',
+		initialize: function(){
+		    this.$('input').colorPicker();
+		    this.$('.colorPicker-picker').addClass('picker-arrow-paint');
+		},
+		visibilityCriteria: '`border.adv` && (`outerShadow.enable` || `borderline.style`)'
+	    })
+	)(
+	    borderline.width
+	)(
+	    new InputField('border.radius', 'text', {
+		text: 'شعاع انحنای لبه ها',
+		icon: 'radius.resized.png',
+		visibilityCriteria: 'border.adv'
+		
+	    })
+	)(
+	    '<br>'
+	)(
+	    outer.enable
+	)(
+	    outer.color
+	)(
+	    outer.blur
+	)(
+	    outer.x
+	)(
+	    outer.y
+	)(
+	    outer.alpha
 	);
 	
     }
@@ -569,83 +458,9 @@
 	};
     }
 
-    var InnerCaptionPreview=Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=inspic.model.mainModel;
-	    var $el=this.$el;
-	    model.subscribe('caption.inner.enable', function(val){
-		$el[val ? 'show' : 'hide']();
-	    })();
-	    model.subscribe('caption.textAlign', function(val){
-		$el.css('text-align', val);
-	    })();
-	    model.subscribe('caption', function(content){
-		$el.html(content.trim() || '{زیرنویس}');
-	    })();
-	    model.subscribe('caption.vpos', function(val){
-		$el.css({
-		    top: (val=='top' ? '0' : 'auto'),
-		    bottom: (val=='bottom' ? '0' : 'auto')
-		});
-	    })();
-	    model.subscribe('caption.inner.hpos', function(val){
-		$el.css({
-		    left : (val == 'left' || val == 'full') ? '0' : 'auto',
-		    right : (val == 'right' || val == 'full') ? '0' : 'auto'
-		});
-	    })();
-	    model.subscribe('caption.inner.background', function(val){
-		$el.css('background-color', val);
-	    })();
-	    model.subscribe('caption.inner.radius', function(val){
-		$el.css('border-radius', val);
-	    })();
-	}
-    });
-
-    var OuterCaptionPreview=Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=inspic.model.mainModel;
-	    var $el=this.$el;
-	    var $wrapper=$el.closest('.pic_wrapper');
-	    var p=inspic.pixelize;
-	    model.subscribe('caption.outer.enable', function(val){
-		$el.css('display', (val ? 'block' : 'none'));
-		//$el[val=='outer' ? 'show': 'hide']();
-	    })();
-	    model.subscribe('caption.textAlign', function(val){
-		$el.css('text-align', val);
-	    })();
-	    model.subscribe('caption', function(content){
-		$el.html(content.trim() || '{زیرنویس}');
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.border`', function(val){
-		$wrapper.css('border', inspicEval(val) || '');
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.background`', function(val){
-		$wrapper.css('background-color', inspicEval(val) || '');
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.padding`', function(val){
-		$wrapper.css('padding', p(inspicEval(val) || 0));
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.radius`', function(val){
-		$wrapper.css('border-radius', p(inspicEval(val || 0)) );
-	    })();
-	    model.subscribe('caption.vpos', function(val){
-		$el[(val=='top' ? 'prependTo' : 'appendTo')]($wrapper);
-	    })();
-
-	}
-    });
-
+/********************************************************************************/
 
     function addCaptionElements(){
-	new InnerCaptionPreview({
-	    el: $('#inspic_border .pic_caption_inner')
-	});
-	new OuterCaptionPreview({
-	    el: $('#inspic_border .pic_caption_outer')
-	});
 	
 	var outerBorder=borderFields('caption.outer.border.','caption.adv',[]);
 	var h1Format=textFormattingFields('caption.h1.', 'caption.adv', []);
@@ -828,6 +643,11 @@
 	addPositionElements();
 	addBorderElements();
 	addCaptionElements();
+	$('.tabs>div').inspic('tabularize', '.tab_headers');
+	new InputField('adv', 'checkbox', {
+	    text: 'نمایش تنظیمات پیشرفته'
+	}).$el.appendTo('.tab_headers');
+
 	var output;
 	$('<a href="#">output</a>').prependTo('body').click(function(){
 	    if (!output)

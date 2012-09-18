@@ -106,6 +106,11 @@
 		set('margin.base', val=='inline_none' ? 3 : 10);
 	},
 	
+	'adv': function(val){
+	    setField('margin.adv', val);
+	    setField('caption.adv', val);
+	    setField('border.adv', val);
+	}
     };
     
 })(jQuery);

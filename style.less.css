@@ -8,7 +8,7 @@
     font-family: "tahoma";
     font-size: 12px;
     direction: rtl;
-    padding: 0;
+    padding: 6px;
     background-color:#EDEDED;
 
     input,img{
@@ -22,16 +22,50 @@
 	    text-align: center;
 	}
     }
-
-    > fieldset {
-	border: 1px solid #fff;
-	background-color: #fdfdfd;
-	margin: 6px;
-	padding: 4px;
-	border-radius: 5px;
-	>legend {
-	    width:100%;
+    
+    .tab_headers {
+	margin-right: 6px;
+	span[for]{
+	    display: inline-block;
+	    padding: 5px 7px;
+	    margin-right: 3px;
+	    background-color: #f3f3f3;
+	    border: 1px solid #f7f7f7;
+	    border-bottom: 0;
+	    border-radius: 3px 3px 0 0;
+	    &:hover{
+		cursor:pointer;
+		background-color: #f4f4f4;
+	    }
+	    &.selected, &.selected:hover{
+		background-color: white;
+	    }
 	}
+	.inspic_inputfield{
+	    float:left;
+	}
+    }
+
+    .tabs{
+	> div {
+	    border: 1px solid #fff;
+	    background-color: white;
+	    padding: 4px;
+	    border-radius: 5px;
+	    height: 100px;
+	    >legend {
+		width:100%;
+	    }
+	}
+    }
+
+    .preview{
+	background-color:white;
+	border-radius: 5px;
+	display: inline-block;
+	height: 400px;
+	width: 750px;
+	overflow: auto;
     }
 }
 
@@ -46,37 +80,6 @@
     width: 250px;
 }
 
-#inspic_monitor{
-    .inspic_screen {
-	position: absolute;
-	top: 51px;
-	left: 26px;
-	background-color: white;
-	width: 194px;
-	height: 84px;
-	font-size: 0.2em;
-	text-align: justify;
-	padding: 0px 3px;
-	overflow: hidden;
-    }
-    .inspic_loading {
-	display: none;
-    }
-}
-
-#inspic_position{
-    .inspic_preview {
-	overflow: hidden !important;
-	height: 130px;
-    }
-
-    .pic_margin img{
-	border: 1px solid black;
-	background-color: white;
-	padding: 2px;
-    }
-}
-
 .pic_clearfix {
     display: block !important;
     &:after {
@@ -85,15 +88,6 @@
 	height: 0;
 	clear: both;
 	visibility: hidden;
-    }
-}
-
-#inspic_border {
-    .inspic_preview{
-	overflow-x: hidden !important;
-	overflow-y: auto !important;
-	text-align: center;
-	width: 370px;
     }
 }
 

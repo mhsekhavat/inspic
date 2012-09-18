@@ -120,7 +120,7 @@ function inspicEval(expr){
 	    	$text.val(val).change();
 	    }
 
-	    $text.keyup(function(e){
+	    $text.keypress(function(e){
 		if (e.keyCode!=38 && e.keyCode!=40)
 		    return;
 		changeStep(e.keyCode==38);
@@ -138,6 +138,25 @@ function inspicEval(expr){
 	});
     }
     
+    function tabularize(header,focus){
+	var $header=$(header);
+	var $tabs=this;
+	focus = focus || 0;
+	$.each(this, function(index){
+	    var $tab=$(this);
+	    $header.append($('<span>', {
+		text:$tab.attr('title'),
+		'for':$tab.attr('id'),
+		click: function(){
+		    $tabs.hide();
+		    $tab.show();
+		    $(this).addClass('selected').siblings().removeClass('selected');
+		}
+	    }));
+	});
+	$header.find('span:first').click();
+    }
+
     var jQueryFunctions = {
 	val : function(value) {
 	    if (_.isUndefined(value)) {
@@ -171,6 +190,7 @@ function inspicEval(expr){
 	
 	'iconSelect': iconSelect,
 	'spinner': spinner,
+	'tabularize': tabularize,
 	css: function(val,key){
 	    if (_.isUndefined(key) || _.isNull(key))
 		return;
