@@ -15,7 +15,7 @@ function inspicEval(expr){
     if(typeof String.prototype.trim !== 'function') {
 	String.prototype.trim = function() {
 	    return $.trim(this);
-	}
+	};
     }
 
     function Scroller(callback,context) {//returns a div
@@ -94,13 +94,14 @@ function inspicEval(expr){
 	    });
 	    $select.change();
 	});
+	return this;
     }
 
     var spinnerTem=$('#inspic_tem_spinner').html();
     function spinner(args){
 	args=_.extend({
 	    step:1,
-	    min:NaN,
+	    min:0,
 	    max:50
 	}, args);
 
@@ -136,6 +137,7 @@ function inspicEval(expr){
 		changeStep(false);
 	    });
 	});
+	return this;
     }
     
     function tabularize(header,focus){
@@ -148,6 +150,8 @@ function inspicEval(expr){
 		text:$tab.attr('title'),
 		'for':$tab.attr('id'),
 		click: function(){
+		    if ($(this).inspic('disabled'))
+			return;
 		    $tabs.hide();
 		    $tab.show();
 		    $(this).addClass('selected').siblings().removeClass('selected');
@@ -155,6 +159,7 @@ function inspicEval(expr){
 	    }));
 	});
 	$header.find('span:first').click();
+	return this;
     }
 
     var jQueryFunctions = {
@@ -182,15 +187,20 @@ function inspicEval(expr){
 	},
 
 	disabled : function(value) {
+	    var $this=$(this);
+	    if (arguments.length==0)
+		return ($this.attr('disabled')=='disabled');
 	    if (value)
-		$(this).attr('disabled', 'disabled');
+		$this.attr('disabled', 'disabled');
 	    else
-		$(this).removeAttr('disabled');
+		$this.removeAttr('disabled');
+	    return this;
 	},
 	
 	'iconSelect': iconSelect,
 	'spinner': spinner,
 	'tabularize': tabularize,
+
 	css: function(val,key){
 	    if (_.isUndefined(key) || _.isNull(key))
 		return;
@@ -198,6 +208,9 @@ function inspicEval(expr){
 	    ret=(ret ? ret+' ' : '');
 	    ret=ret+(_.isUndefined(key) ? val : val+':'+key.trim()+';');
 	    return this.attr('style', ret);
+	},
+	outerHtml: function(){
+	    return $('<div>').append($(this).clone()).html();
 	}
     };
     
@@ -219,8 +232,9 @@ function inspicEval(expr){
 	    return {r:hex[1], g:hex[2], b: hex[3], a:1};
 	}
 	var rgba = color.match(/rgba?\((\d{1,3}),(\d{1,3}),(\d{1,3})(,([.\d]*))?\)/);
+	var alpha=(rgba[5]==='0' || rgba[5] ? rgba[5] : 1);
 	if (rgba)
-	    return {r:parseInt(rgba[1]), g:parseInt(rgba[2]), b:parseInt(rgba[3]), a:parseFloat(rgba[5])||1};
+	    return {r:parseInt(rgba[1]), g:parseInt(rgba[2]), b:parseInt(rgba[3]), a:alpha};
 	if (color=='transparent')
 	    return {r:255, g:255, b:255, a:0};
 	return '';
@@ -228,7 +242,9 @@ function inspicEval(expr){
 
     inspic.rgbaToColor = function(rgba){
 	var rgb=[rgba.r,rgba.g,rgba.b];
-	if (!rgba.a || rgba.a==1)
+	if (rgba.a===0)
+	    return 'transparent';
+	else if (!rgba.a || rgba.a==1)
 	    return _.reduce(rgb, function(memo,val){
 		val || (val=0);
 		val=val.toString(16);

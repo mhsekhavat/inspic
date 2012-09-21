@@ -26,7 +26,7 @@
 	    img.inspic('css','width', p(g('width')));
 	    img.inspic('css','height', p(g('height')));
 	    if (g('title')) {
-		img.attr('', g('title'));
+		img.attr('alt', g('title'));
 		img.attr('title', g('title'));
 	    }
 	    if (g('border.radius'))
@@ -69,17 +69,36 @@
 		ph=border;
 	    }
 
+	    //padding and background
 	    if (g('border.padding')){
 		ph.inspic('css', 'padding', p(g('border.padding')));
 		ph.inspic('css', 'background-color', g('border.background'));
 	    }
 
+	    //radius (outer)
 	    g('border.radius') && ph.inspic('css', 'border-radius', p(g('border.radius')));
+	    
+	    //Borderline and OuterShadow
 	    g('borderline.enable') && ph.inspic('css', 'border', g('borderline'));
-
 	    g('outerShadow.enable') && ph.inspic('css', 'box-shadow', g('outerShadow'));
 
-	    // OuterCaption
+	    //title (outer)
+	    g('title') && ph.attr('title', g('title'));
+
+	    //Anchor (href)
+	    if (g('href')){
+		if (ph.prop('tagName').toLowerCase()=='span'){
+		    var code=ph.inspic('outerHtml');
+		    code=code.replace(/^<span/,'<a').replace(/span>$/,'a>');
+		    ph=$(code);
+		} else{
+		    ph=ph.wrap('<a/>').parent();
+		}
+		ph.attr('href', g('href'));
+		g('href.target') && ph.attr('target', g('href.target'));
+	    }
+	    
+	    // OuterCaption and pic_wrapper
 	    if (g('caption.outer.enable') && g('caption').trim()) {
 		var wrapper = $('<span class="pic_wrapper">');
 		g('caption.outer.border.enable') && wrapper.inspic('css','border', g('caption.outer.border'));
@@ -120,4 +139,19 @@
     });
     inspic.view.Output=Output;
 
+    $(function(){
+	var output=null;
+	$('<a href="#">output</a>').prependTo('body').click(function(){
+	    if (!output)
+		output=new inspic.view.Output({
+		    'model':inspic.model.mainModel
+		});
+	    else{
+		output.render();
+		output.el.focus();
+	    }
+	    return false;
+	});
+
+    });
 })(jQuery);

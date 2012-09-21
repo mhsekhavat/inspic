@@ -315,15 +315,16 @@
 
         // Default color set.
         colors : [
-            'transparent', '993300', '333300', '000080', '333399', '333333', '800000', 'FF6600',
-            '808000', '008000', '008080', '0000FF', '666699', '808080', 'FF0000', 'FF9900',
-            '99CC00', '339966', '33CCCC', '3366FF', '800080', '999999', 'FF00FF', 'FFCC00',
-            'FFFF00', '00FF00', '00FFFF', '00CCFF', '993366', 'C0C0C0', 'FF99CC', 'FFCC99',
-            'FFFF99', 'CCFFFF', '99CCFF', 'FFFFFF'
+            '424242', '676767', '989898', 'C5C5C5', 'E3E3E3', 'F1F1F1', 
+	    '800000', 'FF6600', '808000', '008000', '008080', '0000FF', 
+	    '666699', '808080', 'FF0000', 'FF9900', '99CC00', '339966', 
+	    '33CCCC', '3366FF', '800080', '999999', 'FF00FF', 'FFCC00',
+            'FFFF00', '00FF00', '00FFFF', '00CCFF', '993366', 'C0C0C0', 
+	    'FF99CC', 'FFCC99', 'FFFF99', 'CCFFFF', '99CCFF', 'FFFFFF'
         ],
 
         // If we want to simply add more colors to the default set, use addColors.
-        addColors : []
+        addColors : ['red']
     };
 
 })(jQuery);

@@ -74,7 +74,6 @@
 		};
 	    } else { 
 		/*if expr is just a single field of model, subscribe to its changes */
-		
 		changes='change:'+expr;
 		handler=function(){
 		    onChange.call(context, model.get(expr));
@@ -91,6 +90,7 @@
 	    'version': 1,
 	    'isLoading' : false,
 	    'src' : null,
+	    'src.adv': false,
 	    'src.width' : 0,
 	    'src.height' : 0,
 	    'src.bayan' : false,
@@ -102,6 +102,7 @@
 	    'href': null,
 	    'href.type': 'src',
 	    'href.url': '',
+	    'href.target': '_blank',
 	    'title': '',
 	    'position': 'float_right',
 	    'position.float': 'right',
@@ -113,7 +114,7 @@
 	    'margin.bottom': 10,
 	    'innerShadow.enable':true,
 	    'innerShadow.inset': true,
-	    'innerShadow.blur': 3,
+	    'innerShadow.blur': 10,
 	    'innerShadow.color': '#000',
 	    'innerShadow.x': 0,
 	    'innerShadow.y': 0,
@@ -132,25 +133,25 @@
 	    'border.padding.raw':3,
 	    'border.radius':5,
 	    'border.background':'#fff',
-	    'caption.enable':true,
+	    'caption.enable':false,
 	    'caption.pos':'inner_top',
 	    'caption.textAlign':'center',
-	    'caption.h1.enable': 'true',
+	    'caption.h1.enable': true,
 	    'caption.h1.text':'',
-	    'caption.h1.type':'text',
+	    'caption.h1.type':'',
 	    'caption.h1.bold':false,
 	    'caption.h1.italic':false,
 	    'caption.h1.color.inner':'#eee',
 	    'caption.h1.color.outer':'#000',
 	    'caption.h1.size':14,
 	    'caption.p.text':'',
-	    'caption.p.enable':'',
+	    'caption.p.enable':false,
 	    'caption.p.bold':false,
 	    'caption.p.italic':false,
 	    'caption.p.color.inner':'#eee',
 	    'caption.p.color.outer':'#000',
 	    'caption.p.size':10,
-	    'caption.adv':true,
+	    'caption.adv':false,
 	    'caption.inner.hpos':'full',
 	    'caption.inner.background.color':'#000',
 	    'caption.inner.background.alpha':0.7,

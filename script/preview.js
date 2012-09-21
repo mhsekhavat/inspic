@@ -5,8 +5,9 @@
     var ImagePreview = Backbone.View.extend({
 	initialize : function() {
 	    var model = this.model = mainModel;
-	    var img = this.$('img');
-	    var loading = this.$('img.inspic_loading');
+	    var img= this.$('.imagePreview img');
+	    var loading = this.$('.loading');
+	    var imagePreview = this.$('.imagePreview');
 
 	    model.on('change:src', function() {
 		var src = model.get('src');
@@ -23,17 +24,14 @@
 		_.isUndefined(height) || (img.css('height', _.isNumber(height) ? height + 'px' : 'auto'));
 	    }
 	    model.on('change:width change:height', updateDimensions, this);
-
-	    model.on('change:isLoading', function() {
-		var isLoading = model.get('isLoading');
-		if (isLoading) {
-		    img.hide();
-		    loading.show();
-		} else {
-		    img.show();
-		    loading.hide();
-		}
-	    });
+	    
+	    model.subscribe('isLoading', function(val){
+		loading[val ? 'show' : 'hide']();
+	    })();
+	    
+	    model.subscribe('`src` && !(`isLoading`)', function(val){
+		imagePreview[inspicEval(val) ? 'show' : 'hide']();
+	    })();
 	}
     });
 
@@ -66,10 +64,9 @@
     var BorderPreview=Backbone.View.extend({
 	initialize: function(){
 	    var model=this.model=mainModel;
-	    var $wrapper=this.$('.pic_wrapper');
 	    var $border=this.$('.pic_border');
 	    var $inner=this.$('.pic_inner');
-	    var $img=this.$('img');
+	    var _this=this;
 	    var p=inspic.pixelize;
 	    model.subscribe('innerShadow', function(val){
 		$inner.css('box-shadow', val);
@@ -86,15 +83,14 @@
 	    model.subscribe('border.background', function(val){
 		$border.css('background-color', val);
 	    })();
-	    /*model.subscribe('margin', function(val){
-	      $wrapper.css('margin', val);
-	      })();*/
 	    model.subscribe('border.radius', function(val){
 		$border.css('border-radius', p(val));
 	    })();
 	    model.subscribe('border.radius.inner', function(val){
 		$inner.css('border-radius', p(val));
-		$img.css('border-radius', p(val));
+	    })();
+	    model.subscribe('`border.radius.inner` `src`', function(){
+		_this.$('img').css('border-radius', p(model.get('border.radius.inner')));
 	    })();
 	}
     });
@@ -164,7 +160,6 @@
 	    model.subscribe('caption.vpos', function(val){
 		$el[(val=='top' ? 'prependTo' : 'appendTo')]($wrapper);
 	    })();
-
 	}
     });
 

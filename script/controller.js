@@ -110,6 +110,25 @@
 	    setField('margin.adv', val);
 	    setField('caption.adv', val);
 	    setField('border.adv', val);
+	    setField('src.adv', val);
+	},
+	
+	'margin.adv': function(val){
+	    if (val){
+		var $tmp=$('<div>').css('margin',get('margin'));
+		setField('margin.top', $tmp.css('marginTop'));
+		setField('margin.bottom', $tmp.css('marginBottom'));
+		setField('margin.right', $tmp.css('marginRight'));
+		setField('margin.left', $tmp.css('marginLeft'));
+	    }
+	    set('margin.adv', val);
+	},
+	
+	'caption.enable': function(val){
+	    set('caption.enable', val);
+	    if (val){
+		;
+	    }
 	}
     };
     
