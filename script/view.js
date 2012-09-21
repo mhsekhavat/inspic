@@ -149,6 +149,7 @@
 		mainModel.subscribe('src', function(val){
 		    scroller[val ? 'show' : 'hide']();
 		})();
+
 		return scroller;
 	    }()
 	)(
@@ -235,7 +236,7 @@
 		    'وسط': 'block_center',
 		    'داخل متن': 'inline_none',
 		    'چپ به تنهایی': 'block_left',
-		    'چپ': 'inline_left',
+		    'چپ': 'inline_left'
 		},
 		initialize: function(){
 		    this.$('select').inspic('iconSelect', this.field);
@@ -246,7 +247,7 @@
 	)( 
 	    new InputField('margin.base', 'text', {
 		text: 'فاصله از متن:',
-		visibilityCriteria: '!`margin.adv`',
+		visibilityCriteria: '!`margin.adv`'
 	    })
 	)(
 	    new InputField('margin.top', 'text', {
@@ -270,7 +271,7 @@
 	    new InputField('margin.left', 'text', {
 		text: 'چپ',
 		icon: 'ml.png',
-		visibilityCriteria: 'margin.adv',
+		visibilityCriteria: 'margin.adv'
 	    })
 	);
 
@@ -472,7 +473,7 @@
 	    blur: new InputField(prefix+'blur', 'text', {
 		visibilityCriteria: crit('blur'),
 		text: 'بزرگی سایه',
-		icon: 'shadow-radius.png',
+		icon: 'shadow-radius.png'
 	    }), 
 	    color: new InputField(prefix+'color', 'text', {
 		visibilityCriteria: crit('color'),
@@ -516,7 +517,7 @@
 		    'خارج پایین': 'outer_top',
 		    'داخل بالا':'inner_top',
 		    'داخل پایین':'inner_bottom',
-		    'خارج بالا': 'outer_bottom',
+		    'خارج بالا': 'outer_bottom'
 		},
 		initialize: function(){
 		    this.$('select').inspic('iconSelect', this.field);
@@ -609,7 +610,7 @@
 	)(
 	    new InputField('caption.p.enable', 'checkbox', {
 		text: 'شرح:',
-		visibilityCriteria: 'caption.enable',
+		visibilityCriteria: 'caption.enable'
 	    })
 	)(
 	    new InputField('caption.p.text', 'text', {

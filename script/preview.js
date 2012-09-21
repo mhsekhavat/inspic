@@ -106,7 +106,7 @@
 		$el.css('text-align', val);
 	    })();
 	    model.subscribe('caption', function(content){
-		$el.html(content.trim() || '{زیرنویس}');
+		$el.html(content.trim());
 	    })();
 	    model.subscribe('caption.vpos', function(val){
 		$el.css({

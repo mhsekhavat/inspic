@@ -25,7 +25,7 @@
 	    value=numberize(value);
 	if (_.isNaN(value))
 	    return;
-	if (setter=modelFieldSetters[field]){
+	if ((setter=modelFieldSetters[field])){
 	    setter.call(model,value,e);
 	} else {
 	    set(field,value);

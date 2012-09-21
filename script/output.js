@@ -17,7 +17,7 @@
 	    var p = inspic.pixelize;
 	    var g = function(x) {
 		return model.get(x);
-	    }
+	    };
 	    var ph; // placeholder
 	    
 	    //Image
@@ -47,7 +47,7 @@
 		if (g('caption.inner.enable') && g('caption').trim()){
 		    var caption = $('<span class="pic_caption_inner">');
 		    caption.html(g('caption').trim());
-		    caption.inspic('css','text-align',g('caption.textAlign'))
+		    caption.inspic('css','text-align',g('caption.textAlign'));
 		    g('caption.vpos')=='top' && caption.inspic('css','top','0');
 		    g('caption.vpos')=='bottom' && caption.inspic('css','bottom','0');
 		    g('caption.inner.hpos').match(/left|full/) && caption.inspic('css','left', '0');

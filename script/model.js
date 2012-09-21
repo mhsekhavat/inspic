@@ -178,6 +178,7 @@
 			return inspic.controller.bayanSizedUrl(src, 'view');
 		    else if (type=='url')
 			return url;
+		    return;
 		}),
 	    'margin': new ComputedField(
 		['margin.base','margin.adv','margin.top', 'margin.right','margin.bottom','margin.left','position','outerShadow.enable','outerShadow.blur','outerShadow.x','outerShadow.y'],
@@ -190,6 +191,8 @@
 			else if (pos.match(/_left/))
 			    l=0;
 			if (shadow){
+			    if (blur>=10)
+				blur=Math.floor(blur/2)+4+Math.floor(blur/5);
 			    t+=Math.max(0, blur-y);
 			    r+=Math.max(0, blur+x);
 			    b+=Math.max(0, blur+y);
@@ -238,7 +241,9 @@
 	    'caption.p': new ComputedField(
 		['caption.p.enable', 'caption.p.text', 'caption.p.style'],
 		function(enable,                text,             style){
-		    return (enable && text ? '<p style="'+style+'">'+text+'</p>' : '');
+		    if (!enable)
+			return '';
+		    return '<p style="'+style+'">' + (text || '}عنوان زیر نویس{') + '</p>';
 		}),
 	    'caption': new ComputedField(
 		['caption.p', 'caption.h1'],

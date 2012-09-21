@@ -23,14 +23,17 @@
 }
 #insertPicture .tab_headers {
   margin-right: 6px;
+  position: relative;
+  top: 1px;
 }
 #insertPicture .tab_headers span[for] {
   display: inline-block;
   padding: 5px 7px;
   margin-right: 3px;
   background-color: #f3f3f3;
-  border: 1px solid #f7f7f7;
-  border-bottom: 0;
+  border-style: solid;
+  border-color: #bbbbbb;
+  border-width: 1px 1px 0 1px;
   border-radius: 5px 5px 0 0;
 }
 #insertPicture .tab_headers span[for]:hover {
@@ -43,12 +46,14 @@
 }
 #insertPicture .tab_headers span[for].selected, #insertPicture .tab_headers span[for].selected:hover {
   background-color: white;
+  border-bottom: 1px solid white;
+  z-index: 2;
 }
 #insertPicture .tab_headers .inspic_inputfield {
   float: left;
 }
 #insertPicture .tabs > div {
-  border: 1px solid #fff;
+  border: 1px solid #bbbbbb;
   background-color: white;
   padding: 4px;
   border-radius: 5px;
@@ -148,7 +153,13 @@
 .iconSelect .iconSelectItem.selected {
   background-color: white;
 }
-.iconSelect[field="borderline.style"] .iconSelectItem[value="solid"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="solid"] {
+.iconSelect[field="borderline.style"], .iconSelect[field="caption.outer.border.style"] {
+  /*.iconSelectItem[value="solid"]{
+	background-image:url("@{base-icon}/line-solid.png");
+    }*/
+
+}
+.iconSelect[field="borderline.style"] .iconSelectItem[value="@{value}"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="@{value}"] {
   background-image: url("images/icon/line-solid.png");
 }
 .iconSelect[field="borderline.style"] .iconSelectItem[value="dashed"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="dashed"] {
