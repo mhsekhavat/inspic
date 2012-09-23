@@ -2,7 +2,6 @@
     var Output=Backbone.View.extend({
 	initialize: function(options){
 	    var window=this.window=open('output.html','inspic_output', options.specs);
-	    var _this=this;
 	    this.setElement(window);
 	    this.model.on('change', function(){
 		window.focus();
@@ -12,7 +11,6 @@
 	},
 
 	render: function(){
-	    var _this = this;
 	    var model=this.model;
 	    var p = inspic.pixelize;
 	    var g = function(x) {

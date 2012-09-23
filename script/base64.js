@@ -133,6 +133,6 @@
 	    return string;
 	}
 
-    }
+    };
     inspic.base64=Base64;
 })();
