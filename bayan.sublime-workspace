@@ -23,18 +23,31 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 3606,
+				"buffer_size": 3649,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "(function($) {\n	inspic.view = {};\n	var mainModel = inspic.model.mainModel;\n\n	// load templates for later use from index.html\n	var templates = {};\n	$('[inspic_tem]').each(function() {\n		var $this = $(this);\n		templates[$this.attr('inspic_tem')] = _.template($this.html());\n	});\n\n	var InputField = Backbone.View.extend({\n		tagName : 'span',\n		className : 'inspic_inputfield',\n\n		updateValue : function(val) {\n			this.$('input,select').inspic('val', val);\n		},\n\n		updateDisability : function() {\n			this.$('*').inspic('disabled', this.model.get('isLoading'));\n		},\n\n		initialize : function(field, template, args) {\n			args || (args = {});\n			var model = this.model = mainModel;\n			this.field = field;\n\n			!args.events || (this.events = args.events);\n\n			this.render(field, template, args);\n\n			field && model.subscribe(field, this.updateValue, this)();\n\n			var criteria = args.visibilityCriteria;\n			if (criteria) {\n				var $el = this.$el;\n				model.subscribe(criteria, function(substituted) {\n					// jQuery has bug: display:block will be set by\n					// .show()\n					// function\n					// $el[_.isEmpty(causes) ? 'show' :\n					// 'hide'].call($el);\n					$el.css('display', inspicEval(substituted) ? 'inline-block' : 'none');\n				})();\n			}\n\n			!args.subscribe || _.each(args.subscribe, function(val, key) {\n				model.subscribe(key, val, this)();\n			}, this);\n\n			!args.initialize || (args.initialize.call(this, model));\n		},\n\n		events : {\n			\"change input\" : \"onChange\",\n			\"keyup input\" : \"onChange\",\n			\"change select\" : \"onChange\"\n		},\n\n		iconsDir : 'images/icon/',\n\n		render : function(field, template, args) {\n			var data = _.pick(args, 'text', 'icon', 'options');\n			!data.icon || (data.icon = this.iconsDir + data.icon);\n			var variables = {\n				id : _.uniqueId('inspic_'),\n				'data' : data\n			};\n			variables.label = templates['label'](variables);\n			this.$el.html(templates[template](variables));\n			this.$el.attr({\n				'field' : this.field,\n				'title' : (args.text || '').replace(/:$/, '')\n			});\n\n			var width = args.width || 30;\n\n			(width == 'long') && (width = 250);\n			this.$('input[type=\"text\"]').css({\n				'width' : width + 'px',\n				'text-align' : args.textAlign || 'center',\n				'direction' : (args.textAlign == 'right' ? 'rtl' : 'ltr')\n			});\n\n			typeof (this.model.defaults[field]) != \"number\" || args.noSpinner || this.$el.find('input').inspic('spinner', args.spinnerArgs);\n		},\n\n		onChange : function(e) {\n			inspic.controller.handleDefaultInputFieldChange(this.field, $(e.target).inspic('val'), this, e);\n		}\n	});\n\n/** ************************************************************************************************************ */\n\nfunction appendTo(container) {\n	return function ret(element) {\n		ret.container = container;\n		if (!element)\n			return ret;\n		!(element.el) || (element = element.el);\n		$(element).appendTo(container);\n		return ret;\n	};\n}\n\nfunction addSrcElements() {\n\n	appendTo('#inspic_src')(new InputField('src', 'text', {\n		text : 'آدرس:',\n		width : 'long',\n		textAlign : 'left',\n		events : {\n			\"change input\" : \"onChange\"\n		}\n	}))(new InputField('title', 'text', {\n		text : 'عنوان:',\n		width : 'long',\n		textAlign : 'right',\n		visibilityCriteria : '`src`'\n	}))('<br>')(new InputField('src.bayan.size', 'select', {\n		text : 'اندازه:',\n		options : {\n			'کوچک' : 'thumb',\n			'متوسط' : 'image_preview',\n			'کامل' : 'view'\n		},\n		visibilityCriteria : '`src.bayan` && `src`'\n	}))(function() {\n		var scroller = inspic.scroller(function(val) {\n			inspic.controller.setField('width', val * 1000);\n		});\n		mainModel.subscribe('width', function(width) {\n			scroller.setScrollerValue(width / 1000);\n		})();\n		mainModel.subscribe('src', function(val) {\n			scroller[val ? 'show' : 'hide']();\n		})();\n\n		return scroller;\n	}()\n	)(\n	new InputField('width', 'text', {\n		visibilityCriteria : '`src.adv` && `src`',\n		text : 'پهنا:'\n	})\n	)(\n	new InputField('height', 'text', {\n		visibilityCriteria : '`src.adv` && `src`',\n		text : 'ارتفاع:'\n	}))(new InputField('keep_ratio', 'checkbox', {\n		visibilityCriteria : '`src.adv` && `src`',\n		text : 'حفظ تناسب ابعاد'\n	}));\n\n	appendTo('#inspic_link')(new InputField('href.type', 'select', {\n		text : 'مقصد پیوند:',\n		options : {\n			'بدون پیوند' : 'none',\n			'تصویر' : 'src',\n			'اندازه کامل' : 'big',\n			'url' : 'url'\n		},\n		subscribe : {\n			'`src.bayan` && `src.bayan.size`!=\"view\"' : function(substituted) {\n				this.$('option[value=\"big\"]')[inspicEval(substituted) ? 'show' : 'hide']();\n			}\n		}\n	}))(new InputField('href.url', 'text', {\n		width : 'long',\n		textAlign : 'left',\n		subscribe : {\n			'`href.type`' : function(substituted) {\n				substituted == '\"url\"' ? this.$('input').css('display', 'inline-block').focus().select() : this.$('input').hide();\n			}\n		}\n	}))(new InputField('href', 'text', {\n		width : 'long',\n		textAlign : 'left',\n		alwaysEnabled : true,\n		visibilityCriteria : '`href.type`!=\"url\" && `href.type`!=\"none\"',\n		initialize : function() {\n			this.$('input').inspic('disabled', true);\n		}\n	}))(new InputField('href.target', 'select', {\n		text : 'محل باز شدن:',\n		visibilityCriteria : '`href.type`!=\"none\" && `src.adv`',\n		options : {\n			'صفحه جدید' : '_blank',\n			'صفحه فعلی' : '_self'\n		}\n	}));\n}\n/** ******************************************************************** */\n\nfunction addPositionElements() {\n\n		/*\n		 * appendTo('#inspic_position>legend')( new InputField('margin.adv',\n		 * 'checkbox', { text: 'پیشرفته', initialize: function(){\n		 * this.$el.css('float','left'); } }) );\n*/\n\nappendTo('#inspic_position')(new InputField('position', 'select', {\n			// text: 'چینش:',\n			options : {\n				'راست' : 'inline_right',\n				'راست به تنهایی' : 'block_right',\n				'وسط' : 'block_center',\n				'داخل متن' : 'inline_none',\n				'چپ به تنهایی' : 'block_left',\n				'چپ' : 'inline_left'\n			},\n			initialize : function() {\n				this.$('select').inspic('iconSelect', this.field);\n			}\n		}))('<br>')(new InputField('margin.base', 'text', {\n			text : 'فاصله از متن:',\n			visibilityCriteria : '!`margin.adv`'\n		}))(new InputField('margin.top', 'text', {\n			text : 'بالا',\n			icon : 'mt.png',\n			visibilityCriteria : 'margin.adv'\n		}))(new InputField('margin.right', 'text', {\n			text : 'راست',\n			icon : 'mr.png',\n			visibilityCriteria : 'margin.adv'\n		}))(new InputField('margin.bottom', 'text', {\n			text : 'پایین',\n			icon : 'mb.png',\n			visibilityCriteria : 'margin.adv'\n		}))(new InputField('margin.left', 'text', {\n			text : 'چپ',\n			icon : 'ml.png',\n			visibilityCriteria : 'margin.adv'\n		}));\n\n		var $margin = $('#insertPicture .preview .pic_margin');\n		$(document).on('focus mouseenter', '[field*=\"margin\"] *', function() {\n			$margin.css('backgroundColor', '#fbfd98');\n		}).on('blur mouseout', '[field*=\"margin\"] *', function() {\n			$margin.css('backgroundColor', '#fff');\n		});\n\n	}\n\n	/** ******************************************************************************* */\n\n	function addBorderElements() {\n\n		/*\n		 * new InputField('border.adv', 'checkbox', { text: 'پیشرفته',\n		 * initialize: function(){ this.$el.css('float','left'); }\n		 * }).$el.appendTo('#inspic_border>legend');\n*/\n\nvar inner = shadowFields('سایه داخلی:', 'innerShadow.', 'border.adv', 'x,y,alpha'.split(','));\nvar borderline = borderFields('borderline.', 'border.adv', [\n	'width' ]);\nvar outer = shadowFields('سایه خارجی:', 'outerShadow.', 'border.adv', 'x,y,alpha'.split(','));\n\nappendTo('#inspic_border')(inner.enable)(inner.color)(inner.blur)(inner.x)(inner.y)(inner.alpha)('<br>')(borderline.enable)(borderline.style)(borderline.color)(new InputField('border.padding.raw', 'text', {\n	text : 'فاصله کادر بیرونی با تصویر',\n	icon : 'padding.png',\n	visibilityCriteria : '`outerShadow.enable` || `borderline.style`'\n}))(new InputField('border.background', 'text', {\n			// text: 'رنگ بین کادر و تصویر',\n			// icon: 'paint-can-left.png',\n			initialize : function() {\n				this.$('input').colorPicker();\n				this.$('.colorPicker-picker').addClass('picker-arrow-paint');\n			},\n			visibilityCriteria : '`border.adv` && (`outerShadow.enable` || `borderline.style`)'\n		}))(borderline.width)(new InputField('border.radius', 'text', {\n			text : 'شعاع انحنای لبه ها',\n			icon : 'radius.resized.png',\n			visibilityCriteria : 'border.adv'\n\n		}))('<br>')(outer.enable)(outer.color)(outer.blur)(outer.x)(outer.y)(outer.alpha);\n\n	}\n\n	/** ****************************************************************************** */\n\n	function textFormattingFields(prefix, advField, advs) {\n		var vis = '`' + prefix + 'enable`';\n		var visAdv = vis + ' && `' + advField + '`';\n		function crit(field) {\n			// return (_.include(advs, field) ? visAdv : vis);\n			return visAdv;\n		}\n\n		return {\n			bold : new InputField(prefix + 'bold', 'checkbox', {\n				visibilityCriteria : crit('bold'),\n				text : 'bold'\n			}),\n			italic : new InputField(prefix + 'italic', 'checkbox', {\n				visibilityCriteria : crit('italic'),\n				text : 'italic'\n			}),\n			colorInner : new InputField(prefix + 'color.inner', 'text', {\n				visibilityCriteria : crit('color') + ' && `caption.inner.enable`',\n				initialize : function() {\n					this.$('input').colorPicker();\n					this.$('.colorPicker-picker').addClass('picker-arrow-text');\n				}\n			}),\n			colorOuter : new InputField(prefix + 'color.outer', 'text', {\n				visibilityCriteria : crit('color') + ' && `caption.outer.enable`',\n				initialize : function() {\n					this.$('input').colorPicker();\n					this.$('.colorPicker-picker').addClass('picker-arrow-text');\n				}\n			}),\n			size : new InputField(prefix + 'size', 'text', {\n				visibilityCriteria : crit('size'),\n				text : 'اندازه فونت',\n				icon : 'fontsize.gif'\n			})\n		};\n	}\n\n	function borderFields(prefix, advField, advs) {\n		var vis = '`' + prefix + 'enable`';\n		var visAdv = vis + ' && `' + advField + '`';\n		function crit(field) {\n			return (_.include(advs, field) ? visAdv : vis);\n		}\n		return {\n			enable : new InputField(prefix + 'enable', 'checkbox', {\n				text : 'خط'\n			}),\n			style : new InputField(prefix + 'style', 'select', {\n				visibilityCriteria : crit('style'),\n				// text: 'نوع خط',\n				options : {\n					// 'بدون خط':'',\n					'خط ساده' : 'solid',\n					'خط چین' : 'dashed',\n					'نقطه چین' : 'dotted',\n					'دو خطی' : 'double'\n				},\n				initialize : function() {\n					this.$('select').inspic('iconSelect', this.field);\n				}\n			}),\n			width : new InputField(prefix + 'width', 'text', {\n				visibilityCriteria : crit('width'),\n				text : 'ضخامت خط',\n				icon : 'border-weight.png'\n			}),\n			color : new InputField(prefix + 'color', 'text', {\n				visibilityCriteria : crit('color'),\n				// text: 'زنگ خط',\n				// icon: 'line.gif',\n				initialize : function() {\n					this.$('input').colorPicker();\n					this.$('.colorPicker-picker').addClass('picker-arrow-line');\n				}\n			})\n		};\n	}\n\n	function shadowFields(text, prefix, advField, advs) {\n		var vis = prefix + 'enable';\n		var visAdv = '`' + vis + '` && `' + advField + '`';\n		function crit(field) {\n			return (_.include(advs, field) ? visAdv : vis);\n		}\n		return {\n			alpha : new InputField(prefix + 'alpha', 'text', {\n				visibilityCriteria : crit('alpha'),\n				text : 'شفافیت',\n				icon : 'transparency.png',\n				spinnerArgs : {\n					step : 0.1,\n					min : 0,\n					max : 1\n				}\n			}),\n			y : new InputField(prefix + 'y', 'text', {\n				visibilityCriteria : crit('y'),\n				text : 'فاصله عمودی سایه با تصویر',\n				icon : 'dist-v.png',\n				spinnerArgs : {\n					min : -50\n				}\n			}),\n			x : new InputField(prefix + 'x', 'text', {\n				visibilityCriteria : crit('x'),\n				text : 'فاصله افقی سایه با تصویر',\n				icon : 'dist-h.png',\n				spinnerArgs : {\n					min : -50\n				}\n			}),\n			blur : new InputField(prefix + 'blur', 'text', {\n				visibilityCriteria : crit('blur'),\n				text : 'بزرگی سایه',\n				icon : 'shadow-radius.png'\n			}),\n			color : new InputField(prefix + 'color', 'text', {\n				visibilityCriteria : crit('color'),\n				initialize : function() {\n					this.$('input').colorPicker();\n					this.$('.colorPicker-picker').addClass('picker-arrow-line');\n				}\n			}),\n			enable : new InputField(prefix + 'enable', 'checkbox', {\n				'text' : text\n			})\n		};\n	}\n\n	/** ***************************************************************************** */\n\n	function addCaptionElements() {\n\n		var outerBorder = borderFields('caption.outer.border.', 'caption.adv', []);\n		var h1Format = textFormattingFields('caption.h1.', 'caption.adv', []);\n		var pFormat = textFormattingFields('caption.p.', 'caption.adv', []);\n\n		/*\n		 * appendTo('#inspic_caption legend')( new InputField('caption.adv',\n		 * 'checkbox', { text: 'پیشرفته', initialize: function(){\n		 * this.$el.css('float','left'); } }) );\n*/\n\nappendTo('#inspic_caption')(new InputField('caption.enable', 'checkbox', {\n	text : 'فعال'\n}))(new InputField('caption.pos', 'select', {\n			// text: 'نوع:',\n			visibilityCriteria : 'caption.enable',\n			options : {\n				'خارج پایین' : 'outer_top',\n				'داخل بالا' : 'inner_top',\n				'داخل پایین' : 'inner_bottom',\n				'خارج بالا' : 'outer_bottom'\n			},\n			initialize : function() {\n				this.$('select').inspic('iconSelect', this.field);\n			}\n		}))(new InputField('caption.inner.hpos', 'select', {\n			// text: 'افقی',\n			options : {\n				'راست' : 'right',\n				'کامل' : 'full',\n				'چپ' : 'left'\n			},\n			visibilityCriteria : 'caption.inner.enable',\n			initialize : function() {\n				this.$('select').inspic('iconSelect', this.field);\n				var _el = this.$('.iconSelect');\n				this.model.subscribe('caption.vpos', function(vpos) {\n					_el.removeClass(\"posTop posBottom\");\n					_el.addClass(vpos == 'top' ? 'posTop' : 'posBottom');\n				})();\n			}\n		}))(new InputField('caption.textAlign', 'select', {\n			// text: 'چینش متن:',\n			visibilityCriteria : 'caption.enable',\n			options : {\n				'راست' : 'right',\n				'وسط' : 'center',\n				'چپ' : 'left'\n			},\n			initialize : function() {\n				this.$('select').inspic('iconSelect', this.field);\n			}\n		}))(new InputField('caption.inner.background.color', 'text', {\n			visibilityCriteria : 'caption.inner.enable',\n			// icon: 'paint-can-left.png',\n			// text:'رنگ داخل:',\n			initialize : function() {\n				this.$('input').colorPicker();\n				this.$('.colorPicker-picker').addClass('picker-arrow-paint');\n			}\n		}))(new InputField('caption.inner.background.alpha', 'text', {\n			visibilityCriteria : 'caption.inner.enable',\n			text : 'شفافیت رنگ داخل',\n			icon : 'transparency.png',\n			spinnerArgs : {\n				step : 0.1,\n				min : 0,\n				max : 1\n			}\n		}))('<br>')(new InputField('caption.h1.type', 'select', {\n			text : 'عنوان زیرنویس:',\n			visibilityCriteria : 'caption.enable',\n			options : {\n				'بدون عنوان' : '',\n				'عنوان تصویر' : 'title',\n				'متن' : 'text'\n			},\n			initialize : function() {\n				var $title = this.$('option[value=\"title\"]');\n				this.model.subscribe('title', function(val) {\n					$title[val ? 'show' : 'hide']();\n				})();\n			}\n		}))(new InputField('caption.h1.text', 'text', {\n			visibilityCriteria : '`caption.h1.type`==\"text\"',\n			width : 'long',\n			textAlign : 'right'\n		}))(h1Format.colorInner)(h1Format.colorOuter)(h1Format.size)(h1Format.bold)(h1Format.italic)('<br>')(new InputField('caption.p.enable', 'checkbox', {\n			text : 'شرح:',\n			visibilityCriteria : 'caption.enable'\n		}))(new InputField('caption.p.text', 'text', {\n			visibilityCriteria : 'caption.p.enable',\n			width : 'long',\n			textAlign : 'right'\n		}))(pFormat.colorInner)(pFormat.colorOuter)(pFormat.size)(pFormat.bold)(pFormat.italic)('<br>')(appendTo((function() {\n			var ret = $('<span>');\n			inspic.model.mainModel.subscribe('caption.outer.enable', function(val) {\n				ret.css('display', val ? 'inline-block' : 'none');\n			})();\n			return ret;\n		})())(outerBorder.enable)(outerBorder.style)(outerBorder.color)(outerBorder.width)(new InputField('caption.outer.padding', 'text', {\n			visibilityCriteria : 'caption.outer.border.enable',\n			text : 'فاصله تا کادر بیرونی',\n			icon : 'padding.png'\n		}))(new InputField('caption.outer.radius', 'text', {\n			visibilityCriteria : 'caption.outer.border.enable',\n			text : 'شعاع انحنای لبه کادر بیرونی',\n			icon : 'radius.resized.png'\n		}))(new InputField('caption.outer.background.color', 'text', {\n			visibilityCriteria : 'caption.outer.enable',\n			// text:'رنگ داخل:',\n			// icon:\n			// 'paint-can-left.png',\n			initialize : function() {\n				this.$('input').colorPicker();\n				this.$('.colorPicker-picker').addClass('picker-arrow-paint');\n			}\n		}))(new InputField('caption.outer.background.alpha', 'text', {\n			visibilityCriteria : 'caption.outer.enable',\n			text : 'شفافیت رنگ داخل',\n			icon : 'transparency.png',\n			spinnerArgs : {\n				step : 0.1,\n				min : 0,\n				max : 1\n			}\n		})).container);\n}\n\nfunction tabularize() {\n	$('#insertPicture .tabs>div').inspic('tabularize', '.tab_headers');\n	var $headers = $('#insertPicture .tab_headers>span[for]');\n	mainModel.subscribe('src', function(val) {\n		$headers.inspic('disabled', !val).first().inspic('disabled', false);\n	});\n	new InputField('adv', 'checkbox', {\n		text : 'نمایش تنظیمات پیشرفته'\n	}).$el.appendTo('.tab_headers');\n\n}\n\n$(function() {\n	addSrcElements();\n	addPositionElements();\n	addBorderElements();\n	addCaptionElements();\n	tabularize();\n	inspic.controller.setField('src', 'img.jpg');\n});\n\n})(jQuery);",
 			"file": "script/view.js",
-			"file_size": 17833,
-			"file_write_time": 1348345947000000,
 			"settings":
 			{
-				"buffer_size": 17105,
+				"buffer_size": 19711,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/mohammad/.config/sublime-text-2/Packages/User/sublime-jslint.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 185,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/mohammad/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
+			"settings":
+			{
+				"buffer_size": 54,
 				"line_ending": "Unix"
 			}
 		}
@@ -42,12 +55,24 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 285.0,
+		"height": 75.0,
 		"selected_items":
 		[
 			[
-				"Package Control: ",
+				"Package Control: in",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: lis",
 				"Package Control: List Packages"
+			],
+			[
+				"Package Control: rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
 			],
 			[
 				"dis",
@@ -119,10 +144,11 @@
 	},
 	"file_history":
 	[
+		"/home/mohammad/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
+		"/home/mohammad/.config/sublime-text-2/Packages/Default/Default (Linux).sublime-keymap",
 		"/home/mohammad/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
 		"/home/mohammad/garage/backbone/backbone.js",
 		"/home/mohammad/garage/backbone/jquery.js",
-		"/home/mohammad/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
 		"/home/mohammad/.config/sublime-text-2/Packages/User/JavaScript.sublime-settings",
 		"/home/mohammad/garage/backbone/untitled.sublime-project",
 		"/home/mohammad/workspace/bayan2/index.html",
@@ -200,15 +226,15 @@
 					"file": "index.html",
 					"settings":
 					{
-						"buffer_size": 3606,
+						"buffer_size": 3649,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3606,
-								3606
+								0,
+								0
 							]
 						],
 						"settings":
@@ -216,7 +242,7 @@
 							"is_xml": false,
 							"syntax": "Packages/HTML/HTML.tmLanguage",
 							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 79.0,
@@ -229,19 +255,15 @@
 					"file": "script/view.js",
 					"settings":
 					{
-						"buffer_size": 17105,
+						"buffer_size": 19711,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2399,
-								2399
-							],
-							[
-								2535,
-								2535
+								951,
+								951
 							]
 						],
 						"settings":
@@ -250,7 +272,59 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1190.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/home/mohammad/.config/sublime-text-2/Packages/User/sublime-jslint.sublime-settings",
+					"settings":
+					{
+						"buffer_size": 185,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								185,
+								185
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/home/mohammad/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
+					"settings":
+					{
+						"buffer_size": 54,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								24,
+								24
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -289,6 +363,10 @@
 		]
 	},
 	"menu_visible": true,
+	"output.jslint_result_view":
+	{
+		"height": 112.0
+	},
 	"replace":
 	{
 		"height": 64.0

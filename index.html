@@ -1,92 +1,92 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" type="text/css" href="normalize.css">
-		<link rel="stylesheet" type="text/css" href="style.css">
-		<link rel="stylesheet" type="text/css" href="colorPicker.css">
-		<!-- -------------------------------------------------TEMPLATES:BEGIN------------------------------------- -->
-		<script type="text/template" inspic_tem="label">
-			<label for="<%=id%>">
-			<% if (data.icon) { %>
-			<img src="<%=data.icon%>" title="<%=data.text%>" alt="<%=data.text%>:">
-			<% } else if(data.text) { %>
-			<%=data.text%>
-			<% } %>
-			</label>
-		</script>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="colorPicker.css">
+    <!-- -------------------------------------------------TEMPLATES:BEGIN------------------------------------- -->
+    <script type="text/template" inspic_tem="label">
+      <label for="<%=id%>">
+	<% if (data.icon) { %>
+	<img src="<%=data.icon%>" title="<%=data.text%>" alt="<%=data.text%>:">
+	<% } else if(data.text) { %>
+	<%=data.text%>
+	<% } %>
+      </label>
+    </script>
 
-		<script type="text/template" inspic_tem="text">
-			<%=label%>
-			<input id="<%=id%>" type="text">
-		</script>
+    <script type="text/template" inspic_tem="text">
+      <%=label%>
+      <input id="<%=id%>" type="text">
+    </script>
 
-		<script type="text/template" inspic_tem="select">
-			<%=label%>
-			<select id="<%=id%>">
-			<%_.each(data.options, function(val,key){%>
-			<option value="<%=val%>"><%=key%></option>
-			<%})%>
-			</select>
-		</script>
-	
-		<script type="text/template" inspic_tem="checkbox">
-			<input id="<%=id%>" type="checkbox">
-			<%=label%>
-		</script>
+    <script type="text/template" inspic_tem="select">
+      <%=label%>
+      <select id="<%=id%>">
+	<%_.each(data.options, function(val,key){%>
+	<option value="<%=val%>"><%=key%></option>
+	<%})%>
+      </select>
+    </script>
+    
+    <script type="text/template" inspic_tem="checkbox">
+      <input id="<%=id%>" type="checkbox">
+      <%=label%>
+    </script>
 
-		<script type="text/template" id="inspic_tem_selectItem">
-			<span class="iconSelect">
-			<%var first=true;_.each(items, function(val,key){%><span class="iconSelectItem<%if(first){first=false;%> first<%}%>" value="<%=key%>" title="<%=val%>">&nbsp;</span><%});%>
-			</span>
-		</script>
+    <script type="text/template" id="inspic_tem_selectItem">
+      <span class="iconSelect">
+	<%var first=true;_.each(items, function(val,key){%><span class="iconSelectItem<%if(first){first=false;%> first<%}%>" value="<%=key%>" title="<%=val%>">&nbsp;</span><%});%>
+      </span>
+    </script>
 
-		<script type="text/template" id="inspic_tem_spinner">
-			<span class="inspic_spinner">
-			&nbsp;
-			<img class="inspic_up" src="images/icon/bullet_arrow_up.png">
-			<img class="inspic_dn" src="images/icon/bullet_arrow_down.png">
-			</span>
-		</script>
-		<!-- -----------------------------------TEMPLATES:END------------------------------- -->
-		<script type="text/javascript" src="script/include/jquery.js"></script>
-		<script type="text/javascript" src="script/include/underscore.js"></script>
-		<script type="text/javascript" src="script/include/backbone.js"></script>
-		<script type="text/javascript" src="script/jquery.colorPicker.js"></script>
-		<script src="script/inspic.js"></script>
-		<script src="script/model.js"></script>
-		<script src="script/controller.js"></script>
-		<script src="script/view.js"></script>
-		<script src="script/preview.js"></script>
-		<script src="script/output.js"></script>
-		<script src="script/base64.js"></script>
-		<script src="script/input.js"></script>
-		<script src="script/toJson.js"></script>
-	</head>
-	<body>
-		<div id="insertPicture">
+    <script type="text/template" id="inspic_tem_spinner">
+      <span class="inspic_spinner">
+	&nbsp;
+	<img class="inspic_up" src="images/icon/bullet_arrow_up.png">
+	<img class="inspic_dn" src="images/icon/bullet_arrow_down.png">
+      </span>
+    </script>
+    <!-- -----------------------------------TEMPLATES:END------------------------------- -->
+    <script type="text/javascript" src="script/include/jquery.js"></script>
+    <script type="text/javascript" src="script/include/underscore.js"></script>
+    <script type="text/javascript" src="script/include/backbone.js"></script>
+    <script type="text/javascript" src="script/jquery.colorPicker.js"></script>
+    <script src="script/inspic.js"></script>
+    <script src="script/model.js"></script>
+    <script src="script/controller.js"></script>
+    <script src="script/view.js"></script>
+    <script src="script/preview.js"></script>
+    <script src="script/output.js"></script>
+    <script src="script/base64.js"></script>
+    <script src="script/input.js"></script>
+    <script src="script/toJson.js"></script>
+  </head>
+  <body>
+    <div id="insertPicture">
 
-			<div class="tab_headers"></div>
-			<div class="tabs">
-				<div id="inspic_src" tab_title="مشخصات تصویر"></div>
-				<div id="inspic_link" tab_title="پیوند"></div>
-				<div id="inspic_position" tab_title="جایگاه در متن"></div>
-				<div id="inspic_border" tab_title="کادر و سایه"></div>
-				<div id="inspic_caption" tab_title="زیر نویس"></div>
-			</div>
+      <div class="tab_headers"></div>
+      <div class="tabs">
+	<div id="inspic_src" tab_title="مشخصات تصویر"></div>
+	<div id="inspic_link" tab_title="پیوند"></div>
+	<div id="inspic_position" tab_title="جایگاه در متن"></div>
+	<div id="inspic_border" tab_title="کادر و سایه"></div>
+	<div id="inspic_caption" tab_title="زیر نویس"></div>
+      </div>
 
-			<hr>
-			<div class="preview">
-				<div class="imagePreview">
-					<span> بلاگ رسانه ای است برای متخصصان تا با استفاده از امکانات پیشرفته ، حضور موثرتری در اینترنت داشته باشند. </span>
-					<span class="inspic_clearfix"> <span class="pic_margin"> <span class="pic_wrapper"> <span class="pic_border"> <span class="pic_inner"> <span class="pic_caption_inner"></span> <img src="car.jpg" width="320px"> </span> </span> <span class="pic_caption_outer"> </span> </span> </span> </span>
-					<span> سعی ما در بلاگ بر این است تا به ساده ترین نحو ممکن این فرصت را برای نخبگان، محققان، هنرمندان، اهل قلم و بلاگ نویسان حرفه ای فراهم آوریم تا بتوانند بدون پرداخت هزینه و فارغ از دغدغه های فنی، بر تولید و نشر آثار خود تمرکز کنند. </span>
-				</div>
-				<div class="loading">
-					<img src="images/loading.gif">
-				</div>
-			</div>
-		</div>
+      <hr>
+      <div class="preview">
+	<div class="imagePreview">
+	  <span> بلاگ رسانه ای است برای متخصصان تا با استفاده از امکانات پیشرفته ، حضور موثرتری در اینترنت داشته باشند. </span>
+	  <span class="inspic_clearfix"> <span class="pic_margin"> <span class="pic_wrapper"> <span class="pic_border"> <span class="pic_inner"> <span class="pic_caption_inner"></span> <img src="car.jpg" width="320px"> </span> </span> <span class="pic_caption_outer"> </span> </span> </span> </span>
+	  <span> سعی ما در بلاگ بر این است تا به ساده ترین نحو ممکن این فرصت را برای نخبگان، محققان، هنرمندان، اهل قلم و بلاگ نویسان حرفه ای فراهم آوریم تا بتوانند بدون پرداخت هزینه و فارغ از دغدغه های فنی، بر تولید و نشر آثار خود تمرکز کنند. </span>
+	</div>
+	<div class="loading">
+	  <img src="images/loading.gif">
+	</div>
+      </div>
+    </div>
 
-	</body>
+  </body>
 </html>

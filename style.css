@@ -159,7 +159,7 @@
     }*/
 
 }
-.iconSelect[field="borderline.style"] .iconSelectItem[value="@{value}"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="@{value}"] {
+.iconSelect[field="borderline.style"] .iconSelectItem[value="@{value-color}hi"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="@{value-color}hi"] {
   background-image: url("images/icon/line-solid.png");
 }
 .iconSelect[field="borderline.style"] .iconSelectItem[value="dashed"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="dashed"] {

@@ -162,8 +162,9 @@
 }
 
 @base-icon:"images/icon";
-.item(@value, @icon){
-    .iconSelectItem[value="@{value}"]{
+@value-color:"hi";
+.item (@value2, @icon){
+    .iconSelectItem[value="@{value-color}"]{
 	background-image:url("@{base-icon}/@{icon}");
     }
 }
