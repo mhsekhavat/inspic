@@ -105,8 +105,8 @@
 	    model.subscribe('caption.textAlign', function(val){
 		$el.css('text-align', val);
 	    })();
-	    model.subscribe('caption', function(content){
-		$el.html(content.trim());
+	    model.subscribe('caption.preview', function(content){
+		$el.html(content);
 	    })();
 	    model.subscribe('caption.vpos', function(val){
 		$el.css({
@@ -142,8 +142,8 @@
 	    model.subscribe('caption.textAlign', function(val){
 		$el.css('text-align', val);
 	    })();
-	    model.subscribe('caption', function(content){
-		$el.html(content.trim() || '{زیرنویس}');
+	    model.subscribe('caption.preview', function(content){
+		$el.html(content);
 	    })();
 	    model.subscribe('`caption.outer.enable` && `caption.outer.border`', function(val){
 		$wrapper.css('border', inspicEval(val) || '');

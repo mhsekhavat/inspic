@@ -5,6 +5,10 @@
  */
 var inspic = {};
 
+console=console || {
+    log: function(){;}
+}
+
 function inspicEval(expr){
     //console.log(expr);
     return eval(expr);
@@ -108,8 +112,17 @@ function inspicEval(expr){
 
 	$.each(this, function(){
 	    var $text=$(this);
+	    var $spinner=$(spinnerTem);
+	    var $up=$spinner.find('.inspic_up');
+	    var $dn=$spinner.find('.inspic_dn');
 
-	    function changeStep(inc){
+	    function updateDisablity(){
+		var val=parseFloat($text.val());
+		$dn.inspic('disabled', val==args.min);
+		$up.inspic('disabled', val==args.max);
+	    }
+	    
+	    function changeStep(inc, el){
 		var step=args.step;
 		var delta=(inc ? step : -step);
 		var val=parseFloat($text.val())+delta;
@@ -120,6 +133,7 @@ function inspicEval(expr){
 		_.isNaN(max) || (val=Math.min(val, max));
 		(val%1===0) || (val=val.toFixed(2));
 		$text.val(val).change();
+		//updateDisablity();
 	    }
 
 	    $text.keypress(function(e){
@@ -129,14 +143,34 @@ function inspicEval(expr){
 	    });
 
 	    $text.width($text.width()-11);
-	    var $spinner=$(spinnerTem);
 	    $text.after($spinner);
-	    $spinner.find('.inspic_up').click(function(){
+
+	    function mousePress($el, func){
+		var i1=NaN,i2=NaN;
+		$el.mousedown(function(){
+		    func();
+		    i1=setTimeout(function(){
+			i2=setInterval(func, 100);
+		    },500);
+		});
+		$(document).bind('mouseup mouseleave', function(){
+		    if (i1){
+			clearTimeout(i1);
+			i1=NaN;
+		    } if (i2) {
+			clearInterval(i2);
+			i2=NaN;
+		    }
+		});
+	    }
+
+	    mousePress($up, function(){
 		changeStep(true);
 	    });
-	    $spinner.find('.inspic_dn').click(function(){
+	    mousePress($dn, function(){
 		changeStep(false);
 	    });
+	    $text.change(updateDisablity);
 	});
 	return this;
     }
@@ -262,7 +296,7 @@ function inspicEval(expr){
 	return inspic.rgbaToColor(ret);
     };
 
-    inspic.tlbr=function(t,l,b,r){
+    inspic.trbl=function(t,r,b,l){
 	var p=inspic.pixelize;
 	if (t==r && r==b && b==l)
 	    return p(t);
@@ -271,6 +305,14 @@ function inspicEval(expr){
 	else
 	    return p(t)+' '+p(r)+' '+p(b)+' '+p(l);
     };
+
+     inspic.parseBool=function(x){
+	 if (typeof(x)=='string')
+	    return (x=='true' || x=='1');
+	else
+	    return x;
+    };
+
     /*$.fn.extend({iconSelect: function(input){
 	this.each(function(){
 	    $(this).on('click', '.iconSelectItem', function(){
@@ -282,3 +324,5 @@ function inspicEval(expr){
 	});
     }});*/
 })(jQuery);
+
+qqq='<a inspic="hrf|src,mrg|13|3|13|13,ish|10|0|0|#000|1,osh|3|0|0|#000|1,bdr|3|5|#fff,cap|inner_top|center|#000|0.7|full,h1|text|false|false|#eee|14,ver|1" target="_blank" href="car.jpg" style="padding:3px; background-color:#fff; border-radius:5px; box-shadow:0 0 3px #000000; float:right; margin:13px 3px 13px 13px;" class="pic_border"><span style="box-shadow:0 0 10px #000000 inset; border-radius:3px;" class="pic_inner"><img style="width:470px; height:353px; border-radius:3px;" src="car.jpg"><span style="text-align:center; top:0; left:0; right:0; background-color:rgba(0,0,0,0.7); border-radius:3px 3px 0 0;" class="pic_caption_inner"><h1 style="font-weight:normal; font-style:normal; color:#eee; font-size:14px;">salam</h1></span></span></a>';

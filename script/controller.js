@@ -5,6 +5,7 @@
     function numberize(s){
 	if (_.isNumber(s))
 	    return s;
+	s=s||'';
 	//persian letters:
 	s=s.replace(/[\u06f0-\u06f9]/g, function(c){ return String.fromCharCode(c.charCodeAt(0)-1776+48); });
 
@@ -21,8 +22,12 @@
     
     function setField(field,value,e){
 	var setter;
-	if (typeof(model.defaults[field])=="number")
+	var type=typeof(model.defaults[field]);
+	if (type=="number")
 	    value=numberize(value);
+	else if (type=="boolean"){
+	    value=inspic.parseBool(value);
+	}
 	if (_.isNaN(value))
 	    return;
 	if ((setter=modelFieldSetters[field])){
@@ -33,6 +38,12 @@
     }
     controller.setField=setField;
     controller.handleDefaultInputFieldChange=setField;
+
+    function setFields(dict){
+	for (var field in dict)
+	    setField(field, dict[field]);
+    }
+    controller.setFields=setFields;
 
     function bayanSizedUrl(url, size){
 	return url.replace(/\?.*$/,'')+'?'+size;
@@ -111,6 +122,7 @@
 	    setField('caption.adv', val);
 	    setField('border.adv', val);
 	    setField('src.adv', val);
+	    set('adv', val);
 	},
 	
 	'margin.adv': function(val){
@@ -120,6 +132,12 @@
 		setField('margin.bottom', $tmp.css('marginBottom'));
 		setField('margin.right', $tmp.css('marginRight'));
 		setField('margin.left', $tmp.css('marginLeft'));
+	    } else {
+		var args=_.map(['margin.top', 'margin.right', 'margin.bottom', 'margin.left', 'position', 'margin.base', 'outerShadow.enable', 'outerShadow.blur', 'outerShadow.x', 'outerShadow.y'], function(field){
+		    return this.get(field);
+		}, this);
+		var base=this.autoMarginInv.apply(this, args);
+		set('margin.base', base);
 	    }
 	    set('margin.adv', val);
 	},

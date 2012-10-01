@@ -16,7 +16,8 @@
 	template:'text', //default underscore template name
 
 	updateValue: function(val) {
-	    this.$(this.inputSelector).inspic('val', val);
+	    this.$inputSelector.inspic('val', val);
+	    this.$inputSelector.trigger('change', ['inspicView']);
 	},
 
 	updateDisability: function() {
@@ -27,10 +28,12 @@
 	    args || (args = {});
 	    var model = this.model = mainModel;
 	    this.field = field;
-	    
+
 	    !args.events || (this.events = args.events);
 
 	    this.render(field, args);
+
+	    this.inputSelector && (this.$inputSelector=this.$(this.inputSelector));
 
 	    field && model.subscribe(field, this.updateValue, this)();
 
@@ -76,7 +79,9 @@
 	    });
 	},
 
-	onChange: function(e) {
+	onChange: function(e,inspicView) {
+	    if (inspicView=='inspicView')
+		return;
 	    inspic.controller.handleDefaultInputFieldChange(this.field, $(e.target).inspic('val'), this, e);
 	}
     });
@@ -133,8 +138,8 @@
 	    args.colorPickerClass && this.$('.colorPicker-picker').addClass(args.colorPickerClass);
 	}
     });
-    
-    /** ************************************************************************************************************ */
+
+    /* ************************************************************************************************************* */
 
     function appendTo(container) {
 	return function ret(element) {
@@ -147,8 +152,7 @@
     }
 
     function addSrcElements() {
-	appendTo('#inspic_src')
-	(
+	appendTo('#inspic_src')(
 	    new TextInputField('src', {
 		text: 'آدرس:',
 		width: 'long',
@@ -178,6 +182,7 @@
 	    })
 	)(
 	    function() {
+		var wrapper=$('<span>');
 		var scroller = inspic.scroller(function(val) {
 		    inspic.controller.setField('width', val * 1000);
 		});
@@ -185,10 +190,13 @@
 		    scroller.setScrollerValue(width / 1000);
 		})();
 		mainModel.subscribe('src', function(val) {
-		    scroller[val ? 'show' : 'hide']();
+		    wrapper.css('display', (val ? 'inline-block' : 'none'));
 		})();
 
-		return scroller;
+		wrapper.text('مقیاس: ');
+		wrapper.addClass('inspic_inputfield');
+		wrapper.append(scroller);
+		return wrapper;
 	    }()
 	)(
 	    new TextInputField('width', {
@@ -403,14 +411,49 @@
 	    return visAdv;
 	}
 
+	var BoolInputField=InputField.extend({
+	    tagName: 'span',
+	    className: 'iconSelectItem',
+	    template: 'bool',
+	    updateValue: function(val){
+		this.$el[(val ? 'addClass' : 'removeClass')]('selected');
+	    },
+	    events: {
+		"click": "onChange"
+	    },
+	    onChange: function(e, inspicView){
+		$(e.target).inspic('val', !this.model.get(this.field));
+		InputField.prototype.onChange.call(this, e, inspicView);
+	    }
+	});
+
+	var BoolGroup=InputField.extend({
+	    initialize: function(fields, args){
+		this.fields=fields;
+		InputField.prototype.initialize.call(this,'testField', args);
+	    },
+	    render: function(){
+		var $el=$('<span class="iconSelect">').appendTo(this.$el);
+		_.each(this.fields, function(x, i){
+		    i || x.$el.addClass('first');
+		    $el.append(x.$el);
+		});
+	    }
+	});
+	
 	return {
-	    bold: new CheckInputField(prefix + 'bold', {
-		visibilityCriteria: crit('bold'),
-		text: 'bold'
-	    }),
-	    italic: new CheckInputField(prefix + 'italic', {
-		visibilityCriteria: crit('italic'),
-		text: 'italic'
+	    boldItalic: new BoolGroup(
+		[
+		    new BoolInputField(prefix+'bold', {
+			text: 'bold',
+			icon: 'text_bold.png'
+		    }),
+		    new BoolInputField(prefix+'italic', {
+			text: 'italic',
+			icon: 'text_italic.png'
+		    })
+		], {
+		visibilityCriteria: crit('boldItalic')
 	    }),
 	    colorInner: new ColorInputField(prefix + 'color.inner', {
 		visibilityCriteria: crit('color') + ' && `caption.inner.enable`',
@@ -428,7 +471,7 @@
 	};
     }
 
-    function borderFields(prefix, advField, advs) {
+    function borderFields(prefix, advField, advs, enableTitle) {
 	var vis = '`' + prefix + 'enable`';
 	var visAdv = vis + ' && `' + advField + '`';
 
@@ -438,7 +481,7 @@
 
 	return {
 	    enable: new CheckInputField(prefix + 'enable', {
-		text: 'خط'
+		text: enableTitle ||'خط'
 	    }),
 	    style: new IconSelectInputField(prefix + 'style', {
 		visibilityCriteria: crit('style'),
@@ -519,7 +562,7 @@
 
     function addCaptionElements() {
 
-	var outerBorder = borderFields('caption.outer.border.', 'caption.adv', []);
+	var outerBorder = borderFields('caption.outer.border.', 'caption.adv', ['style'], 'کادر');
 	var h1Format = textFormattingFields('caption.h1.', 'caption.adv', []);
 	var pFormat = textFormattingFields('caption.p.', 'caption.adv', []);
 
@@ -589,64 +632,6 @@
 		}
 	    })
 	)(
-	    '<br>'
-	)(
-	    new SelectInputField('caption.h1.type', {
-		text: 'عنوان زیرنویس:',
-		visibilityCriteria: 'caption.enable',
-		options: {
-		    'بدون عنوان': '',
-		    'عنوان تصویر': 'title',
-		    'متن': 'text'
-		},
-		subscribe: {
-		    'title': function(val) {
-			this.$('option[value="title"]')[val ? 'show' : 'hide']();
-		    }
-		}
-	    })
-	)(
-	    new TextInputField('caption.h1.text', {
-		visibilityCriteria: '`caption.h1.type`=="text"',
-		width: 'long',
-		textAlign: 'right'
-	    })
-	)(
-	    h1Format.colorInner
-	)(
-	    h1Format.colorOuter
-	)(
-	    h1Format.size
-	)(
-	    h1Format.bold
-	)(
-	    h1Format.italic
-	)(
-	    '<br>'
-	)(
-	    new CheckInputField('caption.p.enable', {
-		text: 'شرح:',
-		visibilityCriteria: 'caption.enable'
-	    })
-	)(
-	    new CheckInputField('caption.p.text', {
-		visibilityCriteria: 'caption.p.enable',
-		width: 'long',
-		textAlign: 'right'
-	    })
-	)(
-	    pFormat.colorInner
-	)(
-	    pFormat.colorOuter
-	)(
-	    pFormat.size
-	)(
-	    pFormat.bold
-	)(
-	    pFormat.italic
-	)(
-	    '<br>'
-	)(
 	    appendTo(
 		(function() {
 		    var ret = $('<span>');
@@ -677,24 +662,79 @@
 		})
 	    )(
 		new ColorInputField('caption.outer.background.color', {
-		    visibilityCriteria: 'caption.outer.enable',
+		    visibilityCriteria: 'caption.outer.border.enable',
 		    // text:'رنگ داخل:',
 		    // icon:
 		    // 'paint-can-left.png',
 		    colorPickerClass:'picker-arrow-paint'
 		})
 	    )(
-		 new TextInputField('caption.outer.background.alpha', {
-		     visibilityCriteria: 'caption.outer.enable',
-		     text: 'شفافیت رنگ داخل',
-		     icon: 'transparency.png',
-		     spinnerArgs: {
-			 step: 0.1,
-			 min: 0,
-			 max: 1
-		     }
-		 })
-	     ).container
+		new TextInputField('caption.outer.background.alpha', {
+		    visibilityCriteria: '`caption.outer.border.enable` && `caption.adv`',
+		    text: 'شفافیت رنگ داخل',
+		    icon: 'transparency.png',
+		    spinnerArgs: {
+			step: 0.1,
+			min: 0,
+			max: 1
+		    }
+		})
+	    ).container
+	)(
+	    '<br>'
+	)(
+	    new SelectInputField('caption.h1.type', {
+		text: 'عنوان زیرنویس:',
+		visibilityCriteria: 'caption.enable',
+		options: {
+		    'بدون عنوان': '',
+		    'عنوان تصویر': 'title',
+		    'متن': 'text'
+		},
+		subscribe: {
+		    'title': function(val) {
+			this.$('option[value="title"]')[val ? 'show' : 'hide']();
+		    }
+		}
+	    })
+	)(
+	    new TextInputField('caption.h1.text', {
+		visibilityCriteria: '`caption.enable` && `caption.h1.type`=="text"',
+		width: 'long',
+		textAlign: 'right'
+	    })
+	)(
+	    h1Format.colorInner
+	)(
+	    h1Format.colorOuter
+	)(
+	    h1Format.size
+	)(
+	    h1Format.boldItalic
+	)(
+	    '<br>'
+	)(
+	    new CheckInputField('caption.p.enable', {
+		text: 'شرح:',
+		visibilityCriteria: 'caption.enable'
+	    })
+	)(
+	    new TextInputField('caption.p.text', {
+		visibilityCriteria: '`caption.p.enable` && `caption.enable`',
+		width: 'long',
+		textAlign: 'right'
+	    })
+	)(
+	    pFormat.colorInner
+	)(
+	    pFormat.colorOuter
+	)(
+	    pFormat.size
+	)(
+	    pFormat.boldItalic
+	)(
+	    '<br>'
+	)(
 	);
     }
 
@@ -709,13 +749,13 @@
 	}).$el.appendTo('.tab_headers');
     }
 
-    $(function() {
+    function addElements(){
 	addSrcElements();
 	addPositionElements();
 	addBorderElements();
 	addCaptionElements();
 	tabularize();
-	inspic.controller.setField('src', 'car.jpg');
-    });
+    }
+    inspic.view.addElements=addElements;
 
 })(jQuery);

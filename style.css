@@ -11,7 +11,7 @@
   padding: 6px;
   background-color: #EDEDED;
 }
-#insertPicture input, #insertPicture img {
+#insertPicture input, #insertPicture img, #insertPicture select {
   vertical-align: middle;
 }
 #insertPicture input {
@@ -153,13 +153,7 @@
 .iconSelect .iconSelectItem.selected {
   background-color: white;
 }
-.iconSelect[field="borderline.style"], .iconSelect[field="caption.outer.border.style"] {
-  /*.iconSelectItem[value="solid"]{
-	background-image:url("@{base-icon}/line-solid.png");
-    }*/
-
-}
-.iconSelect[field="borderline.style"] .iconSelectItem[value="@{value-color}hi"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="@{value-color}hi"] {
+.iconSelect[field="borderline.style"] .iconSelectItem[value="solid"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="solid"] {
   background-image: url("images/icon/line-solid.png");
 }
 .iconSelect[field="borderline.style"] .iconSelectItem[value="dashed"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="dashed"] {
@@ -240,7 +234,7 @@
 .inspic_spinner {
   position: relative;
   width: 11px;
-  height: 3px;
+  height: 5px;
   display: inline-block;
   vertical-align: middle;
 }
@@ -249,12 +243,25 @@
   right: 0;
   padding: 2px;
   cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+}
+.inspic_spinner img[disabled="disabled"] {
+  cursor: default;
 }
 .inspic_spinner img.inspic_dn {
   top: 2px;
+  border-radius: 0 0 3px 3px;
 }
 .inspic_spinner img.inspic_up {
   bottom: 2px;
+  border-radius: 3px 3px 0 0;
+}
+.inspic_spinner img:hover {
+  background-color: #F2E9D5;
+}
+.inspic_spinner img:hover[disabled="disabled"] {
+  background-color: #ffffff;
 }
 /*#insertPicture fieldset fieldset {
     border-width: 0;

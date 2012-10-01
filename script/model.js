@@ -45,6 +45,7 @@
 	 *Sample: subscribe('!`src.bayan` && `href.type`=="url"', function(val){ console.log(val, this); }, taghi)
 	 * will subscribe the function(val) to changes of src.bayan and href.type and call it with (this=taghi) and (val=~src.bayan && href.type=="url") on each change.
 	 */
+
 	subscribe: function(expr, onChange, context){
 	    if (!expr || !onChange)
 		return;
@@ -89,6 +90,7 @@
 	defaults : {
 	    'version': 1,
 	    'isLoading' : false,
+	    'adv': false,
 	    'src' : null,
 	    'src.adv': false,
 	    'src.width' : 0,
@@ -99,7 +101,6 @@
 	    'width' : null,
 	    'height' : null,
 	    'keep_ratio' : true,
-	    'href': null,
 	    'href.type': 'src',
 	    'href.url': '',
 	    'href.target': '_blank',
@@ -157,7 +158,6 @@
 	    'caption.inner.background.alpha':0.7,
 	    'caption.outer.background.color':'#fff',
 	    'caption.outer.background.alpha':1,
-	    'caption.outer.forecolor':'#000',
 	    'caption.outer.border.enable':false,
 	    'caption.outer.border.style':'solid',
 	    'caption.outer.border.width':1,
@@ -165,7 +165,42 @@
 	    'caption.outer.padding':3,
 	    'caption.outer.radius':0
 	},
-	
+
+	autoMargin: function(pos, base, shadow, blur, x, y){
+	    //Notice: changes should be applied to autoMarginInv too.
+	    var t,r,b,l;
+	    base=base || 0;
+	    t=r=b=l=base;
+	    if (pos.match(/_right/))
+		r=0;
+	    else if (pos.match(/_left/))
+		l=0;
+	    if (shadow){
+		if (blur>=10)
+		    blur=Math.floor(blur/2)+4+Math.floor(blur/5);
+		t+=Math.max(0, blur-y);
+		r+=Math.max(0, blur+x);
+		b+=Math.max(0, blur+y);
+		l+=Math.max(0, blur-x);
+	    }
+	    return [t,r,b,l];
+	},
+	autoMarginInv: function(t, r, b, l, pos, base, shadow, blur, x, y){
+	    //Notice: changes should be applied to autoMargin too.
+	    if (shadow){
+		if (blur>=10)
+		    blur=Math.floor(blur/2)+4+Math.floor(blur/5);
+		t-=Math.max(0, blur-y);
+		r-=Math.max(0, blur+x);
+		b-=Math.max(0, blur+y);
+		l-=Math.max(0, blur-x);
+	    }
+	    if (pos.match(/_right/) && r==0)
+		r=t;
+	    else if (pos.match(/_left/) && l==0)
+		l=t;
+	    return  ( (t==r) && (r==b) && (b==l) ? t : '');
+	},
 	computed: {
 	    'href': new ComputedField(
 		['src','href.type','href.url'],
@@ -178,33 +213,18 @@
 			return inspic.controller.bayanSizedUrl(src, 'view');
 		    else if (type=='url')
 			return url;
-		    return;
+		    return '';
 		}),
 	    'margin': new ComputedField(
 		['margin.base','margin.adv','margin.top', 'margin.right','margin.bottom','margin.left','position','outerShadow.enable','outerShadow.blur','outerShadow.x','outerShadow.y'],
 		function(base,         adv,         top,          right,         bottom,         left,  pos,       shadow,              blur,              x,              y){
-		    var t,r,b,l;
-		    if (!adv){
-			t=r=b=l=base || 0;
-			if (pos.match(/_right/))
-			    r=0;
-			else if (pos.match(/_left/))
-			    l=0;
-			if (shadow){
-			    if (blur>=10)
-				blur=Math.floor(blur/2)+4+Math.floor(blur/5);
-			    t+=Math.max(0, blur-y);
-			    r+=Math.max(0, blur+x);
-			    b+=Math.max(0, blur+y);
-			    l+=Math.max(0, blur-x);
-			}
+		    var trbl;
+		    if (!adv && base!==''){
+			trbl=this.autoMargin(pos, base, shadow, blur, x, y);
 		    } else {
-			t=top;
-			r=right;
-			b=bottom;
-			l=left;
+			trbl=[top, right, bottom, left];
 		    }
-		    return inspic.tlbr(t,l,b,r);
+		    return inspic.trbl.apply(document,trbl);
 		}),
 	    'innerShadow': shadowField('innerShadow.'),
 	    'borderline': borderField('borderline.'),
@@ -227,15 +247,23 @@
 		function(type){
 		    return (type!='');
 		}),
-	    'caption.h1': new ComputedField(
+	    'caption.h1.finalText': new ComputedField(
 		['caption.h1.type', 'caption.h1.text', 'title', 'caption.h1.style'],
-		function(    type,              text,   title,              style){
+		function(    type,              text,   title){
 		    var ret='';
 		    if (type=='text')
 			ret=text;
 		    else if (type=='title')
 			ret=title;
-		    return (ret ? '<h1 style="'+style+'">'+ret+'</h1>' : '');
+		    return ret;		    
+		}),
+	    'caption.h1': new ComputedField(
+		['caption.h1.finalText', 'caption.h1.style'],
+		function(         text,              style){
+		    return $('<h1>',{
+			'style':style,
+			'text':text
+		    }).inspic('outerHtml');
 		}),
 	    'caption.p.style': textFormattingField('caption.p.'),
 	    'caption.p': new ComputedField(
@@ -243,12 +271,22 @@
 		function(enable,                text,             style){
 		    if (!enable)
 			return '';
-		    return '<p style="'+style+'">' + (text || '}عنوان زیر نویس{') + '</p>';
+		    return $('<p>', {
+			'style': style,
+			'text':text
+		    }).inspic('outerHtml');
 		}),
 	    'caption': new ComputedField(
 		['caption.p', 'caption.h1'],
 		function(p, h1){
 		    return h1+p;
+		}),
+	    'caption.preview': new ComputedField(
+		['caption', 'caption.p.text', 'caption.h1.finalText', 'caption.p.style', 'caption.h1.style'],
+		function(caption, p, h1, styleP, styleH1){
+		    if (p || h1)
+			return caption;
+		    return ('<h1 style="'+styleH1+'">{عنوان زیرنویس}</h1><p style="'+styleP+'">{شرح زیرنویس}</p>');
 		}),
 	    'caption.type': new ComputedField(
 		['caption.pos'],
@@ -354,11 +392,12 @@
 		italic=(italic ? 'italic' : 'normal');
 		color=color || '#000';
 		size=inspic.pixelize(size || 10);
-		return "font-weight:"+bold+"; font-style:"+italic+"; color:"+color+"; font-size:"+size;
+		return "font-weight:"+bold+"; font-style:"+italic+"; color:"+color+"; font-size:"+size+";";
 	    }
 	);
     }
 
     inspic.model.MainModel = MainModel;
     inspic.model.mainModel = new MainModel();
+
 })(jQuery);
