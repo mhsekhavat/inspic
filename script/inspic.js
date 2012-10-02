@@ -3,7 +3,7 @@
  * MVC pattern. order of importing javascript modules is important:
  * inspic.js -> model.js -> controller.js -> view.js
  */
-var inspic = {};
+var inspic = inspic || {};
 
 console=console || {
     log: function(){;}
@@ -313,16 +313,6 @@ function inspicEval(expr){
 	    return x;
     };
 
-    /*$.fn.extend({iconSelect: function(input){
-	this.each(function(){
-	    $(this).on('click', '.iconSelectItem', function(){
-		$(this).parents('.iconSelect').val($(this).val()).trigger('manualChange');
-	    }).on('manualChange', function(){
-		$(this).find('.selected').removeAttr('selected');
-		$(this).find('.iconSelectItem[value='+$(this).val()+']').addClass('selected');
-	    }).trigger('manualChange');
-	});
-    }});*/
 })(jQuery);
 
-qqq='<a inspic="hrf|src,mrg|13|3|13|13,ish|10|0|0|#000|1,osh|3|0|0|#000|1,bdr|3|5|#fff,cap|inner_top|center|#000|0.7|full,h1|text|false|false|#eee|14,ver|1" target="_blank" href="car.jpg" style="padding:3px; background-color:#fff; border-radius:5px; box-shadow:0 0 3px #000000; float:right; margin:13px 3px 13px 13px;" class="pic_border"><span style="box-shadow:0 0 10px #000000 inset; border-radius:3px;" class="pic_inner"><img style="width:470px; height:353px; border-radius:3px;" src="car.jpg"><span style="text-align:center; top:0; left:0; right:0; background-color:rgba(0,0,0,0.7); border-radius:3px 3px 0 0;" class="pic_caption_inner"><h1 style="font-weight:normal; font-style:normal; color:#eee; font-size:14px;">salam</h1></span></span></a>';
+

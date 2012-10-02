@@ -195,9 +195,9 @@
 		b-=Math.max(0, blur+y);
 		l-=Math.max(0, blur-x);
 	    }
-	    if (pos.match(/_right/) && r==0)
+	    if (pos.match(/_right/) && !r)
 		r=t;
-	    else if (pos.match(/_left/) && l==0)
+	    else if (pos.match(/_left/) && !l)
 		l=t;
 	    return  ( (t==r) && (r==b) && (b==l) ? t : '');
 	},
@@ -401,3 +401,4 @@
     inspic.model.mainModel = new MainModel();
 
 })(jQuery);
+

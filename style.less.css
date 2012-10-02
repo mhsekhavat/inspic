@@ -78,6 +78,7 @@
 	width: 750px;
 	overflow: auto;
     }
+
 }
 
 .inspic_inputfield{
@@ -289,14 +290,28 @@
     }
 }
 
-/*#insertPicture fieldset fieldset {
-    border-width: 0;
+.spanButton(@color){
+    background-color:lighten(@color, 10%);
+    border:1px solid desaturate(darken(@color, 20%), 20%);
+    color:darken(@color, 50%);
+    display:inline-block;
+    float: left;
+    padding: 5px;
+    position:relative;
+    bottom: 3px;
+    border-radius: 3px;
+    &:hover{
+	cursor:pointer;
+	background-color:@color;
+    }
 }
-#insertPicture fieldset fieldset legend {
-    display: inline;
-    float: right;
-    margin-left: 15px;
-}*/
 
-
-/*position:'absolute',left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.6)',color:'white',lineHeight:'normal',overflow:'hidden'*/
+.inspic_button{
+    &.submit{
+	.spanButton(#b5f2c4);
+    }
+    &.cancel{
+	margin-left: 3px;
+	.spanButton(#ddd);
+    }
+}

@@ -54,7 +54,8 @@
 	//in all these functions, this is equal to model
 	'src' : function(url) {
 	    var newImg = $(new Image()).hide().appendTo('body');
-	    newImg.load(function() {
+
+	    function handleSuccess(){
 		set('isLoading', false);
 		set('src', url);
 		set('src.width', newImg.width());
@@ -69,14 +70,23 @@
 		} else {
 		    set('src.bayan', false);
 		}
-	    }).error(function() {
+		newImg.remove();
+	    }
+	    function handleError(){
 		set('isLoading', false);
 		set('src', null);
 		set('src.bayan', false);
 		alert('آدرس تصویر معتبر نیست');
-	    });
-	    newImg.attr('src', url);
-	    set('isLoading', true);
+		newImg.remove();
+	    }
+	    
+	    newImg.load(handleSuccess).error(handleError);
+	    
+	    if (url){
+		set('isLoading', true);
+		newImg.attr('src', url);
+	    } else
+		handleError();
 	},
 
 	'src.bayan.size': function(size){

@@ -160,6 +160,9 @@
 	    wrapper.inspic('css', 'background-color', g('caption.outer.background'));
 	    wrapper.inspic('css', 'padding', p(g('caption.outer.padding')));
 	    wrapper.inspic('css', 'border-radius', p(g('caption.outer.radius')));
+	    //FIXME: width of outerCaption should be calculated by model and must not depend on view! 
+	    var width=$('#insertPicture .preview .pic_wrapper').width();
+	    width && wrapper.inspic('css', 'width', p(width));
 	    
 	    var caption = $('<span class="pic_caption_outer">');
 	    caption.text(g('caption'));
@@ -168,7 +171,7 @@
 
 	    wrapper.append(ph);
 	    wrapper[g('caption.vpos') == 'top' ? 'prepend' : 'append'](caption);
-
+	    
 	    ph = wrapper;
 	} 
 
@@ -214,21 +217,6 @@
 	}
     });
     inspic.view.Output=Output;
-
-    $(function(){
-	var output=null;
-	$('<a href="#">output</a>').prependTo('body').click(function(){
-	    if (!output)
-		output=new inspic.view.Output({
-		    'model':inspic.model.mainModel
-		});
-	    else{
-		output.render();
-		output.el.focus();
-	    }
-	    return false;
-	});
-    });
 
     function saveCookie(){
 	var data=_.omit(genData(model,g), 'src');

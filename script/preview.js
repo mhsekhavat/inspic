@@ -9,14 +9,13 @@
 	    var loading = this.$('.loading');
 	    var imagePreview = this.$('.imagePreview');
 
-	    model.on('change:src', function() {
-		var src = model.get('src');
+	    model.subscribe('src', function(src){
 		var el = $('<img>').attr('src', src);
 		img.replaceWith(el);
 		img = el;// update img variable
 		updateDimensions();
-	    }, this);
-
+	    })();
+	    
 	    function updateDimensions() {
 		var width = model.get('width');
 		var height = model.get('height');
@@ -25,8 +24,8 @@
 	    }
 	    model.on('change:width change:height', updateDimensions, this);
 	    
-	    model.subscribe('isLoading', function(val){
-		loading[val ? 'show' : 'hide']();
+	    model.subscribe('`src` && `isLoading`', function(val){
+		loading[inspicEval(val) ? 'show' : 'hide']();
 	    })();
 	    
 	    model.subscribe('`src` && !(`isLoading`)', function(val){
@@ -163,15 +162,15 @@
 	}
     });
 
-    $(function(){
+    function addPreviews(){
 	new ImagePreview({
 	    el : $('#insertPicture .preview')
 	});
 	new BorderPreview({
-	    el: $('#insertPicture .preview')
+	    el: $('#insertPicture .imagePreview')
 	});
 	new PositionPreview({
-	    el: $('#insertPicture .preview')
+	    el: $('#insertPicture .imagePreview')
 	});
 	new InnerCaptionPreview({
 	    el: $('#insertPicture .pic_caption_inner')
@@ -179,6 +178,7 @@
 	new OuterCaptionPreview({
 	    el: $('#insertPicture .pic_caption_outer')
 	});
-    });
+    }
+    inspic.view.addPreviews=addPreviews;
 
 })(jQuery);

@@ -734,7 +734,6 @@
 	    pFormat.boldItalic
 	)(
 	    '<br>'
-	)(
 	);
     }
 
@@ -744,6 +743,21 @@
 	mainModel.subscribe('src', function(val) {
 	    $headers.inspic('disabled', !val).first().inspic('disabled', false);
 	});
+
+	$('<span>', {
+	    'class':'inspic_button submit',
+	    text:'درج',
+	    click: function(){
+		inspic.callback && inspic.callback(inspic.getHtml());
+	    }
+	}).appendTo('.tab_headers');
+	$('<span>', {
+	    'class':'inspic_button cancel',
+	    text:'انصراف',
+	    click: function(){
+		inspic.callback && inspic.callback();
+	    }
+	}).appendTo('.tab_headers');
 	new CheckInputField('adv', {
 	    text: 'نمایش تنظیمات پیشرفته'
 	}).$el.appendTo('.tab_headers');

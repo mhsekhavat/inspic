@@ -27,11 +27,11 @@
 	    }
 	    
 	    var $img= $html.find('img[src]').first();
-	    if (!$img.length){
+	    if ($img.length){
 		set['src']=$img.attr('src');
 		set['title']=($img.attr('alt') || $img.attr('title') || '');
 	    }
-
+	    
 	    set['href.url']= $html.find('[href]').attr('href') || '';
 	    set['href.type']=data['hrf'] || 'none';
 
@@ -102,7 +102,7 @@
     function loadCookie(){
 	var data=$.cookie('inspicData');
 	if (data)
-	    setHtml('<img inspic="'+data+'">');
+	setHtml('<img inspic="'+data+'">');
     }
     inspic.loadCookie=loadCookie;
 })(jQuery); 
