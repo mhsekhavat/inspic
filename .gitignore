@@ -1,2 +1,8 @@
 bayan.sublime-project
 bayan.sublime-workspace
+.project
+.settings
+.externalToolBuilders
+*~
+Thumbs.db*
+.buildpath
