@@ -1,0 +1,135 @@
+/*
+  anneal_steps = 1000
+  */
+.inspic16 {
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+}
+.inspic16.mt {
+  background: url("./mt.png");
+}
+.inspic16.mr {
+  background: url("./mr.png");
+}
+.inspic16.ml {
+  background: url("./ml.png");
+}
+.inspic16.mb {
+  background: url("./mb.png");
+}
+.inspic16.padding {
+  background: url("./padding.png");
+  width: 18px;
+  height: 18px;
+}
+.inspic16.radius {
+  background: url("./radius.resized.png");
+}
+.inspic16.bold {
+  background: url("./text_bold.png");
+}
+.inspic16.italic {
+  background: url("./text_italic.png");
+}
+.inspic16.fontsize {
+  background: url("./fontsize.png");
+}
+.inspic16.bwidth {
+  background: url("./border-weight.png");
+}
+.inspic16.alpha {
+  background: url("./transparency.png");
+}
+.inspic16.sh-y {
+  background: url("./dist-v.png");
+}
+.inspic16.sh-x {
+  background: url("./dist-h.png");
+}
+.inspic16.sh-rad {
+  background: url("./shadow-radius.png");
+}
+.iconSelectItem {
+  width: 16px;
+  height: 16px;
+}
+.iconSelect[field="borderline.style"] .iconSelectItem[value="solid"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="solid"] {
+  background: url("line-solid.png");
+}
+.iconSelect[field="borderline.style"] .iconSelectItem[value="dashed"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="dashed"] {
+  background: url("line-dashed.png");
+}
+.iconSelect[field="borderline.style"] .iconSelectItem[value="dotted"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="dotted"] {
+  background: url("line-dotted.png");
+}
+.iconSelect[field="borderline.style"] .iconSelectItem[value="double"], .iconSelect[field="caption.outer.border.style"] .iconSelectItem[value="double"] {
+  background: url("line-double.png");
+}
+.iconSelect[field="position"] .iconSelectItem[value="inline_right"] {
+  background: url("wrapping-right.png");
+}
+.iconSelect[field="position"] .iconSelectItem[value="inline_left"] {
+  background: url("wrapping-left.png");
+}
+.iconSelect[field="position"] .iconSelectItem[value="inline_none"] {
+  background: url("wrapping-inline.png");
+}
+.iconSelect[field="position"] .iconSelectItem[value="block_right"] {
+  background: url("wrapping-rightblock.png");
+}
+.iconSelect[field="position"] .iconSelectItem[value="block_left"] {
+  background: url("wrapping-leftblock.png");
+}
+.iconSelect[field="position"] .iconSelectItem[value="block_center"] {
+  background: url("wrapping-center.png");
+}
+.iconSelect[field="caption.textAlign"] .iconSelectItem[value="left"] {
+  background: url("text_align_left.png");
+}
+.iconSelect[field="caption.textAlign"] .iconSelectItem[value="center"] {
+  background: url("text_align_center.png");
+}
+.iconSelect[field="caption.textAlign"] .iconSelectItem[value="right"] {
+  background: url("text_align_right.png");
+}
+.iconSelect.posTop[field="caption.inner.hpos"] .iconSelectItem[value="right"] {
+  background: url("pos-tr.png");
+}
+.iconSelect.posTop[field="caption.inner.hpos"] .iconSelectItem[value="left"] {
+  background: url("pos-tl.png");
+}
+.iconSelect.posTop[field="caption.inner.hpos"] .iconSelectItem[value="full"] {
+  background: url("pos-t.png");
+}
+.iconSelect.posBottom[field="caption.inner.hpos"] .iconSelectItem[value="right"] {
+  background: url("pos-br.png");
+}
+.iconSelect.posBottom[field="caption.inner.hpos"] .iconSelectItem[value="left"] {
+  background: url("pos-bl.png");
+}
+.iconSelect.posBottom[field="caption.inner.hpos"] .iconSelectItem[value="full"] {
+  background: url("pos-b.png");
+}
+.iconSelect[field="caption.pos"] .iconSelectItem[value="inner_bottom"] {
+  background: url("image-ib.png");
+}
+.iconSelect[field="caption.pos"] .iconSelectItem[value="outer_bottom"] {
+  background: url("image-ob.png");
+}
+.iconSelect[field="caption.pos"] .iconSelectItem[value="inner_top"] {
+  background: url("image-it.png");
+}
+.iconSelect[field="caption.pos"] .iconSelectItem[value="outer_top"] {
+  background: url("image-ot.png");
+}
+.colorPicker-picker.picker-arrow-line {
+  background: url("arrow-line.png") !important;
+}
+.colorPicker-picker.picker-arrow-paint {
+  background: url("arrow-paint.png") !important;
+}
+.colorPicker-picker.picker-arrow-text {
+  background: url("arrow-text.png") !important;
+}
