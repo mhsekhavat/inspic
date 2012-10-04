@@ -102,7 +102,7 @@
     function loadCookie(){
 	var data=$.cookie('inspicData');
 	if (data)
-	setHtml('<img inspic="'+data+'">');
+	setHtml('<img data-inspic="'+data+'">');
     }
     inspic.loadCookie=loadCookie;
 })(jQuery); 
