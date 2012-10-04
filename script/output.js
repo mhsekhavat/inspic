@@ -6,6 +6,8 @@
 	var type=typeof(model.defaults[x]);
 	if (type=='boolean')
 	    ret=(ret ? 1 : '');
+        if (x=='position')
+            ret=ret.charAt(0)+ret.charAt(ret.search('_')+1);
 	return ret;
     }
     

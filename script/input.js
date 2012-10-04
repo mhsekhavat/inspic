@@ -5,7 +5,7 @@
 	    var set={};
 	    var $html = $('<html>').html(html);
 
-	    var data=$html.find('[inspic]').attr('inspic');
+	    var data=$html.find('[data-inspic]').attr('data-inspic');
 	    if (data){
 		var dict={};
 		_.each(data.split(','), function(s){
@@ -26,18 +26,25 @@
 		_.extend(set, fields);
 	    }
 	    
-	    var $img= $html.find('img[src]').first();
-	    if ($img.length){
-		set['src']=$img.attr('src');
-		set['title']=($img.attr('alt') || $img.attr('title') || '');
-	    }
 	    
 	    set['href.url']= $html.find('[href]').attr('href') || '';
 	    set['href.type']=data['hrf'] || 'none';
 
 	    if (data['etc'])
 		setPrefixArray(data['etc'], '', ['position', 'adv']);
-	    
+            var tmp=set['position'];
+            if (tmp){
+                var shorts={
+                    b:'block',
+                    i:'inline',
+                    c:'center',
+                    l:'left',
+                    r:'right',
+                    n:'none'
+                };
+                set['position']=shorts[tmp.charAt(0)]+'_'+shorts[tmp.charAt(1)];
+            }
+
 	    if (data['mrg'])
 		setPrefixArray(data['mrg'], 'margin.', ['base','top', 'right', 'bottom', 'left']);
 
@@ -89,8 +96,24 @@
 	    } else
 		set['capion.enable']=false;
 
+            var $img= $html.find('img[src]').first();
+	    if ($img.length){
+		set['src']=$img.attr('src');
+		set['title']=($img.attr('alt') || $img.attr('title') || '');
+                var imgWidth=$img.width();
+                var imgHeight=$img.height();
+                var model=inspic.model.mainModel;
+                if (imgWidth || imgHeight){
+                    model.set('keep_ratio', !(imgWidth && imgHeight));
+                    imgWidth && model.set('width', imgWidth);
+                    imgHeight && model.set('height', imgHeight);
+                }
+            }
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);
+
+            
+               
 	} catch(ex) {
 	    console.log('Exception',ex);
 	    

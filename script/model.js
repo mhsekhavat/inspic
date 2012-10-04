@@ -105,7 +105,7 @@
 	    'href.url': '',
 	    'href.target': '_blank',
 	    'title': '',
-	    'position': 'float_right',
+	    'position': 'inline_right',
 	    'position.float': 'right',
 	    'margin.base': 10,
 	    'margin.adv': false,
@@ -330,7 +330,6 @@
 		function(type,                  inner,                 outer){
 		    return (type=='inner' ? inner : outer);
 		})
-
 	}
     });
 

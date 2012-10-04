@@ -57,11 +57,11 @@
 
 	    function handleSuccess(){
 		set('isLoading', false);
-		set('src', url);
 		set('src.width', newImg.width());
 		set('src.height', newImg.height());
 		set('height', newImg.height());
 		set('width', newImg.width());
+		set('src', url);
 		var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir\/[^?]*(\?(thumb|image_preview|view))?$/);
 		if (bayan) {
 		    set('src.bayan', true);
@@ -150,14 +150,8 @@
 		set('margin.base', base);
 	    }
 	    set('margin.adv', val);
-	},
-	
-	'caption.enable': function(val){
-	    set('caption.enable', val);
-	    if (val){
-		;
-	    }
 	}
+	
     };
     
 })(jQuery);
