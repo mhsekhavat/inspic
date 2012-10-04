@@ -192,7 +192,7 @@
 	data['ver']=g('version');
 
 	var dataAttr=stringify(data);
-	ph.attr('inspic', dataAttr);
+	ph.attr('data-inspic', dataAttr);
 
 	 return ph.inspic('outerHtml');
     }
