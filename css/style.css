@@ -122,6 +122,9 @@
   border: 1px solid #ccc;
   display: inline-block;
   background-color: #ffffff;
+  width: 7px;
+  height: 5px;
+  vertical-align: middle;
 }
 #insertPicture .inspic_spinner > span[disabled="disabled"] {
   cursor: default;
@@ -129,26 +132,16 @@
 #insertPicture .inspic_spinner > span.inspic_dn {
   top: 2px;
   border-radius: 0 0 3px 3px;
-}
-#insertPicture .inspic_spinner > span.inspic_dn .dn {
-  background: url("images/icon/bullet_arrow_down.png");
-  background-position: center-center;
+  background-image: url("images/icon/bullet_arrow_down.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic_spinner > span.inspic_up {
   bottom: 2px;
   border-radius: 3px 3px 0 0;
-}
-#insertPicture .inspic_spinner > span.inspic_up .up {
-  background: url("images/icon/bullet_arrow_up.png");
-  background-position: center-center;
+  background-image: url("images/icon/bullet_arrow_up.png");
+  background-position: center center;
   background-repeat: no-repeat;
-}
-#insertPicture .inspic_spinner > span .up, #insertPicture .inspic_spinner > span .dn {
-  width: 7px;
-  height: 5px;
-  display: inline-block;
-  vertical-align: middle;
 }
 #insertPicture .inspic_spinner > span:hover {
   background-color: #F2E9D5;

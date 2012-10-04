@@ -5,80 +5,80 @@
   height: 16px;
 }
 #insertPicture .inspic16.mt {
-  background: url("images/icon/mt.png");
-  background-position: center-center;
+  background-image: url("images/icon/mt.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.mr {
-  background: url("images/icon/mr.png");
-  background-position: center-center;
+  background-image: url("images/icon/mr.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.ml {
-  background: url("images/icon/ml.png");
-  background-position: center-center;
+  background-image: url("images/icon/ml.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.mb {
-  background: url("images/icon/mb.png");
-  background-position: center-center;
+  background-image: url("images/icon/mb.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.padding {
-  background: url("images/icon/padding.png");
-  background-position: center-center;
+  background-image: url("images/icon/padding.png");
+  background-position: center center;
   background-repeat: no-repeat;
   width: 18px;
   height: 18px;
 }
 #insertPicture .inspic16.radius {
-  background: url("images/icon/radius.resized.png");
-  background-position: center-center;
+  background-image: url("images/icon/radius.resized.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.bold {
-  background: url("images/icon/text_bold.png");
-  background-position: center-center;
+  background-image: url("images/icon/text_bold.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.italic {
-  background: url("images/icon/text_italic.png");
-  background-position: center-center;
+  background-image: url("images/icon/text_italic.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.fontsize {
-  background: url("images/icon/fontsize.png");
-  background-position: center-center;
+  background-image: url("images/icon/fontsize.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.bwidth {
-  background: url("images/icon/border-weight.png");
-  background-position: center-center;
+  background-image: url("images/icon/border-weight.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.alpha {
-  background: url("images/icon/transparency.png");
-  background-position: center-center;
+  background-image: url("images/icon/transparency.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.sh-y {
-  background: url("images/icon/dist-v.png");
-  background-position: center-center;
+  background-image: url("images/icon/dist-v.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.sh-x {
-  background: url("images/icon/dist-h.png");
-  background-position: center-center;
+  background-image: url("images/icon/dist-h.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.sh-rad {
-  background: url("images/icon/shadow-radius.png");
-  background-position: center-center;
+  background-image: url("images/icon/shadow-radius.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .inspic16.slider {
-  background: url("images/icon/slider.png");
-  background-position: center-center;
+  background-image: url("images/icon/slider.png");
+  background-position: center center;
   background-repeat: no-repeat;
   width: 104px;
   height: 15px;
@@ -88,118 +88,118 @@
   height: 16px;
 }
 #insertPicture .iconSelect[field="borderline.style"] .iconSelectItem.solid, #insertPicture .iconSelect[field="caption.outer.border.style"] .iconSelectItem.solid {
-  background: url("images/icon/line-solid.png");
-  background-position: center-center;
+  background-image: url("images/icon/line-solid.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="borderline.style"] .iconSelectItem.dashed, #insertPicture .iconSelect[field="caption.outer.border.style"] .iconSelectItem.dashed {
-  background: url("images/icon/line-dashed.png");
-  background-position: center-center;
+  background-image: url("images/icon/line-dashed.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="borderline.style"] .iconSelectItem.dotted, #insertPicture .iconSelect[field="caption.outer.border.style"] .iconSelectItem.dotted {
-  background: url("images/icon/line-dotted.png");
-  background-position: center-center;
+  background-image: url("images/icon/line-dotted.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="borderline.style"] .iconSelectItem.double, #insertPicture .iconSelect[field="caption.outer.border.style"] .iconSelectItem.double {
-  background: url("images/icon/line-double.png");
-  background-position: center-center;
+  background-image: url("images/icon/line-double.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="position"] .iconSelectItem.inline_right {
-  background: url("images/icon/wrapping-right.png");
-  background-position: center-center;
+  background-image: url("images/icon/wrapping-right.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="position"] .iconSelectItem.inline_left {
-  background: url("images/icon/wrapping-left.png");
-  background-position: center-center;
+  background-image: url("images/icon/wrapping-left.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="position"] .iconSelectItem.inline_none {
-  background: url("images/icon/wrapping-inline.png");
-  background-position: center-center;
+  background-image: url("images/icon/wrapping-inline.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="position"] .iconSelectItem.block_right {
-  background: url("images/icon/wrapping-rightblock.png");
-  background-position: center-center;
+  background-image: url("images/icon/wrapping-rightblock.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="position"] .iconSelectItem.block_left {
-  background: url("images/icon/wrapping-leftblock.png");
-  background-position: center-center;
+  background-image: url("images/icon/wrapping-leftblock.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="position"] .iconSelectItem.block_center {
-  background: url("images/icon/wrapping-center.png");
-  background-position: center-center;
+  background-image: url("images/icon/wrapping-center.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="caption.textAlign"] .iconSelectItem.left {
-  background: url("images/icon/text_align_left.png");
-  background-position: center-center;
+  background-image: url("images/icon/text_align_left.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="caption.textAlign"] .iconSelectItem.center {
-  background: url("images/icon/text_align_center.png");
-  background-position: center-center;
+  background-image: url("images/icon/text_align_center.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="caption.textAlign"] .iconSelectItem.right {
-  background: url("images/icon/text_align_right.png");
-  background-position: center-center;
+  background-image: url("images/icon/text_align_right.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect.posTop[field="caption.inner.hpos"] .iconSelectItem.right {
-  background: url("images/icon/pos-tr.png");
-  background-position: center-center;
+  background-image: url("images/icon/pos-tr.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect.posTop[field="caption.inner.hpos"] .iconSelectItem.left {
-  background: url("images/icon/pos-tl.png");
-  background-position: center-center;
+  background-image: url("images/icon/pos-tl.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect.posTop[field="caption.inner.hpos"] .iconSelectItem.full {
-  background: url("images/icon/pos-t.png");
-  background-position: center-center;
+  background-image: url("images/icon/pos-t.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect.posBottom[field="caption.inner.hpos"] .iconSelectItem.right {
-  background: url("images/icon/pos-br.png");
-  background-position: center-center;
+  background-image: url("images/icon/pos-br.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect.posBottom[field="caption.inner.hpos"] .iconSelectItem.left {
-  background: url("images/icon/pos-bl.png");
-  background-position: center-center;
+  background-image: url("images/icon/pos-bl.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect.posBottom[field="caption.inner.hpos"] .iconSelectItem.full {
-  background: url("images/icon/pos-b.png");
-  background-position: center-center;
+  background-image: url("images/icon/pos-b.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="caption.pos"] .iconSelectItem.inner_bottom {
-  background: url("images/icon/image-ib.png");
-  background-position: center-center;
+  background-image: url("images/icon/image-ib.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="caption.pos"] .iconSelectItem.outer_bottom {
-  background: url("images/icon/image-ob.png");
-  background-position: center-center;
+  background-image: url("images/icon/image-ob.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="caption.pos"] .iconSelectItem.inner_top {
-  background: url("images/icon/image-it.png");
-  background-position: center-center;
+  background-image: url("images/icon/image-it.png");
+  background-position: center center;
   background-repeat: no-repeat;
 }
 #insertPicture .iconSelect[field="caption.pos"] .iconSelectItem.outer_top {
-  background: url("images/icon/image-ot.png") !important;
-  background-position: center-center !important;
+  background-image: url("images/icon/image-ot.png") !important;
+  background-position: center center !important;
   background-repeat: no-repeat !important;
 }
 #insertPicture .colorPicker-picker {
@@ -207,17 +207,17 @@
   height: 18px;
 }
 #insertPicture .colorPicker-picker.picker-arrow-line {
-  background: url("images/icon/arrow-line.png") !important;
-  background-position: center-center !important;
+  background-image: url("images/icon/arrow-line.png") !important;
+  background-position: center center !important;
   background-repeat: no-repeat !important;
 }
 #insertPicture .colorPicker-picker.picker-arrow-paint {
-  background: url("images/icon/arrow-paint.png") !important;
-  background-position: center-center !important;
+  background-image: url("images/icon/arrow-paint.png") !important;
+  background-position: center center !important;
   background-repeat: no-repeat !important;
 }
 #insertPicture .colorPicker-picker.picker-arrow-text {
-  background: url("images/icon/arrow-text.png") !important;
-  background-position: center-center !important;
+  background-image: url("images/icon/arrow-text.png") !important;
+  background-position: center center !important;
   background-repeat: no-repeat !important;
 }
