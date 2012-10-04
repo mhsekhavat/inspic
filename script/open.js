@@ -22,11 +22,11 @@
         '</div>';
 
     function open($el, args){
-	$el=$($el).html(body);
-	inspic.init(args.src || '');
-	if (args.html)
-	    inspic.setHtml(args.html);
-	inspic.callback=args.callback;
+        $el=$($el).html(body);
+        inspic.init(args.src || '');
+        if (args.html)
+            inspic.setHtml(args.html);
+        inspic.callback=args.callback;
     }
     inspic.open=open;
 })(jQuery);

@@ -51,7 +51,7 @@ var inspic=inspic || {};
         '</script>';
 
     inspic.injectTemplates=_.once(function(){
-	$('head').append(head);
+        $('head').append(head);
     });
     inspic.injectTemplates();
 
