@@ -1,0 +1,171 @@
+@import "css/include.less";
+#insertPicture{
+    .inspic16{
+        display: inline-block;
+        vertical-align: middle;
+        width: 16px;
+        height: 16px;
+        &.mt{
+	    .icon("mt.png");
+        }
+        &.mr{
+	    .icon("mr.png");
+        }
+        &.ml{
+	    .icon("ml.png");
+        }
+        &.mb{
+	    .icon("mb.png");
+        }
+        &.padding{
+	    .icon("padding.png");
+	    width: 18px;
+	    height: 18px;
+        }
+        &.radius{
+	    .icon("radius.resized.png");
+        }
+        &.bold{
+	    .icon("text_bold.png");
+        }
+        &.italic{
+	    .icon("text_italic.png");
+        }
+        &.fontsize{
+	    .icon("fontsize.png");
+        }
+        &.bwidth{
+	    .icon("border-weight.png");
+        }
+        &.alpha{
+	    .icon("transparency.png");
+        }
+        &.sh-y{
+	    .icon("dist-v.png");
+        } 
+        &.sh-x{
+	    .icon("dist-h.png");
+        }
+        &.sh-rad{
+	    .icon("shadow-radius.png");
+        }
+
+    }
+
+    .iconSelectItem{
+        &, span{
+        width:16px;
+        height:16px;
+        }
+    }
+
+    .iconSelect{
+        &[field="borderline.style"], &[field="caption.outer.border.style"]{
+            .iconSelectItem{
+                &.solid {
+	            .icon("line-solid.png");
+                }
+                &.dashed {
+	            .icon("line-dashed.png");
+                }
+                &.dotted {
+	            .icon("line-dotted.png");
+                }
+                &.double {
+	            .icon("line-double.png");
+                }
+            }
+        }
+        &[field="position"]{
+            .iconSelectItem{
+                &.inline_right {
+	            .icon("wrapping-right.png");
+                }
+                &.inline_left {
+	            .icon("wrapping-left.png");
+                }
+                &.inline_none {
+	            .icon("wrapping-inline.png");
+                }
+                &.block_right {
+	            .icon("wrapping-rightblock.png");
+                }
+                &.block_left {
+	            .icon("wrapping-leftblock.png");
+                }
+                &.block_center {
+	            .icon("wrapping-center.png");
+                }
+            }
+        }
+        &[field="caption.textAlign"]{
+            .iconSelectItem{
+                &.left {
+	            .icon("text_align_left.png");
+                }
+                &.center {
+	            .icon("text_align_center.png");
+                }
+                &.right {
+	            .icon("text_align_right.png");
+                }
+            }
+        }
+        &.posTop[field="caption.inner.hpos"]{
+            .iconSelectItem{
+                &.right {
+	            .icon("pos-tr.png");
+                }
+                &.left {
+	            .icon("pos-tl.png");
+                }
+                &.full {
+	            .icon("pos-t.png");
+                }
+            }
+        }
+        &.posBottom[field="caption.inner.hpos"]{
+            .iconSelectItem{
+                &.right {
+	            .icon("pos-br.png");
+                }
+                &.left {
+	            .icon("pos-bl.png");
+                }
+                &.full {
+	            .icon("pos-b.png");
+                }
+            }
+        }
+        &[field="caption.pos"]{
+            .iconSelectItem{
+                &.inner_bottom {
+	            .icon("image-ib.png");
+                }
+                &.outer_bottom {
+	            .icon("image-ob.png");
+                }
+                &.inner_top {
+	            .icon("image-it.png");
+                }
+                &.outer_top {
+	            .icon("image-ot.png")!important;
+                }
+            }
+        }
+    }
+    
+    .colorPicker-picker{
+        width: 18px;
+        height: 18px;
+        &.picker-arrow-line{
+	    .icon("arrow-line.png")!important;
+        }
+        &.picker-arrow-paint{
+	    .icon("arrow-paint.png")!important;
+        }
+        &.picker-arrow-text{
+	    .icon("arrow-text.png")!important;
+        }
+    }
+}

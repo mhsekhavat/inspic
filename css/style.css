@@ -1,0 +1,236 @@
+#insertPicture {
+  margin-left: auto;
+  margin-right: auto;
+  border-style: solid;
+  border-width: 2px;
+  width: 750px;
+  position: relative;
+  font-family: "tahoma";
+  font-size: 12px;
+  direction: rtl;
+  padding: 6px;
+  background-color: #EDEDED;
+}
+#insertPicture input, #insertPicture img, #insertPicture select {
+  vertical-align: middle;
+}
+#insertPicture input {
+  margin: 0;
+}
+#insertPicture input[type="text"] {
+  direction: ltr;
+  text-align: center;
+}
+#insertPicture .tab_headers {
+  margin-right: 6px;
+  position: relative;
+  top: 1px;
+}
+#insertPicture .tab_headers span[for] {
+  display: inline-block;
+  padding: 5px 7px;
+  margin-right: 3px;
+  background-color: #f3f3f3;
+  border-style: solid;
+  border-color: #bbbbbb;
+  border-width: 1px 1px 0 1px;
+  border-radius: 5px 5px 0 0;
+}
+#insertPicture .tab_headers span[for]:hover {
+  cursor: pointer;
+  background-color: #f4f4f4;
+}
+#insertPicture .tab_headers span[for]:hover[disabled="disabled"] {
+  cursor: default;
+  background-color: #f3f3f3;
+}
+#insertPicture .tab_headers span[for].selected, #insertPicture .tab_headers span[for].selected:hover {
+  background-color: white;
+  border-bottom: 1px solid white;
+  z-index: 2;
+}
+#insertPicture .tab_headers .inspic_inputfield {
+  float: left;
+}
+#insertPicture .tabs > div {
+  border: 1px solid #bbbbbb;
+  background-color: white;
+  padding: 4px;
+  border-radius: 5px;
+  height: 100px;
+}
+#insertPicture .tabs > div > legend {
+  width: 100%;
+}
+#insertPicture .preview {
+  background-color: white;
+  border-radius: 5px;
+  display: inline-block;
+  height: 400px;
+  width: 750px;
+  overflow: auto;
+}
+#insertPicture .inspic_inputfield {
+  display: inline-block;
+  padding: 5px;
+}
+#insertPicture .inspic_preview {
+  position: relative;
+  float: left;
+  width: 250px;
+}
+#insertPicture .iconSelect {
+  display: inline-block;
+  border-radius: 5px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+}
+#insertPicture .iconSelect .iconSelectItem {
+  display: inline-block;
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 3px;
+  border-right: 1px solid #ddd;
+  padding: 3px;
+}
+#insertPicture .iconSelect .iconSelectItem.first {
+  border: 0;
+}
+#insertPicture .iconSelect .iconSelectItem:hover {
+  cursor: pointer;
+  background-color: #f4f4f4;
+}
+#insertPicture .iconSelect .iconSelectItem.selected {
+  background-color: white;
+}
+#insertPicture .inspic_spinner {
+  position: relative;
+  width: 11px;
+  height: 5px;
+  display: inline-block;
+  vertical-align: middle;
+}
+#insertPicture .inspic_spinner > span {
+  position: absolute;
+  line-height: 0;
+  right: 0;
+  padding: 2px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  display: inline-block;
+  background-color: #ffffff;
+}
+#insertPicture .inspic_spinner > span[disabled="disabled"] {
+  cursor: default;
+}
+#insertPicture .inspic_spinner > span.inspic_dn {
+  top: 2px;
+  border-radius: 0 0 3px 3px;
+}
+#insertPicture .inspic_spinner > span.inspic_dn .dn {
+  background: url("images/icon/bullet_arrow_down.png");
+  background-position: center-center;
+  background-repeat: no-repeat;
+}
+#insertPicture .inspic_spinner > span.inspic_up {
+  bottom: 2px;
+  border-radius: 3px 3px 0 0;
+}
+#insertPicture .inspic_spinner > span.inspic_up .up {
+  background: url("images/icon/bullet_arrow_up.png");
+  background-position: center-center;
+  background-repeat: no-repeat;
+}
+#insertPicture .inspic_spinner > span .up, #insertPicture .inspic_spinner > span .dn {
+  width: 7px;
+  height: 5px;
+  display: inline-block;
+  vertical-align: middle;
+}
+#insertPicture .inspic_spinner > span:hover {
+  background-color: #F2E9D5;
+}
+#insertPicture .inspic_spinner > span:hover[disabled="disabled"] {
+  background-color: #ffffff;
+}
+#insertPicture .inspic_button.submit {
+  background-color: #e0fae7;
+  border: 1px solid #71d088;
+  color: #198f36;
+  display: inline-block;
+  float: left;
+  padding: 5px;
+  position: relative;
+  bottom: 3px;
+  border-radius: 3px;
+}
+#insertPicture .inspic_button.submit:hover {
+  cursor: pointer;
+  background-color: #b5f2c4;
+}
+#insertPicture .inspic_button.cancel {
+  margin-left: 3px;
+  background-color: #f7f7f7;
+  border: 1px solid #aaaaaa;
+  color: #5e5e5e;
+  display: inline-block;
+  float: left;
+  padding: 5px;
+  position: relative;
+  bottom: 3px;
+  border-radius: 3px;
+}
+#insertPicture .inspic_button.cancel:hover {
+  cursor: pointer;
+  background-color: #dddddd;
+}
+.pic_clearfix {
+  display: block !important;
+}
+.pic_clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.pic_margin,
+.pic_border,
+.pic_caption_inner,
+.pic_caption_outer,
+.pic_inner,
+.pic_wrapper {
+  display: inline-block;
+  position: relative;
+}
+.pic_inner img, .pic_border img {
+  vertical-align: middle;
+}
+.pic_inner img {
+  border-width: 0;
+  z-index: -1;
+  position: relative;
+}
+.pic_border {
+  z-index: 1;
+}
+.pic_caption_inner {
+  position: absolute;
+  padding: 20px;
+  min-width: 30%;
+}
+.pic_caption_outer {
+  display: block;
+  padding: 5px;
+}
+.pic_caption_inner h1,
+.pic_caption_outer h1,
+.pic_caption_inner p,
+.pic_caption_outer p {
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+}
