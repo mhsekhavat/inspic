@@ -49,7 +49,11 @@
         &.sh-rad{
 	    .icon("shadow-radius.png");
         }
-
+        &.slider{
+            .icon("slider.png"); 
+            width: 104px;
+            height: 15px;
+        }
     }
 
     .iconSelectItem{

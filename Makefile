@@ -18,7 +18,7 @@ SCRIPTS=script/include/underscore.js \
 STYLES= css/normalize.css \
 	css/colorPicker.css \
 	css/style.css \
-	css/sm_icons.css
+	css/icons.css 
 
 inspic.js: $(SCRIPTS)
 	cat $(SCRIPTS) >inspic.js

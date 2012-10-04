@@ -3037,7 +3037,7 @@ function inspicEval(expr){
             position : 'relative',
             width : 104,
             height : 15
-        }).append('<img src="images/slider.gif">');
+        }).append('<span class="inspic16 slider">');
         $('<span>').css({
             borderWidth : 1,
             borderStyle : 'solid',
@@ -4993,7 +4993,7 @@ function inspicEval(expr){
 	data['ver']=g('version');
 
 	var dataAttr=stringify(data);
-	ph.attr('inspic', dataAttr);
+	ph.attr('data-inspic', dataAttr);
 
 	 return ph.inspic('outerHtml');
     }
@@ -5128,7 +5128,7 @@ function inspicEval(expr){
     function loadCookie(){
 	var data=$.cookie('inspicData');
 	if (data)
-	setHtml('<img inspic="'+data+'">');
+	setHtml('<img data-inspic="'+data+'">');
     }
     inspic.loadCookie=loadCookie;
 })(jQuery); 

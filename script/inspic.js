@@ -30,7 +30,7 @@ function inspicEval(expr){
             position : 'relative',
             width : 104,
             height : 15
-        }).append('<img src="images/slider.gif">');
+        }).append('<span class="inspic16 slider">');
         $('<span>').css({
             borderWidth : 1,
             borderStyle : 'solid',
