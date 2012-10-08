@@ -3768,10 +3768,10 @@ function inspicEval(expr){
                 set('height', h);
                 set('width', w);
                 set('src', url);
-                var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir\/[^?]*(\?(thumb|image_preview|view))?$/);
+                var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir(:\d+)?\/[^?]*(\?(thumb|image_preview|view))?$/);
                 if (bayan) {
                     set('src.bayan', true);
-                    var matchedSize = bayan[4];
+                    var matchedSize = bayan[5];
                     set('src.bayan.size', matchedSize || null);
                 } else {
                     set('src.bayan', false);
