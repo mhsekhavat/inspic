@@ -1,6 +1,10 @@
+.PHONY:all deploy
+
 all: inspic.js inspic.css
-	cp inspic.js inspic.css ../blog/templates/media/script/inspic
 	echo successed
+
+deploy: all
+	cp inspic.js inspic.css ../blog/templates/media/script/inspic
 
 SCRIPTS=script/include/underscore.js \
 	script/include/backbone.js \
@@ -33,3 +37,4 @@ css/icons.css: css/icons.less.css css/include.less
 
 sm_icons.css: inspic.css
 	spritemapper inspic.css
+
