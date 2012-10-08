@@ -1,4 +1,5 @@
 all: inspic.js inspic.css
+	cp inspic.js inspic.css ../blog/templates/media/script/inspic
 	echo successed
 
 SCRIPTS=script/include/underscore.js \
