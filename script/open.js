@@ -22,8 +22,9 @@
         '</div>';
 
     function open($el, args){
+        console.log(args);
         $el=$($el).html(body);
-        inspic.init(args.src || '');
+        inspic.init(args.src);
         if (args.html)
             inspic.setHtml(args.html);
         inspic.callback=args.callback;
