@@ -191,13 +191,6 @@
 
 .pic_clearfix {
     display: block !important;
-    &:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
-    }
 }
 
 .pic_margin, .pic_border, .pic_caption_inner, .pic_caption_outer, .pic_inner, .pic_wrapper {
