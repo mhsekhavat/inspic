@@ -690,7 +690,6 @@
                     text : 'عنوان زیرنویس:',
                     visibilityCriteria : 'caption.enable',
                     options : {
-                        'بدون عنوان' : '',
                         'عنوان تصویر' : 'title',
                         'متن' : 'text'
                     },
@@ -741,6 +740,7 @@
             text : 'درج',
             click : function() {
                 inspic.callback && inspic.callback(inspic.getHtml());
+                console.log(inspic.getHtml());
             }
         }).appendTo('.tab_headers');
         $('<span>', {

@@ -139,7 +139,7 @@
             'caption.textAlign':'center',
             'caption.h1.enable': true,
             'caption.h1.text':'',
-            'caption.h1.type':'',
+            'caption.h1.type':'text',
             'caption.h1.bold':false,
             'caption.h1.italic':false,
             'caption.h1.color.inner':'#eee',
