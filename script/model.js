@@ -203,14 +203,17 @@
         },
         computed: {
             'href': new ComputedField(
-                ['src','href.type','href.url'],
-                function(src, type, url){
+                ['src','src.bayan','href.type','href.url'],
+                function(src, bayan, type, url){
+                    var bayanbox=inspic.bayanbox;
                     if (type=='none')
                         return null;
                     else if (type=='src')
-                        return src;
-                    else if (type=='big')
-                        return inspic.controller.bayanSizedUrl(src, 'view');
+                        return (bayan ? bayanbox(src, 'view') : src);
+                    else if (type=='download')
+                        return bayanbox(src, 'download');
+                    else if (type=='info')
+                        return bayanbox(src, 'info');
                     else if (type=='url')
                         return url;
                     return '';

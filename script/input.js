@@ -28,7 +28,15 @@
 	    
 	    
 	    set['href.url']= $html.find('[href]').attr('href') || '';
-	    set['href.type']=data['hrf'] || 'none';
+            var tmp=data['hrf'];
+            set['href.type']=( tmp ?
+                               ({
+                                   n:'none',
+                                   s:'src',
+                                   d:'download',
+                                   i:'info',
+                                   u:'url'
+                               })[tmp] : 'none');
 
 	    if (data['etc'])
 		setPrefixArray(data['etc'], '', ['position', 'adv']);
@@ -67,12 +75,28 @@
 	    var arr=data['cap'];
 	    if (arr){
 		set['caption.enable']=true;
-		var type=arr[0].replace(/_.*^/,'');
 		setPrefixArray(arr, 'caption.', ['pos', 'textAlign', type+'.background.color', type+'.background.alpha']);
+                set['caption.pos']={
+                    it:'inner_top',
+                    ot:'outer_top',
+                    ib:'inner_bottom',
+                    ob:'outer_bottom'
+                }[set['caption.pos']];
+		var type=set['caption.pos'].replace(/_.*^/,'');
+                set['caption.textAlign']=({
+                    r:'right',
+                    l:'left',
+                    c:'center'
+                })[set['caption.textAlign']];
 		arr=arr.splice(4);
-		if (type=='inner')
+		if (type=='inner'){
 		    setPrefixArray(arr, 'caption.inner.', ['hpos']);
-		else{
+                    set['caption.inner.hpos']=({
+                        r:'right',
+                        f:'full',
+                        l:'left'
+                    })[set['caption.inner.hpos']];
+		}else{
 		    setPrefixArray(arr, 'caption.outer.', ['padding', 'radius']);
 		    if (arr.length>2){
 			set['caption.outer.border.enable']=true;
@@ -111,9 +135,6 @@
             }
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);
-
-            
-               
 	} catch(ex) {
 	    console.log('Exception',ex);
 	    

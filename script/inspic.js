@@ -312,6 +312,10 @@ function inspicEval(expr){
             return x;
     };
 
+    inspic.bayanbox=function(url, query){
+        return url.replace(/\?.*$/,'')+'?'+query;
+    };
+
 })(jQuery);
 
 

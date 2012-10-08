@@ -152,73 +152,91 @@
     }
 
     function addSrcElements() {
-        appendTo('#inspic_src')(new TextInputField('src', {
-            text : 'آدرس:',
-            width : 'long',
-            textAlign : 'left',
-            events : {
-                "change input" : "onChange"
-            }
-        }))(new TextInputField('title', {
-            text : 'عنوان:',
-            width : 'long',
-            textAlign : 'right',
-            visibilityCriteria : '`src`'
-        }))('<br>')(new SelectInputField('src.bayan.size', {
-            text : 'اندازه:',
-            options : {
-                'کوچک' : 'thumb',
-                'متوسط' : 'image_preview',
-                'کامل' : 'view'
-            },
-            visibilityCriteria : '`src.bayan` && `src`'
-        }))(function() {
-            var wrapper = $('<span>');
-            var scroller = inspic.scroller(function(val) {
-                inspic.controller.setField('width', val * 1000);
-            });
-            mainModel.subscribe('width', function(width) {
-                scroller.setScrollerValue(width / 1000);
-            })();
-            mainModel.subscribe('src', function(val) {
-                wrapper.css('display', (val ? 'inline-block' : 'none'));
-            })();
+        appendTo('#inspic_src')(
+            new TextInputField('src', {
+                text : 'آدرس:',
+                width : 'long',
+                textAlign : 'left',
+                events : {
+                    "change input" : "onChange"
+                }
+            })
+        )(
+            new TextInputField('title', {
+                text : 'عنوان:',
+                width : 'long',
+                textAlign : 'right',
+                visibilityCriteria : '`src`'
+            })
+        )(
+            '<br>'
+        )(
+            new SelectInputField('src.bayan.size', {
+                text : 'اندازه:',
+                options : {
+                    'کوچک' : 'thumb',
+                    'متوسط' : 'image_preview',
+                    'کامل' : 'view'
+                },
+                visibilityCriteria : '`src.bayan` && `src`'
+            })
+        )(
+            function() {
+                var wrapper = $('<span>');
+                var scroller = inspic.scroller(function(val) {
+                    inspic.controller.setField('width', val * 1000);
+                });
+                mainModel.subscribe('width', function(width) {
+                    scroller.setScrollerValue(width / 1000);
+                })();
+                mainModel.subscribe('src', function(val) {
+                    wrapper.css('display', (val ? 'inline-block' : 'none'));
+                })();
 
-            wrapper.text('مقیاس: ');
-            wrapper.addClass('inspic_inputfield');
-            wrapper.append(scroller);
-            return wrapper;
-        }())(new TextInputField('width', {
-            visibilityCriteria : '`src.adv` && `src`',
-            text : 'پهنا:'
-        }))(new TextInputField('height', {
-            visibilityCriteria : '`src.adv` && `src`',
-            text : 'ارتفاع:'
-        }))(new CheckInputField('keep_ratio', {
-            visibilityCriteria : '`src.adv` && `src`',
-            text : 'حفظ تناسب ابعاد'
-        }));
+                wrapper.text('مقیاس: ');
+                wrapper.addClass('inspic_inputfield');
+                wrapper.append(scroller);
+                return wrapper;
+            }()
+        )(
+            new TextInputField('width', {
+                visibilityCriteria : '`src.adv` && `src`',
+                text : 'پهنا:'
+            })
+        )(
+            new TextInputField('height', {
+                visibilityCriteria : '`src.adv` && `src`',
+                text : 'ارتفاع:'
+            })
+        )(
+            new CheckInputField('keep_ratio', {
+                visibilityCriteria : '`src.adv` && `src`',
+                text : 'حفظ تناسب ابعاد'
+            })
+        );
 
         appendTo('#inspic_link')
         (
-            new SelectInputField(
-                'href.type',
-                {
+            new SelectInputField('href.type',{
                     text : 'مقصد پیوند:',
-                    options : {
+                    /* Note: input.js and output.js assumes first letters of
+                     * values are different when shortening data
+                     */
+                    options : { 
                         'بدون پیوند' : 'none',
-                        'تصویر' : 'src',
-                        'اندازه کامل' : 'big',
+                        'نمایش تصویر' : 'src',
+                        'دانلود':'download',
+                        'صفحه اطلاعات بیان‌باکس':'info',
                         'url' : 'url'
                     },
                     subscribe : {
-                        '`src.bayan` && `src.bayan.size`!="view"' : function(
+                        '`src.bayan`' : function(
                             substituted) {
-                            this.$('option[value="big"]')[inspicEval(substituted) ? 'show': 'hide']();
+                            this.$('option[value="download"],option[value="info"]')[inspicEval(substituted) ? 'show': 'hide']();
                         }
                     }
-                }))
-        (
+                })
+        )(
             new TextInputField('href.url', {
                 width : 'long',
                 textAlign : 'left',
@@ -227,8 +245,8 @@
                         substituted == '"url"' ? this.$('input').css('display', 'inline-block').focus().select() : this.$('input').hide();
                     }
                 }
-            }))
-        (
+            })
+        )(
             new TextInputField(
                 'href',
                 {
@@ -239,15 +257,23 @@
                     initialize : function() {
                         this.$('input')
                             .inspic('disabled', true);
+                    },
+                    subscribe: {
+                        'href': function(val){
+                            this.$('input').attr('title', val);
+                        }
                     }
-                }))(new SelectInputField('href.target', {
-                    text : 'محل باز شدن:',
-                    visibilityCriteria : '`href.type`!="none" && `src.adv`',
-                    options : {
-                        'صفحه جدید' : '_blank',
-                        'صفحه فعلی' : '_self'
-                    }
-                }));
+                })
+        )(
+            new SelectInputField('href.target', {
+                text : 'محل باز شدن:',
+                visibilityCriteria : '`href.type`!="none" && `src.adv`',
+                options : {
+                    'صفحه جدید' : '_blank',
+                    'صفحه فعلی' : '_self'
+                }
+            })
+        );
     }
 
     /** ******************************************************************** */

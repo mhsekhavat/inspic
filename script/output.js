@@ -6,9 +6,17 @@
 	var type=typeof(model.defaults[x]);
 	if (type=='boolean')
 	    ret=(ret ? 1 : '');
-        if (x=='position')
+        return ret;
+    }
+
+    //minify
+    function m(x){
+        var ret=g(x);
+        if (x=='position' || x=='caption.pos')
             ret=ret.charAt(0)+ret.charAt(ret.search('_')+1);
-	return ret;
+        if (x=='href.type' || x=='caption.inner.hpos' || x=='caption.textAlign')
+            ret=ret.charAt(0);
+        return ret;
     }
     
     function genData(model, g){
@@ -16,7 +24,7 @@
 
 	function getPrefixArray(prefix, fields){
 	    return _.map(fields, function(field){
-		return g(prefix+field);
+		return m(prefix+field);
 	    });
 	}
 
@@ -24,7 +32,7 @@
 	    ret['src']=getPrefixArray('', ['width', 'height', 'keep_ratio']);
 
 	if (g('href.type')!='none')
-	    ret['hrf']=g('href.type');
+	    ret['hrf']=m('href.type');
 	
 	ret['etc']=getPrefixArray('', ['position','adv']);
 

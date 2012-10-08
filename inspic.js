@@ -2202,7 +2202,7 @@ var inspic=inspic || {};
         '</script>';
 
     inspic.injectTemplates=_.once(function(){
-	$('head').append(head);
+        $('head').append(head);
     });
     inspic.injectTemplates();
 
@@ -2520,6 +2520,10 @@ function inspicEval(expr){
             return x;
     };
 
+    inspic.bayanbox=function(url, query){
+        return url.replace(/\?.*$/,'')+'?'+query;
+    };
+
 })(jQuery);
 
 
@@ -2527,398 +2531,401 @@ function inspicEval(expr){
     inspic.model = {};
     
     function ComputedField(depends,func){
-	this.depends=depends || [];
-	this.func=func || function(){;};
+        this.depends=depends || [];
+        this.func=func || function(){;};
     }
     
     ComputedField.prototype={
-	registerBackboneHandlers: function(model,field){
-	    this.model=model;
+        registerBackboneHandlers: function(model,field){
+            this.model=model;
 
-	    var depends=this.depends,
-	    func=this.func;
+            var depends=this.depends,
+            func=this.func;
 
-	    var handler=function(){
-		var args=_.map(depends, model.get, model);
-		model.set(field,func.apply(model, args));
-	    };
-	    this.handler=handler;
+            var handler=function(){
+                var args=_.map(depends, model.get, model);
+                model.set(field,func.apply(model, args));
+            };
+            this.handler=handler;
 
-	    _.each(depends, function(val){
-		model.on('change:'+val, handler, model);
-	    });
-	    return handler;
-	},
-	
-	unregisterBackboneHandlers: function(){
-	    this.model.off(null, this.func);
-	}
+            _.each(depends, function(val){
+                model.on('change:'+val, handler, model);
+            });
+            return handler;
+        },
+        
+        unregisterBackboneHandlers: function(){
+            this.model.off(null, this.func);
+        }
     };
     inspic.model.ComputedField=ComputedField;
     
     var MainModel = Backbone.Model.extend({
-	initialize: function(){
-	    Backbone.Model.prototype.initialize.apply(this, arguments);
-	    !this.computed || (_.each(this.computed, function(val, key){
-		var func=val.registerBackboneHandlers(this,key);
-		func.call(this);
-	    },this));
-	    
-	},
+        initialize: function(){
+            Backbone.Model.prototype.initialize.apply(this, arguments);
+            !this.computed || (_.each(this.computed, function(val, key){
+                var func=val.registerBackboneHandlers(this,key);
+                func.call(this);
+            },this));
+            
+        },
 
-	/**
-	 *Sample: subscribe('!`src.bayan` && `href.type`=="url"', function(val){ console.log(val, this); }, taghi)
-	 * will subscribe the function(val) to changes of src.bayan and href.type and call it with (this=taghi) and (val=~src.bayan && href.type=="url") on each change.
-	 */
+        /**
+         *Sample: subscribe('!`src.bayan` && `href.type`=="url"', function(val){ console.log(val, this); }, taghi)
+         * will subscribe the function(val) to changes of src.bayan and href.type and call it with (this=taghi) and (val=~src.bayan && href.type=="url") on each change.
+         */
 
-	subscribe: function(expr, onChange, context){
-	    if (!expr || !onChange)
-		return;
-	    context=context || this;
-	    var model=this;
-	    var changes,handler; 
+        subscribe: function(expr, onChange, context){
+            if (!expr || !onChange)
+                return;
+            context=context || this;
+            var model=this;
+            var changes,handler; 
 
-	    if (expr.search('`')>-1){
-		/* if expr had `model fields`, subscribe to change of all of them and substitute for calls */
+            if (expr.search('`')>-1){
+                /* if expr had `model fields`, subscribe to change of all of them and substitute for calls */
 
-		//string for changes of `model fields` appeared in expr
-		changes=_.reduce(_.uniq(expr.match(/`[^`]*`/g) || []), function(memo, field){ return memo+'change:'+field.substring(1, field.length-1)+' '; },'');
+                //string for changes of `model fields` appeared in expr
+                changes=_.reduce(_.uniq(expr.match(/`[^`]*`/g) || []), function(memo, field){ return memo+'change:'+field.substring(1, field.length-1)+' '; },'');
 
-		handler=function(){
+                handler=function(){
 
-		    //substitued `model fields` with their values
-		    var substituted=expr.replace(/`([^`]*)`/g, function(matched,$1){ 
-			var ret=model.get($1); 
-			if (typeof(ret)=='string') 
-			    ret='"'+ret+'"';
-			else if (typeof(ret)=="undefined")
-			    ret=null;
-			return ret;
-		    });
+                    //substitued `model fields` with their values
+                    var substituted=expr.replace(/`([^`]*)`/g, function(matched,$1){ 
+                        var ret=model.get($1); 
+                        if (typeof(ret)=='string') 
+                            ret='"'+ret+'"';
+                        else if (typeof(ret)=="undefined")
+                            ret=null;
+                        return ret;
+                    });
 
-		    onChange.call(context, substituted);
-		};
-	    } else { 
-		/*if expr is just a single field of model, subscribe to its changes */
-		changes='change:'+expr;
-		handler=function(){
-		    onChange.call(context, model.get(expr));
-		};
-	    }
+                    onChange.call(context, substituted);
+                };
+            } else { 
+                /*if expr is just a single field of model, subscribe to its changes */
+                changes='change:'+expr;
+                handler=function(){
+                    onChange.call(context, model.get(expr));
+                };
+            }
 
-	    model.on(changes, handler, this);
-	    return handler;
-	},
+            model.on(changes, handler, this);
+            return handler;
+        },
 
-	/*****************************************************************************************************/
+        /*****************************************************************************************************/
 
-	defaults : {
-	    'version': 1,
-	    'isLoading' : false,
-	    'adv': false,
-	    'src' : null,
-	    'src.adv': false,
-	    'src.width' : 0,
-	    'src.height' : 0,
-	    'src.bayan' : false,
-	    'src.bayan.raw_url' : undefined,
-	    'src.bayan.size' : undefined,
-	    'width' : null,
-	    'height' : null,
-	    'keep_ratio' : true,
-	    'href.type': 'src',
-	    'href.url': '',
-	    'href.target': '_blank',
-	    'title': '',
-	    'position': 'inline_right',
-	    'position.float': 'right',
-	    'margin.base': 10,
-	    'margin.adv': false,
-	    'margin.left': 10,
-	    'margin.right': 10,
-	    'margin.top': 10,
-	    'margin.bottom': 10,
-	    'innerShadow.enable':true,
-	    'innerShadow.inset': true,
-	    'innerShadow.blur': 10,
-	    'innerShadow.color': '#000',
-	    'innerShadow.x': 0,
-	    'innerShadow.y': 0,
-	    'innerShadow.alpha': 1,
-	    'outerShadow.enable':true,
-	    'outerShadow.inset': false,
-	    'outerShadow.blur': 3,
-	    'outerShadow.color': '#000',
-	    'outerShadow.x': 0,
-	    'outerShadow.y': 0,
-	    'outerShadow.alpha': 1.0,
-	    'borderline.enable': false,
-	    'borderline.color':'#000',
-	    'borderline.style':'solid',
-	    'borderline.width':1,
-	    'border.padding.raw':3,
-	    'border.radius':5,
-	    'border.background':'#fff',
-	    'caption.enable':false,
-	    'caption.pos':'inner_top',
-	    'caption.textAlign':'center',
-	    'caption.h1.enable': true,
-	    'caption.h1.text':'',
-	    'caption.h1.type':'',
-	    'caption.h1.bold':false,
-	    'caption.h1.italic':false,
-	    'caption.h1.color.inner':'#eee',
-	    'caption.h1.color.outer':'#000',
-	    'caption.h1.size':14,
-	    'caption.p.text':'',
-	    'caption.p.enable':false,
-	    'caption.p.bold':false,
-	    'caption.p.italic':false,
-	    'caption.p.color.inner':'#eee',
-	    'caption.p.color.outer':'#000',
-	    'caption.p.size':10,
-	    'caption.adv':false,
-	    'caption.inner.hpos':'full',
-	    'caption.inner.background.color':'#000',
-	    'caption.inner.background.alpha':0.7,
-	    'caption.outer.background.color':'#fff',
-	    'caption.outer.background.alpha':1,
-	    'caption.outer.border.enable':false,
-	    'caption.outer.border.style':'solid',
-	    'caption.outer.border.width':1,
-	    'caption.outer.border.color':'#000',
-	    'caption.outer.padding':3,
-	    'caption.outer.radius':0
-	},
+        defaults : {
+            'version': 1,
+            'isLoading' : false,
+            'adv': false,
+            'src' : null,
+            'src.adv': false,
+            'src.width' : 0,
+            'src.height' : 0,
+            'src.bayan' : false,
+            'src.bayan.raw_url' : undefined,
+            'src.bayan.size' : undefined,
+            'width' : null,
+            'height' : null,
+            'keep_ratio' : true,
+            'href.type': 'src',
+            'href.url': '',
+            'href.target': '_blank',
+            'title': '',
+            'position': 'inline_right',
+            'position.float': 'right',
+            'margin.base': 10,
+            'margin.adv': false,
+            'margin.left': 10,
+            'margin.right': 10,
+            'margin.top': 10,
+            'margin.bottom': 10,
+            'innerShadow.enable':true,
+            'innerShadow.inset': true,
+            'innerShadow.blur': 10,
+            'innerShadow.color': '#000',
+            'innerShadow.x': 0,
+            'innerShadow.y': 0,
+            'innerShadow.alpha': 1,
+            'outerShadow.enable':true,
+            'outerShadow.inset': false,
+            'outerShadow.blur': 3,
+            'outerShadow.color': '#000',
+            'outerShadow.x': 0,
+            'outerShadow.y': 0,
+            'outerShadow.alpha': 1.0,
+            'borderline.enable': false,
+            'borderline.color':'#000',
+            'borderline.style':'solid',
+            'borderline.width':1,
+            'border.padding.raw':3,
+            'border.radius':5,
+            'border.background':'#fff',
+            'caption.enable':false,
+            'caption.pos':'inner_top',
+            'caption.textAlign':'center',
+            'caption.h1.enable': true,
+            'caption.h1.text':'',
+            'caption.h1.type':'',
+            'caption.h1.bold':false,
+            'caption.h1.italic':false,
+            'caption.h1.color.inner':'#eee',
+            'caption.h1.color.outer':'#000',
+            'caption.h1.size':14,
+            'caption.p.text':'',
+            'caption.p.enable':false,
+            'caption.p.bold':false,
+            'caption.p.italic':false,
+            'caption.p.color.inner':'#eee',
+            'caption.p.color.outer':'#000',
+            'caption.p.size':10,
+            'caption.adv':false,
+            'caption.inner.hpos':'full',
+            'caption.inner.background.color':'#000',
+            'caption.inner.background.alpha':0.7,
+            'caption.outer.background.color':'#fff',
+            'caption.outer.background.alpha':1,
+            'caption.outer.border.enable':false,
+            'caption.outer.border.style':'solid',
+            'caption.outer.border.width':1,
+            'caption.outer.border.color':'#000',
+            'caption.outer.padding':3,
+            'caption.outer.radius':0
+        },
 
-	autoMargin: function(pos, base, shadow, blur, x, y){
-	    //Notice: changes should be applied to autoMarginInv too.
-	    var t,r,b,l;
-	    base=base || 0;
-	    t=r=b=l=base;
-	    if (pos.match(/_right/))
-		r=0;
-	    else if (pos.match(/_left/))
-		l=0;
-	    if (shadow){
-		if (blur>=10)
-		    blur=Math.floor(blur/2)+4+Math.floor(blur/5);
-		t+=Math.max(0, blur-y);
-		r+=Math.max(0, blur+x);
-		b+=Math.max(0, blur+y);
-		l+=Math.max(0, blur-x);
-	    }
-	    return [t,r,b,l];
-	},
-	autoMarginInv: function(t, r, b, l, pos, base, shadow, blur, x, y){
-	    //Notice: changes should be applied to autoMargin too.
-	    if (shadow){
-		if (blur>=10)
-		    blur=Math.floor(blur/2)+4+Math.floor(blur/5);
-		t-=Math.max(0, blur-y);
-		r-=Math.max(0, blur+x);
-		b-=Math.max(0, blur+y);
-		l-=Math.max(0, blur-x);
-	    }
-	    if (pos.match(/_right/) && !r)
-		r=t;
-	    else if (pos.match(/_left/) && !l)
-		l=t;
-	    return  ( (t==r) && (r==b) && (b==l) ? t : '');
-	},
-	computed: {
-	    'href': new ComputedField(
-		['src','href.type','href.url'],
-		function(src, type, url){
-		    if (type=='none')
-			return null;
-		    else if (type=='src')
-			return src;
-		    else if (type=='big')
-			return inspic.controller.bayanSizedUrl(src, 'view');
-		    else if (type=='url')
-			return url;
-		    return '';
-		}),
-	    'margin': new ComputedField(
-		['margin.base','margin.adv','margin.top', 'margin.right','margin.bottom','margin.left','position','outerShadow.enable','outerShadow.blur','outerShadow.x','outerShadow.y'],
-		function(base,         adv,         top,          right,         bottom,         left,  pos,       shadow,              blur,              x,              y){
-		    var trbl;
-		    if (!adv && base!==''){
-			trbl=this.autoMargin(pos, base, shadow, blur, x, y);
-		    } else {
-			trbl=[top, right, bottom, left];
-		    }
-		    return inspic.trbl.apply(document,trbl);
-		}),
-	    'innerShadow': shadowField('innerShadow.'),
-	    'borderline': borderField('borderline.'),
-	    'outerShadow': shadowField('outerShadow.'),
-	    'border.padding': new ComputedField(
-		['border.padding.raw', 'outerShadow.enable', 'borderline.enable'],
-		function(val,           shadow,               line){
-		    return (shadow || line ? val : 0);
-		}),
-	    'border.radius.inner': new ComputedField(
-		['border.radius', 'border.padding'],
-		function(radius, padding){
-		    if (!padding)
-			return radius;
-		    return (radius<6 ? Math.round(radius/2) : radius-3);
-		}),
-	    'caption.h1.style': textFormattingField('caption.h1.'),
-	    'caption.h1.enable': new ComputedField(
-		['caption.h1.type'],
-		function(type){
-		    return (type!='');
-		}),
-	    'caption.h1.finalText': new ComputedField(
-		['caption.h1.type', 'caption.h1.text', 'title', 'caption.h1.style'],
-		function(    type,              text,   title){
-		    var ret='';
-		    if (type=='text')
-			ret=text;
-		    else if (type=='title')
-			ret=title;
-		    return ret;		    
-		}),
-	    'caption.h1': new ComputedField(
-		['caption.h1.finalText', 'caption.h1.style'],
-		function(         text,              style){
-		    return $('<h1>',{
-			'style':style,
-			'text':text
-		    }).inspic('outerHtml');
-		}),
-	    'caption.p.style': textFormattingField('caption.p.'),
-	    'caption.p': new ComputedField(
-		['caption.p.enable', 'caption.p.text', 'caption.p.style'],
-		function(enable,                text,             style){
-		    if (!enable)
-			return '';
-		    return $('<p>', {
-			'style': style,
-			'text':text
-		    }).inspic('outerHtml');
-		}),
-	    'caption': new ComputedField(
-		['caption.p', 'caption.h1'],
-		function(p, h1){
-		    return h1+p;
-		}),
-	    'caption.preview': new ComputedField(
-		['caption', 'caption.p.text', 'caption.h1.finalText', 'caption.p.style', 'caption.h1.style'],
-		function(caption, p, h1, styleP, styleH1){
-		    if (p || h1)
-			return caption;
-		    return ('<h1 style="'+styleH1+'">{عنوان زیرنویس}</h1><p style="'+styleP+'">{شرح زیرنویس}</p>');
-		}),
-	    'caption.type': new ComputedField(
-		['caption.pos'],
-		function(pos){
-		    return (pos=='inner_top' || pos=='inner_bottom' ? 'inner' : 'outer');
-		}),
-	    'caption.vpos': new ComputedField(
-		['caption.pos'],
-		function(pos){
-		    return (pos=='inner_top' || pos=='outer_top' ? 'top' : 'bottom');
-		}),
-	    'caption.inner.enable': new ComputedField(
-		['caption.enable', 'caption.type'],
-		function(enable, type){
-		    return (enable && type=='inner');
-		}),
-	    'caption.outer.enable': new ComputedField(
-		['caption.enable', 'caption.type'],
-		function(enable, type){
-		    return (enable && type=='outer');
-		}),
-	    'caption.inner.radius': new ComputedField(
-		['border.radius.inner', 'caption.vpos', 'caption.inner.hpos'],
-		function(radius,         vpos,           hpos){
-		    var tl,tr,br,bl;
-		    tl=tr=br=bl=radius;
-		    vpos=='top' ? (br=bl=0) : (tl=tr=0);
-		    hpos=='full' || (hpos=='left' ? (tr=br=0) : (tl=bl=0));
-		    return _.map([tl,tr,br,bl], inspic.pixelize).join(' ');
-		}),
-	    'caption.inner.background': colorField('caption.inner.background.'),
-	    'caption.outer.background': colorField('caption.outer.background.'),
-	    'caption.outer.border': borderField('caption.outer.border.'),
-	    'caption.p.color': new ComputedField(
-		['caption.type', 'caption.p.color.inner', 'caption.p.color.outer'],
-		function(type,                  inner,                 outer){
-		    return (type=='inner' ? inner : outer);
-		}),
-	    'caption.h1.color': new ComputedField(
-		['caption.type', 'caption.h1.color.inner', 'caption.h1.color.outer'],
-		function(type,                  inner,                 outer){
-		    return (type=='inner' ? inner : outer);
-		})
-	}
+        autoMargin: function(pos, base, shadow, blur, x, y){
+            //Notice: changes should be applied to autoMarginInv too.
+            var t,r,b,l;
+            base=base || 0;
+            t=r=b=l=base;
+            if (pos.match(/_right/))
+                r=0;
+            else if (pos.match(/_left/))
+                l=0;
+            if (shadow){
+                if (blur>=10)
+                    blur=Math.floor(blur/2)+4+Math.floor(blur/5);
+                t+=Math.max(0, blur-y);
+                r+=Math.max(0, blur+x);
+                b+=Math.max(0, blur+y);
+                l+=Math.max(0, blur-x);
+            }
+            return [t,r,b,l];
+        },
+        autoMarginInv: function(t, r, b, l, pos, base, shadow, blur, x, y){
+            //Notice: changes should be applied to autoMargin too.
+            if (shadow){
+                if (blur>=10)
+                    blur=Math.floor(blur/2)+4+Math.floor(blur/5);
+                t-=Math.max(0, blur-y);
+                r-=Math.max(0, blur+x);
+                b-=Math.max(0, blur+y);
+                l-=Math.max(0, blur-x);
+            }
+            if (pos.match(/_right/) && !r)
+                r=t;
+            else if (pos.match(/_left/) && !l)
+                l=t;
+            return  ( (t==r) && (r==b) && (b==l) ? t : '');
+        },
+        computed: {
+            'href': new ComputedField(
+                ['src','src.bayan','href.type','href.url'],
+                function(src, bayan, type, url){
+                    var bayanbox=inspic.bayanbox;
+                    if (type=='none')
+                        return null;
+                    else if (type=='src')
+                        return (bayan ? bayanbox(src, 'view') : src);
+                    else if (type=='download')
+                        return bayanbox(src, 'download');
+                    else if (type=='info')
+                        return bayanbox(src, 'info');
+                    else if (type=='url')
+                        return url;
+                    return '';
+                }),
+            'margin': new ComputedField(
+                ['margin.base','margin.adv','margin.top', 'margin.right','margin.bottom','margin.left','position','outerShadow.enable','outerShadow.blur','outerShadow.x','outerShadow.y'],
+                function(base,         adv,         top,          right,         bottom,         left,  pos,       shadow,              blur,              x,              y){
+                    var trbl;
+                    if (!adv && base!==''){
+                        trbl=this.autoMargin(pos, base, shadow, blur, x, y);
+                    } else {
+                        trbl=[top, right, bottom, left];
+                    }
+                    return inspic.trbl.apply(document,trbl);
+                }),
+            'innerShadow': shadowField('innerShadow.'),
+            'borderline': borderField('borderline.'),
+            'outerShadow': shadowField('outerShadow.'),
+            'border.padding': new ComputedField(
+                ['border.padding.raw', 'outerShadow.enable', 'borderline.enable'],
+                function(val,           shadow,               line){
+                    return (shadow || line ? val : 0);
+                }),
+            'border.radius.inner': new ComputedField(
+                ['border.radius', 'border.padding'],
+                function(radius, padding){
+                    if (!padding)
+                        return radius;
+                    return (radius<6 ? Math.round(radius/2) : radius-3);
+                }),
+            'caption.h1.style': textFormattingField('caption.h1.'),
+            'caption.h1.enable': new ComputedField(
+                ['caption.h1.type'],
+                function(type){
+                    return (type!='');
+                }),
+            'caption.h1.finalText': new ComputedField(
+                ['caption.h1.type', 'caption.h1.text', 'title', 'caption.h1.style'],
+                function(    type,              text,   title){
+                    var ret='';
+                    if (type=='text')
+                        ret=text;
+                    else if (type=='title')
+                        ret=title;
+                    return ret;             
+                }),
+            'caption.h1': new ComputedField(
+                ['caption.h1.finalText', 'caption.h1.style'],
+                function(         text,              style){
+                    return $('<h1>',{
+                        'style':style,
+                        'text':text
+                    }).inspic('outerHtml');
+                }),
+            'caption.p.style': textFormattingField('caption.p.'),
+            'caption.p': new ComputedField(
+                ['caption.p.enable', 'caption.p.text', 'caption.p.style'],
+                function(enable,                text,             style){
+                    if (!enable)
+                        return '';
+                    return $('<p>', {
+                        'style': style,
+                        'text':text
+                    }).inspic('outerHtml');
+                }),
+            'caption': new ComputedField(
+                ['caption.p', 'caption.h1'],
+                function(p, h1){
+                    return h1+p;
+                }),
+            'caption.preview': new ComputedField(
+                ['caption', 'caption.p.text', 'caption.h1.finalText', 'caption.p.style', 'caption.h1.style'],
+                function(caption, p, h1, styleP, styleH1){
+                    if (p || h1)
+                        return caption;
+                    return ('<h1 style="'+styleH1+'">{عنوان زیرنویس}</h1><p style="'+styleP+'">{شرح زیرنویس}</p>');
+                }),
+            'caption.type': new ComputedField(
+                ['caption.pos'],
+                function(pos){
+                    return (pos=='inner_top' || pos=='inner_bottom' ? 'inner' : 'outer');
+                }),
+            'caption.vpos': new ComputedField(
+                ['caption.pos'],
+                function(pos){
+                    return (pos=='inner_top' || pos=='outer_top' ? 'top' : 'bottom');
+                }),
+            'caption.inner.enable': new ComputedField(
+                ['caption.enable', 'caption.type'],
+                function(enable, type){
+                    return (enable && type=='inner');
+                }),
+            'caption.outer.enable': new ComputedField(
+                ['caption.enable', 'caption.type'],
+                function(enable, type){
+                    return (enable && type=='outer');
+                }),
+            'caption.inner.radius': new ComputedField(
+                ['border.radius.inner', 'caption.vpos', 'caption.inner.hpos'],
+                function(radius,         vpos,           hpos){
+                    var tl,tr,br,bl;
+                    tl=tr=br=bl=radius;
+                    vpos=='top' ? (br=bl=0) : (tl=tr=0);
+                    hpos=='full' || (hpos=='left' ? (tr=br=0) : (tl=bl=0));
+                    return _.map([tl,tr,br,bl], inspic.pixelize).join(' ');
+                }),
+            'caption.inner.background': colorField('caption.inner.background.'),
+            'caption.outer.background': colorField('caption.outer.background.'),
+            'caption.outer.border': borderField('caption.outer.border.'),
+            'caption.p.color': new ComputedField(
+                ['caption.type', 'caption.p.color.inner', 'caption.p.color.outer'],
+                function(type,                  inner,                 outer){
+                    return (type=='inner' ? inner : outer);
+                }),
+            'caption.h1.color': new ComputedField(
+                ['caption.type', 'caption.h1.color.inner', 'caption.h1.color.outer'],
+                function(type,                  inner,                 outer){
+                    return (type=='inner' ? inner : outer);
+                })
+        }
     });
 
     function colorField(prefix){
-	//TODO: use it in shadowField and borderField
-	return new ComputedField(
-	    [prefix+'color', prefix+'alpha'],
-	    function(color,alpha){
-		return inspic.alphaColor(color || '#000', alpha);
-	    }
-	);
+        //TODO: use it in shadowField and borderField
+        return new ComputedField(
+            [prefix+'color', prefix+'alpha'],
+            function(color,alpha){
+                return inspic.alphaColor(color || '#000', alpha);
+            }
+        );
     }
 
     function shadowField(prefix){
-	return new ComputedField(
-	    _.map(
-		['enable','x','y','blur','color','alpha','inset'],
-		function(field){ return prefix+field; }
-	    ),
-	    function(enable, x, y, blur, color, alpha, inset){
-		if (!enable)
-		    return '';
-		var p=inspic.pixelize;
-		color=inspic.alphaColor(color || '#000', alpha);
-		inset= inset ? 'inset' : '';
-		return [p(x),p(y),p(blur),color,inset].join(' ');
-	    }
-	);
+        return new ComputedField(
+            _.map(
+                ['enable','x','y','blur','color','alpha','inset'],
+                function(field){ return prefix+field; }
+            ),
+            function(enable, x, y, blur, color, alpha, inset){
+                if (!enable)
+                    return '';
+                var p=inspic.pixelize;
+                color=inspic.alphaColor(color || '#000', alpha);
+                inset= inset ? 'inset' : '';
+                return [p(x),p(y),p(blur),color,inset].join(' ');
+            }
+        );
     }
 
     function borderField(prefix){
-	return new ComputedField(
-	    _.map(
-		['enable','style','width','color','alpha'],
-		function(field){ return prefix+field; }
-	    ),
-	    function(enable, style, width, color, alpha){
-		var p=inspic.pixelize;
-		if (!enable)
-		    return '';
-		if (!width && !_.isNumber(width))
-		    width=1;
-		if (style=='double' && width<3)
-		    width=3;
-		var ret=[p(width), style, inspic.alphaColor(color || '#000', alpha)].join(' ');
-		return ret;
-	    }
-	);
+        return new ComputedField(
+            _.map(
+                ['enable','style','width','color','alpha'],
+                function(field){ return prefix+field; }
+            ),
+            function(enable, style, width, color, alpha){
+                var p=inspic.pixelize;
+                if (!enable)
+                    return '';
+                if (!width && !_.isNumber(width))
+                    width=1;
+                if (style=='double' && width<3)
+                    width=3;
+                var ret=[p(width), style, inspic.alphaColor(color || '#000', alpha)].join(' ');
+                return ret;
+            }
+        );
     }
     
     function textFormattingField(prefix){
-	return new ComputedField(
-	    _.map(
-		['bold','italic','color','size'],
-		function(field){ return prefix+field; }
-	    ),
-	    function(bold,italic,color,size){
-		bold=(bold ? 'bold' : 'normal');
-		italic=(italic ? 'italic' : 'normal');
-		color=color || '#000';
-		size=inspic.pixelize(size || 10);
-		return "font-weight:"+bold+"; font-style:"+italic+"; color:"+color+"; font-size:"+size+";";
-	    }
-	);
+        return new ComputedField(
+            _.map(
+                ['bold','italic','color','size'],
+                function(field){ return prefix+field; }
+            ),
+            function(bold,italic,color,size){
+                bold=(bold ? 'bold' : 'normal');
+                italic=(italic ? 'italic' : 'normal');
+                color=color || '#000';
+                size=inspic.pixelize(size || 10);
+                return "font-weight:"+bold+"; font-style:"+italic+"; color:"+color+"; font-size:"+size+";";
+            }
+        );
     }
 
     inspic.model.MainModel = MainModel;
@@ -2933,298 +2940,324 @@ function inspicEval(expr){
     // load templates for later use from index.html
     var templates = {};
     $('[inspic_tem]').each(function() {
-	var $this = $(this);
-	templates[$this.attr('inspic_tem')] = _.template($this.html());
+        var $this = $(this);
+        templates[$this.attr('inspic_tem')] = _.template($this.html());
     });
 
     var InputField = Backbone.View.extend({
-	tagName : 'span', // tag name of html [container] element
-	className : 'inspic_inputfield', // class name of html [container] element
-	inputSelector : 'input', // selects html elements whos value should be set to model
-	template : 'text', // default underscore template name
+        tagName : 'span', // tag name of html [container] element
+        className : 'inspic_inputfield', // class name of html [container] element
+        inputSelector : 'input', // selects html elements whos value should be set to model
+        template : 'text', // default underscore template name
 
-	updateValue : function(val) {
-	    this.$inputSelector.inspic('val', val);
-	    this.$inputSelector.trigger('change', ['inspicView']);
-	},
+        updateValue : function(val) {
+            this.$inputSelector.inspic('val', val);
+            this.$inputSelector.trigger('change', ['inspicView']);
+        },
 
-	updateDisability : function() {
-	    this.$('*').inspic('disabled', this.model.get('isLoading'));
-	},
+        updateDisability : function() {
+            this.$('*').inspic('disabled', this.model.get('isLoading'));
+        },
 
-	initialize : function(field, args) {
-	    args || ( args = {});
-	    var model = this.model = mainModel;
-	    this.field = field;
+        initialize : function(field, args) {
+            args || ( args = {});
+            var model = this.model = mainModel;
+            this.field = field;
 
-	    !args.events || (this.events = args.events);
+            !args.events || (this.events = args.events);
 
-	    this.render(field, args);
+            this.render(field, args);
 
-	    this.inputSelector && (this.$inputSelector = this.$(this.inputSelector));
+            this.inputSelector && (this.$inputSelector = this.$(this.inputSelector));
 
-	    field && model.subscribe(field, this.updateValue, this)();
+            field && model.subscribe(field, this.updateValue, this)();
 
-	    var criteria = args.visibilityCriteria;
-	    if (criteria) {
-		var $el = this.$el;
-		model.subscribe(criteria,function(substituted) {
-		    $el.css('display',
-			    inspicEval(substituted) ? 'inline-block': 'none');
-		})();
-	    }
+            var criteria = args.visibilityCriteria;
+            if (criteria) {
+                var $el = this.$el;
+                model.subscribe(criteria,function(substituted) {
+                    $el.css('display',
+                            inspicEval(substituted) ? 'inline-block': 'none');
+                })();
+            }
 
-	    !args.subscribe || _.each(args.subscribe, function(val, key) {
-		model.subscribe(key, val, this)();
-	    }, this);
+            !args.subscribe || _.each(args.subscribe, function(val, key) {
+                model.subscribe(key, val, this)();
+            }, this);
 
-	    !args.initialize || (args.initialize.call(this, model));
-	},
+            !args.initialize || (args.initialize.call(this, model));
+        },
 
-	events : {
-	    "change input" : "onChange",
-	},
+        events : {
+            "change input" : "onChange",
+        },
 
-	// generate variables that will be passed to underscore template
-	generateRenderVariables : function(args) {
-	    var data = _.pick(args, 'text', 'icon', 'options');
-	    var variables = {
-		id : _.uniqueId('inspic_'),
-		'data' : data
-	    };
-	    variables.label = templates['label'](variables);
-	    return variables;
-	},
+        // generate variables that will be passed to underscore template
+        generateRenderVariables : function(args) {
+            var data = _.pick(args, 'text', 'icon', 'options');
+            var variables = {
+                id : _.uniqueId('inspic_'),
+                'data' : data
+            };
+            variables.label = templates['label'](variables);
+            return variables;
+        },
 
-	render : function(field, args) {
-	    var variables = this.generateRenderVariables(args);
-	    this.$el.html(templates[this.template](variables));
-	    this.$el.attr({
-		'field' : this.field,
-		'title' : (args.text || '').replace(/:$/, '')
-	    });
-	},
+        render : function(field, args) {
+            var variables = this.generateRenderVariables(args);
+            this.$el.html(templates[this.template](variables));
+            this.$el.attr({
+                'field' : this.field,
+                'title' : (args.text || '').replace(/:$/, '')
+            });
+        },
 
-	onChange : function(e, inspicView) {
-	    if (inspicView == 'inspicView')
-		return;
-	    inspic.controller.handleDefaultInputFieldChange(this.field, $(e.target).inspic('val'), this, e);
-	}
+        onChange : function(e, inspicView) {
+            if (inspicView == 'inspicView')
+                return;
+            inspic.controller.handleDefaultInputFieldChange(this.field, $(e.target).inspic('val'), this, e);
+        }
     });
     inspic.view.InputField = InputField;
 
     var TextInputField = InputField.extend({
-	template : 'text',
-	render : function(field, args) {
-	    InputField.prototype.render.call(this, field, args);
+        template : 'text',
+        render : function(field, args) {
+            InputField.prototype.render.call(this, field, args);
 
-	    var width = args.width || 30;
-	    (width == 'long') && ( width = 250);
+            var width = args.width || 30;
+            (width == 'long') && ( width = 250);
 
-	    this.$('input').css({
-		'width' : width + 'px',
-		'text-align' : args.textAlign || 'center',
-		'direction' : (args.textAlign == 'right' ? 'rtl' : 'ltr')
-	    });
+            this.$('input').css({
+                'width' : width + 'px',
+                'text-align' : args.textAlign || 'center',
+                'direction' : (args.textAlign == 'right' ? 'rtl' : 'ltr')
+            });
 
-	    // fields whose default value is number will have spinner
-	    if (( typeof (this.model.defaults[field])).toLowerCase() == "number" && !args.noSpinner)
-		this.$el.find('input').inspic('spinner', args.spinnerArgs);
-	},
+            // fields whose default value is number will have spinner
+            if (( typeof (this.model.defaults[field])).toLowerCase() == "number" && !args.noSpinner)
+                this.$el.find('input').inspic('spinner', args.spinnerArgs);
+        },
 
-	events : {
-	    "change input" : "onChange",
-	    "keyup input" : "onChange"
-	}
+        events : {
+            "change input" : "onChange",
+            "keyup input" : "onChange"
+        }
     });
 
     var SelectInputField = InputField.extend({
-	inputSelector : 'select',
-	template : 'select',
-	events : {
-	    'change select' : 'onChange'
-	}
+        inputSelector : 'select',
+        template : 'select',
+        events : {
+            'change select' : 'onChange'
+        }
     });
 
     var IconSelectInputField = SelectInputField.extend({
-	render : function(field, args) {
-	    SelectInputField.prototype.render.call(this, field, args);
-	    this.$('select').inspic('iconSelect', this.field);
-	}
+        render : function(field, args) {
+            SelectInputField.prototype.render.call(this, field, args);
+            this.$('select').inspic('iconSelect', this.field);
+        }
     });
 
     var CheckInputField = InputField.extend({
-	template : 'checkbox'
+        template : 'checkbox'
     });
 
     var ColorInputField = InputField.extend({
-	render : function(field, args) {
-	    InputField.prototype.render.call(this, field, args);
-	    this.$('input').colorPicker();
-	    args.colorPickerClass && this.$('.colorPicker-picker').addClass(args.colorPickerClass);
-	}
+        render : function(field, args) {
+            InputField.prototype.render.call(this, field, args);
+            this.$('input').colorPicker();
+            args.colorPickerClass && this.$('.colorPicker-picker').addClass(args.colorPickerClass);
+        }
     });
 
     /* *************************************************************************************************************
      * */
 
     function appendTo(container) {
-	return function ret(element) {
-	    ret.container = container;
-	    if (!element)
-		return ret;
-	    !(element.el) || ( element = element.el);
-	    $(element).appendTo(container);
-	    return ret;
-	};
+        return function ret(element) {
+            ret.container = container;
+            if (!element)
+                return ret;
+            !(element.el) || ( element = element.el);
+            $(element).appendTo(container);
+            return ret;
+        };
     }
 
     function addSrcElements() {
-	appendTo('#inspic_src')(new TextInputField('src', {
-	    text : 'آدرس:',
-	    width : 'long',
-	    textAlign : 'left',
-	    events : {
-		"change input" : "onChange"
-	    }
-	}))(new TextInputField('title', {
-	    text : 'عنوان:',
-	    width : 'long',
-	    textAlign : 'right',
-	    visibilityCriteria : '`src`'
-	}))('<br>')(new SelectInputField('src.bayan.size', {
-	    text : 'اندازه:',
-	    options : {
-		'کوچک' : 'thumb',
-		'متوسط' : 'image_preview',
-		'کامل' : 'view'
-	    },
-	    visibilityCriteria : '`src.bayan` && `src`'
-	}))(function() {
-	    var wrapper = $('<span>');
-	    var scroller = inspic.scroller(function(val) {
-		inspic.controller.setField('width', val * 1000);
-	    });
-	    mainModel.subscribe('width', function(width) {
-		scroller.setScrollerValue(width / 1000);
-	    })();
-	    mainModel.subscribe('src', function(val) {
-		wrapper.css('display', (val ? 'inline-block' : 'none'));
-	    })();
+        appendTo('#inspic_src')(
+            new TextInputField('src', {
+                text : 'آدرس:',
+                width : 'long',
+                textAlign : 'left',
+                events : {
+                    "change input" : "onChange"
+                }
+            })
+        )(
+            new TextInputField('title', {
+                text : 'عنوان:',
+                width : 'long',
+                textAlign : 'right',
+                visibilityCriteria : '`src`'
+            })
+        )(
+            '<br>'
+        )(
+            new SelectInputField('src.bayan.size', {
+                text : 'اندازه:',
+                options : {
+                    'کوچک' : 'thumb',
+                    'متوسط' : 'image_preview',
+                    'کامل' : 'view'
+                },
+                visibilityCriteria : '`src.bayan` && `src`'
+            })
+        )(
+            function() {
+                var wrapper = $('<span>');
+                var scroller = inspic.scroller(function(val) {
+                    inspic.controller.setField('width', val * 1000);
+                });
+                mainModel.subscribe('width', function(width) {
+                    scroller.setScrollerValue(width / 1000);
+                })();
+                mainModel.subscribe('src', function(val) {
+                    wrapper.css('display', (val ? 'inline-block' : 'none'));
+                })();
 
-	    wrapper.text('مقیاس: ');
-	    wrapper.addClass('inspic_inputfield');
-	    wrapper.append(scroller);
-	    return wrapper;
-	}())(new TextInputField('width', {
-	    visibilityCriteria : '`src.adv` && `src`',
-	    text : 'پهنا:'
-	}))(new TextInputField('height', {
-	    visibilityCriteria : '`src.adv` && `src`',
-	    text : 'ارتفاع:'
-	}))(new CheckInputField('keep_ratio', {
-	    visibilityCriteria : '`src.adv` && `src`',
-	    text : 'حفظ تناسب ابعاد'
-	}));
+                wrapper.text('مقیاس: ');
+                wrapper.addClass('inspic_inputfield');
+                wrapper.append(scroller);
+                return wrapper;
+            }()
+        )(
+            new TextInputField('width', {
+                visibilityCriteria : '`src.adv` && `src`',
+                text : 'پهنا:'
+            })
+        )(
+            new TextInputField('height', {
+                visibilityCriteria : '`src.adv` && `src`',
+                text : 'ارتفاع:'
+            })
+        )(
+            new CheckInputField('keep_ratio', {
+                visibilityCriteria : '`src.adv` && `src`',
+                text : 'حفظ تناسب ابعاد'
+            })
+        );
 
-	appendTo('#inspic_link')
-	(
-	    new SelectInputField(
-		'href.type',
-		{
-		    text : 'مقصد پیوند:',
-		    options : {
-		        'بدون پیوند' : 'none',
-		        'تصویر' : 'src',
-		        'اندازه کامل' : 'big',
-		        'url' : 'url'
-		    },
-		    subscribe : {
-		        '`src.bayan` && `src.bayan.size`!="view"' : function(
-		            substituted) {
-		            this.$('option[value="big"]')[inspicEval(substituted) ? 'show': 'hide']();
-		        }
-		    }
-		}))
-	(
-	    new TextInputField('href.url', {
-		width : 'long',
-		textAlign : 'left',
-		subscribe : {
-		    '`href.type`' : function(substituted) {
-		        substituted == '"url"' ? this.$('input').css('display', 'inline-block').focus().select() : this.$('input').hide();
-		    }
-		}
-	    }))
-	(
-	    new TextInputField(
-		'href',
-		{
-		    width : 'long',
-		    textAlign : 'left',
-		    alwaysEnabled : true,
-		    visibilityCriteria : '`href.type`!="url" && `href.type`!="none"',
-		    initialize : function() {
-		        this.$('input')
-		            .inspic('disabled', true);
-		    }
-		}))(new SelectInputField('href.target', {
-		    text : 'محل باز شدن:',
-		    visibilityCriteria : '`href.type`!="none" && `src.adv`',
-		    options : {
-			'صفحه جدید' : '_blank',
-			'صفحه فعلی' : '_self'
-		    }
-		}));
+        appendTo('#inspic_link')
+        (
+            new SelectInputField('href.type',{
+                    text : 'مقصد پیوند:',
+                    /* Note: input.js and output.js assumes first letters of
+                     * values are different when shortening data
+                     */
+                    options : { 
+                        'بدون پیوند' : 'none',
+                        'نمایش تصویر' : 'src',
+                        'دانلود':'download',
+                        'صفحه اطلاعات بیان‌باکس':'info',
+                        'url' : 'url'
+                    },
+                    subscribe : {
+                        '`src.bayan`' : function(
+                            substituted) {
+                            this.$('option[value="download"],option[value="info"]')[inspicEval(substituted) ? 'show': 'hide']();
+                        }
+                    }
+                })
+        )(
+            new TextInputField('href.url', {
+                width : 'long',
+                textAlign : 'left',
+                subscribe : {
+                    '`href.type`' : function(substituted) {
+                        substituted == '"url"' ? this.$('input').css('display', 'inline-block').focus().select() : this.$('input').hide();
+                    }
+                }
+            })
+        )(
+            new TextInputField(
+                'href',
+                {
+                    width : 'long',
+                    textAlign : 'left',
+                    alwaysEnabled : true,
+                    visibilityCriteria : '`href.type`!="url" && `href.type`!="none"',
+                    initialize : function() {
+                        this.$('input')
+                            .inspic('disabled', true);
+                    },
+                    subscribe: {
+                        'href': function(val){
+                            this.$('input').attr('title', val);
+                        }
+                    }
+                })
+        )(
+            new SelectInputField('href.target', {
+                text : 'محل باز شدن:',
+                visibilityCriteria : '`href.type`!="none" && `src.adv`',
+                options : {
+                    'صفحه جدید' : '_blank',
+                    'صفحه فعلی' : '_self'
+                }
+            })
+        );
     }
 
     /** ******************************************************************** */
 
     function addPositionElements() {
 
-	/*
-	 * appendTo('#inspic_position>legend')( new InputField('margin.adv',
-	 * 'checkbox', { text: 'پیشرفته', initialize: function(){
-	 * this.$el.css('float','left'); } }) );
-	 */
+        /*
+         * appendTo('#inspic_position>legend')( new InputField('margin.adv',
+         * 'checkbox', { text: 'پیشرفته', initialize: function(){
+         * this.$el.css('float','left'); } }) );
+         */
 
-	appendTo('#inspic_position')(new IconSelectInputField('position', {
-	    // text: 'چینش:',
-	    options : {
-		'راست' : 'inline_right',
-		'راست به تنهایی' : 'block_right',
-		'وسط' : 'block_center',
-		'داخل متن' : 'inline_none',
-		'چپ به تنهایی' : 'block_left',
-		'چپ' : 'inline_left'
-	    }
-	}))('<br>')(new TextInputField('margin.base', {
-	    text : 'فاصله از متن:',
-	    visibilityCriteria : '!`margin.adv`'
-	}))(new TextInputField('margin.top', {
-	    text : 'بالا',
-	    icon : 'mt',
-	    visibilityCriteria : 'margin.adv'
-	}))(new TextInputField('margin.right', {
-	    text : 'راست',
-	    icon : 'mr',
-	    visibilityCriteria : 'margin.adv'
-	}))(new TextInputField('margin.bottom', {
-	    text : 'پایین',
-	    icon : 'mb',
-	    visibilityCriteria : 'margin.adv'
-	}))(new TextInputField('margin.left', {
-	    text : 'چپ',
-	    icon : 'ml',
-	    visibilityCriteria : 'margin.adv'
-	}));
+        appendTo('#inspic_position')(new IconSelectInputField('position', {
+            // text: 'چینش:',
+            options : {
+                'راست' : 'inline_right',
+                'راست به تنهایی' : 'block_right',
+                'وسط' : 'block_center',
+                'داخل متن' : 'inline_none',
+                'چپ به تنهایی' : 'block_left',
+                'چپ' : 'inline_left'
+            }
+        }))('<br>')(new TextInputField('margin.base', {
+            text : 'فاصله از متن:',
+            visibilityCriteria : '!`margin.adv`'
+        }))(new TextInputField('margin.top', {
+            text : 'بالا',
+            icon : 'mt',
+            visibilityCriteria : 'margin.adv'
+        }))(new TextInputField('margin.right', {
+            text : 'راست',
+            icon : 'mr',
+            visibilityCriteria : 'margin.adv'
+        }))(new TextInputField('margin.bottom', {
+            text : 'پایین',
+            icon : 'mb',
+            visibilityCriteria : 'margin.adv'
+        }))(new TextInputField('margin.left', {
+            text : 'چپ',
+            icon : 'ml',
+            visibilityCriteria : 'margin.adv'
+        }));
 
-	var $margin = $('#insertPicture .preview .pic_margin');
-	$(document).on('focus mouseenter', '[field*="margin"] *', function() {
-	    $margin.css('backgroundColor', '#fbfd98');
-	}).on('blur mouseout', '[field*="margin"] *', function() {
-	    $margin.css('backgroundColor', '#fff');
-	});
+        var $margin = $('#insertPicture .preview .pic_margin');
+        $(document).on('focus mouseenter', '[field*="margin"] *', function() {
+            $margin.css('backgroundColor', '#fbfd98');
+        }).on('blur mouseout', '[field*="margin"] *', function() {
+            $margin.css('backgroundColor', '#fff');
+        });
 
     }
 
@@ -3233,52 +3266,52 @@ function inspicEval(expr){
 
     function addBorderElements() {
 
-	/*
-	 * new InputField('border.adv', 'checkbox', { text: 'پیشرفته',
-	 * initialize: function(){ this.$el.css('float','left'); }
-	 * }).$el.appendTo('#inspic_border>legend');
-	 */
+        /*
+         * new InputField('border.adv', 'checkbox', { text: 'پیشرفته',
+         * initialize: function(){ this.$el.css('float','left'); }
+         * }).$el.appendTo('#inspic_border>legend');
+         */
 
-	var inner = shadowFields('سایه داخلی:', 'innerShadow.', 'border.adv', 'x,y,alpha'.split(','));
-	var borderline = borderFields('borderline.', 'border.adv', ['width']);
-	var outer = shadowFields('سایه خارجی:', 'outerShadow.', 'border.adv', 'x,y,alpha'.split(','));
+        var inner = shadowFields('سایه داخلی:', 'innerShadow.', 'border.adv', 'x,y,alpha'.split(','));
+        var borderline = borderFields('borderline.', 'border.adv', ['width']);
+        var outer = shadowFields('سایه خارجی:', 'outerShadow.', 'border.adv', 'x,y,alpha'.split(','));
 
-	appendTo('#inspic_border')
-	(inner.enable)
-	(inner.color)
-	(inner.blur)
-	(inner.x)
-	(inner.y)
-	(inner.alpha)
-	('<br>')
-	(borderline.enable)
-	(borderline.style)
-	(borderline.color)
-	(
-	    new TextInputField(
-		'border.padding.raw',
-		{
-		    text : 'فاصله کادر بیرونی با تصویر',
-		    icon : 'padding',
-		    visibilityCriteria : '`outerShadow.enable` || `borderline.style`'
-		})
+        appendTo('#inspic_border')
+        (inner.enable)
+        (inner.color)
+        (inner.blur)
+        (inner.x)
+        (inner.y)
+        (inner.alpha)
+        ('<br>')
+        (borderline.enable)
+        (borderline.style)
+        (borderline.color)
+        (
+            new TextInputField(
+                'border.padding.raw',
+                {
+                    text : 'فاصله کادر بیرونی با تصویر',
+                    icon : 'padding',
+                    visibilityCriteria : '`outerShadow.enable` || `borderline.style`'
+                })
         )(
-	    new ColorInputField(
-		'border.background',
-		{
-		    // text: 'رنگ بین کادر و تصویر',
-		    // icon: 'paint-can-left.png',
-		    colorPickerClass : 'picker-arrow-paint',
-		    visibilityCriteria : '`border.adv` && (`outerShadow.enable` || `borderline.style`)'
-		})
+            new ColorInputField(
+                'border.background',
+                {
+                    // text: 'رنگ بین کادر و تصویر',
+                    // icon: 'paint-can-left.png',
+                    colorPickerClass : 'picker-arrow-paint',
+                    visibilityCriteria : '`border.adv` && (`outerShadow.enable` || `borderline.style`)'
+                })
         )(
             borderline.width
         )(
-		    new TextInputField('border.radius', {
-		        text : 'شعاع انحنای لبه ها',
-		        icon : 'radius',
-		        visibilityCriteria : 'border.adv'
-		    })
+                    new TextInputField('border.radius', {
+                        text : 'شعاع انحنای لبه ها',
+                        icon : 'radius',
+                        visibilityCriteria : 'border.adv'
+                    })
         )(
             '<br>'
         )(
@@ -3288,7 +3321,7 @@ function inspicEval(expr){
         )(
             outer.blur
         )(
-	    outer.x
+            outer.x
         )(
             outer.y
         )(
@@ -3300,155 +3333,155 @@ function inspicEval(expr){
      * */
 
     function textFormattingFields(prefix, advField, advs) {
-	var vis = '`' + prefix + 'enable`';
-	var visAdv = vis + ' && `' + advField + '`';
+        var vis = '`' + prefix + 'enable`';
+        var visAdv = vis + ' && `' + advField + '`';
 
-	function crit(field) {
-	    // return (_.include(advs, field) ? visAdv : vis);
-	    return visAdv;
-	}
+        function crit(field) {
+            // return (_.include(advs, field) ? visAdv : vis);
+            return visAdv;
+        }
 
-	var BoolInputField = InputField.extend({
-	    tagName : 'span',
-	    className : 'iconSelectItem',
-	    template : 'bool',
-	    updateValue : function(val) {
-		this.$el[(val ? 'addClass' : 'removeClass')]('selected');
-	    },
-	    events : {
-		"click" : "onChange"
-	    },
-	    onChange : function(e, inspicView) {
-		$(e.target).inspic('val', !this.model.get(this.field));
-		InputField.prototype.onChange.call(this, e, inspicView);
-	    }
-	});
+        var BoolInputField = InputField.extend({
+            tagName : 'span',
+            className : 'iconSelectItem',
+            template : 'bool',
+            updateValue : function(val) {
+                this.$el[(val ? 'addClass' : 'removeClass')]('selected');
+            },
+            events : {
+                "click" : "onChange"
+            },
+            onChange : function(e, inspicView) {
+                $(e.target).inspic('val', !this.model.get(this.field));
+                InputField.prototype.onChange.call(this, e, inspicView);
+            }
+        });
 
-	var BoolGroup = InputField.extend({
-	    initialize : function(fields, args) {
-		this.fields = fields;
-		InputField.prototype.initialize.call(this, 'testField', args);
-	    },
-	    render : function() {
-		var $el = $('<span class="iconSelect">').appendTo(this.$el);
-		_.each(this.fields, function(x, i) {
-		    i || x.$el.addClass('first');
-		    $el.append(x.$el);
-		});
-	    }
-	});
+        var BoolGroup = InputField.extend({
+            initialize : function(fields, args) {
+                this.fields = fields;
+                InputField.prototype.initialize.call(this, 'testField', args);
+            },
+            render : function() {
+                var $el = $('<span class="iconSelect">').appendTo(this.$el);
+                _.each(this.fields, function(x, i) {
+                    i || x.$el.addClass('first');
+                    $el.append(x.$el);
+                });
+            }
+        });
 
-	return {
-	    boldItalic : new BoolGroup([new BoolInputField(prefix + 'bold', {
-		text : 'bold',
-		icon : 'bold'
-	    }), new BoolInputField(prefix + 'italic', {
-		text : 'italic',
-		icon : 'italic'
-	    })], {
-		visibilityCriteria : crit('boldItalic')
-	    }),
-	    colorInner : new ColorInputField(prefix + 'color.inner', {
-		visibilityCriteria : crit('color') + ' && `caption.inner.enable`',
-		colorPickerClass : 'picker-arrow-text'
-	    }),
-	    colorOuter : new ColorInputField(prefix + 'color.outer', {
-		visibilityCriteria : crit('color') + ' && `caption.outer.enable`',
-		colorPickerClass : 'picker-arrow-text'
-	    }),
-	    size : new TextInputField(prefix + 'size', {
-		visibilityCriteria : crit('size'),
-		text : 'اندازه فونت',
-		icon : 'fontsize'
-	    })
-	};
+        return {
+            boldItalic : new BoolGroup([new BoolInputField(prefix + 'bold', {
+                text : 'bold',
+                icon : 'bold'
+            }), new BoolInputField(prefix + 'italic', {
+                text : 'italic',
+                icon : 'italic'
+            })], {
+                visibilityCriteria : crit('boldItalic')
+            }),
+            colorInner : new ColorInputField(prefix + 'color.inner', {
+                visibilityCriteria : crit('color') + ' && `caption.inner.enable`',
+                colorPickerClass : 'picker-arrow-text'
+            }),
+            colorOuter : new ColorInputField(prefix + 'color.outer', {
+                visibilityCriteria : crit('color') + ' && `caption.outer.enable`',
+                colorPickerClass : 'picker-arrow-text'
+            }),
+            size : new TextInputField(prefix + 'size', {
+                visibilityCriteria : crit('size'),
+                text : 'اندازه فونت',
+                icon : 'fontsize'
+            })
+        };
     }
 
     function borderFields(prefix, advField, advs, enableTitle) {
-	var vis = '`' + prefix + 'enable`';
-	var visAdv = vis + ' && `' + advField + '`';
+        var vis = '`' + prefix + 'enable`';
+        var visAdv = vis + ' && `' + advField + '`';
 
-	function crit(field) {
-	    return (_.include(advs, field) ? visAdv : vis);
-	}
+        function crit(field) {
+            return (_.include(advs, field) ? visAdv : vis);
+        }
 
-	return {
-	    enable : new CheckInputField(prefix + 'enable', {
-		text : enableTitle || 'خط'
-	    }),
-	    style : new IconSelectInputField(prefix + 'style', {
-		visibilityCriteria : crit('style'),
-		// text: 'نوع خط',
-		options : {
-		    // 'بدون خط':'',
-		    'خط ساده' : 'solid',
-		    'خط چین' : 'dashed',
-		    'نقطه چین' : 'dotted',
-		    'دو خطی' : 'double'
-		}
-	    }),
-	    width : new TextInputField(prefix + 'width', {
-		visibilityCriteria : crit('width'),
-		text : 'ضخامت خط',
-		icon : 'bwidth'
-	    }),
-	    color : new ColorInputField(prefix + 'color', {
-		visibilityCriteria : crit('color'),
-		// text: 'زنگ خط',
-		// icon: 'line.gif',
-		colorPickerClass : 'picker-arrow-line'
-	    })
-	};
+        return {
+            enable : new CheckInputField(prefix + 'enable', {
+                text : enableTitle || 'خط'
+            }),
+            style : new IconSelectInputField(prefix + 'style', {
+                visibilityCriteria : crit('style'),
+                // text: 'نوع خط',
+                options : {
+                    // 'بدون خط':'',
+                    'خط ساده' : 'solid',
+                    'خط چین' : 'dashed',
+                    'نقطه چین' : 'dotted',
+                    'دو خطی' : 'double'
+                }
+            }),
+            width : new TextInputField(prefix + 'width', {
+                visibilityCriteria : crit('width'),
+                text : 'ضخامت خط',
+                icon : 'bwidth'
+            }),
+            color : new ColorInputField(prefix + 'color', {
+                visibilityCriteria : crit('color'),
+                // text: 'زنگ خط',
+                // icon: 'line.gif',
+                colorPickerClass : 'picker-arrow-line'
+            })
+        };
     }
 
     function shadowFields(text, prefix, advField, advs) {
-	var vis = prefix + 'enable';
-	var visAdv = '`' + vis + '` && `' + advField + '`';
+        var vis = prefix + 'enable';
+        var visAdv = '`' + vis + '` && `' + advField + '`';
 
-	function crit(field) {
-	    return (_.include(advs, field) ? visAdv : vis);
-	}
+        function crit(field) {
+            return (_.include(advs, field) ? visAdv : vis);
+        }
 
-	return {
-	    alpha : new TextInputField(prefix + 'alpha', {
-		visibilityCriteria : crit('alpha'),
-		text : 'شفافیت',
-		icon : 'alpha',
-		spinnerArgs : {
-		    step : 0.1,
-		    min : 0,
-		    max : 1
-		}
-	    }),
-	    y : new TextInputField(prefix + 'y', {
-		visibilityCriteria : crit('y'),
-		text : 'فاصله عمودی سایه با تصویر',
-		icon : 'sh-y',
-		spinnerArgs : {
-		    min : -50
-		}
-	    }),
-	    x : new TextInputField(prefix + 'x', {
-		visibilityCriteria : crit('x'),
-		text : 'فاصله افقی سایه با تصویر',
-		icon : 'sh-x',
-		spinnerArgs : {
-		    min : -50
-		}
-	    }),
-	    blur : new TextInputField(prefix + 'blur', {
-		visibilityCriteria : crit('blur'),
-		text : 'بزرگی سایه',
-		icon : 'sh-rad'
-	    }),
-	    color : new ColorInputField(prefix + 'color', {
-		visibilityCriteria : crit('color'),
-		colorPickerClass : 'picker-arrow-line'
-	    }),
-	    enable : new CheckInputField(prefix + 'enable', {
-		'text' : text
-	    })
-	};
+        return {
+            alpha : new TextInputField(prefix + 'alpha', {
+                visibilityCriteria : crit('alpha'),
+                text : 'شفافیت',
+                icon : 'alpha',
+                spinnerArgs : {
+                    step : 0.1,
+                    min : 0,
+                    max : 1
+                }
+            }),
+            y : new TextInputField(prefix + 'y', {
+                visibilityCriteria : crit('y'),
+                text : 'فاصله عمودی سایه با تصویر',
+                icon : 'sh-y',
+                spinnerArgs : {
+                    min : -50
+                }
+            }),
+            x : new TextInputField(prefix + 'x', {
+                visibilityCriteria : crit('x'),
+                text : 'فاصله افقی سایه با تصویر',
+                icon : 'sh-x',
+                spinnerArgs : {
+                    min : -50
+                }
+            }),
+            blur : new TextInputField(prefix + 'blur', {
+                visibilityCriteria : crit('blur'),
+                text : 'بزرگی سایه',
+                icon : 'sh-rad'
+            }),
+            color : new ColorInputField(prefix + 'color', {
+                visibilityCriteria : crit('color'),
+                colorPickerClass : 'picker-arrow-line'
+            }),
+            enable : new CheckInputField(prefix + 'enable', {
+                'text' : text
+            })
+        };
     }
 
     /** *****************************************************************************
@@ -3456,208 +3489,208 @@ function inspicEval(expr){
 
     function addCaptionElements() {
 
-	var outerBorder = borderFields('caption.outer.border.', 'caption.adv', ['style'], 'کادر');
-	var h1Format = textFormattingFields('caption.h1.', 'caption.adv', []);
-	var pFormat = textFormattingFields('caption.p.', 'caption.adv', []);
+        var outerBorder = borderFields('caption.outer.border.', 'caption.adv', ['style'], 'کادر');
+        var h1Format = textFormattingFields('caption.h1.', 'caption.adv', []);
+        var pFormat = textFormattingFields('caption.p.', 'caption.adv', []);
 
-	/*
-	 * appendTo('#inspic_caption legend')( new InputField('caption.adv',
-	 * 'checkbox', { text: 'پیشرفته', initialize: function(){
-	 * this.$el.css('float','left'); } }) );
-	 */
+        /*
+         * appendTo('#inspic_caption legend')( new InputField('caption.adv',
+         * 'checkbox', { text: 'پیشرفته', initialize: function(){
+         * this.$el.css('float','left'); } }) );
+         */
 
-	appendTo('#inspic_caption')
-	(new CheckInputField('caption.enable', {
-	    text : 'فعال'
-	}))
-	(new IconSelectInputField('caption.pos', {
-	    // text: 'نوع:',
-	    visibilityCriteria : 'caption.enable',
-	    options : {
-		'خارج پایین' : 'outer_top',
-		'داخل بالا' : 'inner_top',
-		'داخل پایین' : 'inner_bottom',
-		'خارج بالا' : 'outer_bottom'
-	    }
-	}))
-	(
-	    new IconSelectInputField('caption.inner.hpos', {
-		// text: 'افقی',
-		options : {
-		    'راست' : 'right',
-		    'کامل' : 'full',
-		    'چپ' : 'left'
-		},
-		visibilityCriteria : 'caption.inner.enable',
-		subscribe : {
-		    'caption.vpos' : function(vpos) {
-		        var $el = this.$('.iconSelect')
-		            .removeClass("posTop posBottom");
-		        $el.addClass(vpos == 'top' ? 'posTop'
-		                     : 'posBottom');
-		    }
-		}
-	    }))
-	(new IconSelectInputField('caption.textAlign', {
-	    // text: 'چینش متن:',
-	    visibilityCriteria : 'caption.enable',
-	    options : {
-		'راست' : 'right',
-		'وسط' : 'center',
-		'چپ' : 'left'
-	    }
-	}))
-	(new ColorInputField('caption.inner.background.color', {
-	    visibilityCriteria : 'caption.inner.enable',
-	    // icon: 'paint-can-left.png',
-	    // text:'رنگ داخل:',
-	    colorPickerClass : 'picker-arrow-paint'
-	}))
-	(new TextInputField('caption.inner.background.alpha', {
-	    visibilityCriteria : 'caption.inner.enable',
-	    text : 'شفافیت رنگ داخل',
-	    icon : 'alpha',
-	    spinnerArgs : {
-		step : 0.1,
-		min : 0,
-		max : 1
-	    }
-	}))
-	(
-	    appendTo(
-		(function() {
-		    var ret = $('<span>');
-		    inspic.model.mainModel.subscribe(
-		        'caption.outer.enable',
-		        function(val) {
-		            ret.css('display',
-		                    val ? 'inline-block'
-		                    : 'none');
-		        })();
-		    return ret;
-		})())
-	    (outerBorder.enable)
-	    (outerBorder.style)
-	    (outerBorder.color)
-	    (outerBorder.width)
-	    (
-		new TextInputField(
-		    'caption.outer.padding',
-		    {
-		        visibilityCriteria : 'caption.outer.border.enable',
-		        text : 'فاصله تا کادر بیرونی',
-		        icon : 'padding'
-		    }))
-	    (
-		new TextInputField(
-		    'caption.outer.radius',
-		    {
-		        visibilityCriteria : 'caption.outer.border.enable',
-		        text : 'شعاع انحنای لبه کادر بیرونی',
-		        icon : 'radius'
-		    }))
-	    (
-		new ColorInputField(
-		    'caption.outer.background.color',
-		    {
-		        visibilityCriteria : 'caption.outer.border.enable',
-		        // text:'رنگ داخل:',
-		        // icon:
-		        // 'paint-can-left.png',
-		        colorPickerClass : 'picker-arrow-paint'
-		    }))
-	    (
-		new TextInputField(
-		    'caption.outer.background.alpha',
-		    {
-		        visibilityCriteria : '`caption.outer.border.enable` && `caption.adv`',
-		        text : 'شفافیت رنگ داخل',
-		        icon : 'transparency',
-		        spinnerArgs : {
-		            step : 0.1,
-		            min : 0,
-		            max : 1
-		        }
-		    })).container)
-	('<br>')
-	(
-	    new SelectInputField(
-		'caption.h1.type',
-		{
-		    text : 'عنوان زیرنویس:',
-		    visibilityCriteria : 'caption.enable',
-		    options : {
-		        'بدون عنوان' : '',
-		        'عنوان تصویر' : 'title',
-		        'متن' : 'text'
-		    },
-		    subscribe : {
-		        'title' : function(val) {
-		            this.$('option[value="title"]')[val ? 'show'
-		                                            : 'hide']();
-		        }
-		    }
-		}))
-	(
-	    new TextInputField(
-		'caption.h1.text',
-		{
-		    visibilityCriteria : '`caption.enable` && `caption.h1.type`=="text"',
-		    width : 'long',
-		    textAlign : 'right'
-		}))
-	(h1Format.colorInner)
-	(h1Format.colorOuter)
-	(h1Format.size)
-	(h1Format.boldItalic)
-	('<br>')
-	(new CheckInputField('caption.p.enable', {
-	    text : 'شرح:',
-	    visibilityCriteria : 'caption.enable'
-	}))
-	(
-	    new TextInputField(
-		'caption.p.text',
-		{
-		    visibilityCriteria : '`caption.p.enable` && `caption.enable`',
-		    width : 'long',
-		    textAlign : 'right'
-		}))(pFormat.colorInner)(pFormat.colorOuter)(
-		    pFormat.size)(pFormat.boldItalic)('<br>');
+        appendTo('#inspic_caption')
+        (new CheckInputField('caption.enable', {
+            text : 'فعال'
+        }))
+        (new IconSelectInputField('caption.pos', {
+            // text: 'نوع:',
+            visibilityCriteria : 'caption.enable',
+            options : {
+                'خارج پایین' : 'outer_top',
+                'داخل بالا' : 'inner_top',
+                'داخل پایین' : 'inner_bottom',
+                'خارج بالا' : 'outer_bottom'
+            }
+        }))
+        (
+            new IconSelectInputField('caption.inner.hpos', {
+                // text: 'افقی',
+                options : {
+                    'راست' : 'right',
+                    'کامل' : 'full',
+                    'چپ' : 'left'
+                },
+                visibilityCriteria : 'caption.inner.enable',
+                subscribe : {
+                    'caption.vpos' : function(vpos) {
+                        var $el = this.$('.iconSelect')
+                            .removeClass("posTop posBottom");
+                        $el.addClass(vpos == 'top' ? 'posTop'
+                                     : 'posBottom');
+                    }
+                }
+            }))
+        (new IconSelectInputField('caption.textAlign', {
+            // text: 'چینش متن:',
+            visibilityCriteria : 'caption.enable',
+            options : {
+                'راست' : 'right',
+                'وسط' : 'center',
+                'چپ' : 'left'
+            }
+        }))
+        (new ColorInputField('caption.inner.background.color', {
+            visibilityCriteria : 'caption.inner.enable',
+            // icon: 'paint-can-left.png',
+            // text:'رنگ داخل:',
+            colorPickerClass : 'picker-arrow-paint'
+        }))
+        (new TextInputField('caption.inner.background.alpha', {
+            visibilityCriteria : 'caption.inner.enable',
+            text : 'شفافیت رنگ داخل',
+            icon : 'alpha',
+            spinnerArgs : {
+                step : 0.1,
+                min : 0,
+                max : 1
+            }
+        }))
+        (
+            appendTo(
+                (function() {
+                    var ret = $('<span>');
+                    inspic.model.mainModel.subscribe(
+                        'caption.outer.enable',
+                        function(val) {
+                            ret.css('display',
+                                    val ? 'inline-block'
+                                    : 'none');
+                        })();
+                    return ret;
+                })())
+            (outerBorder.enable)
+            (outerBorder.style)
+            (outerBorder.color)
+            (outerBorder.width)
+            (
+                new TextInputField(
+                    'caption.outer.padding',
+                    {
+                        visibilityCriteria : 'caption.outer.border.enable',
+                        text : 'فاصله تا کادر بیرونی',
+                        icon : 'padding'
+                    }))
+            (
+                new TextInputField(
+                    'caption.outer.radius',
+                    {
+                        visibilityCriteria : 'caption.outer.border.enable',
+                        text : 'شعاع انحنای لبه کادر بیرونی',
+                        icon : 'radius'
+                    }))
+            (
+                new ColorInputField(
+                    'caption.outer.background.color',
+                    {
+                        visibilityCriteria : 'caption.outer.border.enable',
+                        // text:'رنگ داخل:',
+                        // icon:
+                        // 'paint-can-left.png',
+                        colorPickerClass : 'picker-arrow-paint'
+                    }))
+            (
+                new TextInputField(
+                    'caption.outer.background.alpha',
+                    {
+                        visibilityCriteria : '`caption.outer.border.enable` && `caption.adv`',
+                        text : 'شفافیت رنگ داخل',
+                        icon : 'transparency',
+                        spinnerArgs : {
+                            step : 0.1,
+                            min : 0,
+                            max : 1
+                        }
+                    })).container)
+        ('<br>')
+        (
+            new SelectInputField(
+                'caption.h1.type',
+                {
+                    text : 'عنوان زیرنویس:',
+                    visibilityCriteria : 'caption.enable',
+                    options : {
+                        'بدون عنوان' : '',
+                        'عنوان تصویر' : 'title',
+                        'متن' : 'text'
+                    },
+                    subscribe : {
+                        'title' : function(val) {
+                            this.$('option[value="title"]')[val ? 'show'
+                                                            : 'hide']();
+                        }
+                    }
+                }))
+        (
+            new TextInputField(
+                'caption.h1.text',
+                {
+                    visibilityCriteria : '`caption.enable` && `caption.h1.type`=="text"',
+                    width : 'long',
+                    textAlign : 'right'
+                }))
+        (h1Format.colorInner)
+        (h1Format.colorOuter)
+        (h1Format.size)
+        (h1Format.boldItalic)
+        ('<br>')
+        (new CheckInputField('caption.p.enable', {
+            text : 'شرح:',
+            visibilityCriteria : 'caption.enable'
+        }))
+        (
+            new TextInputField(
+                'caption.p.text',
+                {
+                    visibilityCriteria : '`caption.p.enable` && `caption.enable`',
+                    width : 'long',
+                    textAlign : 'right'
+                }))(pFormat.colorInner)(pFormat.colorOuter)(
+                    pFormat.size)(pFormat.boldItalic)('<br>');
     }
 
     function tabularize() {
-	$('#insertPicture .tabs>div').inspic('tabularize', '.tab_headers');
-	var $headers = $('#insertPicture .tab_headers>span[for]');
-	mainModel.subscribe('src', function(val) {
-	    $headers.inspic('disabled', !val).first().inspic('disabled', false);
-	});
+        $('#insertPicture .tabs>div').inspic('tabularize', '.tab_headers');
+        var $headers = $('#insertPicture .tab_headers>span[for]');
+        mainModel.subscribe('src', function(val) {
+            $headers.inspic('disabled', !val).first().inspic('disabled', false);
+        });
 
-	$('<span>', {
-	    'class' : 'inspic_button submit',
-	    text : 'درج',
-	    click : function() {
-		inspic.callback && inspic.callback(inspic.getHtml());
-	    }
-	}).appendTo('.tab_headers');
-	$('<span>', {
-	    'class' : 'inspic_button cancel',
-	    text : 'انصراف',
-	    click : function() {
-		inspic.callback && inspic.callback();
-	    }
-	}).appendTo('.tab_headers');
-	new CheckInputField('adv', {
-	    text : 'نمایش تنظیمات پیشرفته'
-	}).$el.appendTo('.tab_headers');
+        $('<span>', {
+            'class' : 'inspic_button submit',
+            text : 'درج',
+            click : function() {
+                inspic.callback && inspic.callback(inspic.getHtml());
+            }
+        }).appendTo('.tab_headers');
+        $('<span>', {
+            'class' : 'inspic_button cancel',
+            text : 'انصراف',
+            click : function() {
+                inspic.callback && inspic.callback();
+            }
+        }).appendTo('.tab_headers');
+        new CheckInputField('adv', {
+            text : 'نمایش تنظیمات پیشرفته'
+        }).$el.appendTo('.tab_headers');
     }
 
     function addElements() {
-	addSrcElements();
-	addPositionElements();
-	addBorderElements();
-	addCaptionElements();
-	tabularize();
+        addSrcElements();
+        addPositionElements();
+        addBorderElements();
+        addCaptionElements();
+        tabularize();
     }
 
 
@@ -3669,155 +3702,150 @@ function inspicEval(expr){
     var model = inspic.model.mainModel;
 
     function numberize(s){
-	if (_.isNumber(s))
-	    return s;
-	s=s||'';
-	//persian letters:
-	s=s.replace(/[\u06f0-\u06f9]/g, function(c){ return String.fromCharCode(c.charCodeAt(0)-1776+48); });
+        if (_.isNumber(s))
+            return s;
+        s=s||'';
+        //persian letters:
+        s=s.replace(/[\u06f0-\u06f9]/g, function(c){ return String.fromCharCode(c.charCodeAt(0)-1776+48); });
 
-	return parseFloat(s.replace(/[^\d\-\.]/g,''));
+        return parseFloat(s.replace(/[^\d\-\.]/g,''));
     }
 
     function set(field,val){
-	model.set(field,val);
+        model.set(field,val);
     }
 
     function get(field){
-	return model.get(field);
+        return model.get(field);
     }
     
     function setField(field,value,e){
-	var setter;
-	var type=typeof(model.defaults[field]);
-	if (type=="number")
-	    value=numberize(value);
-	else if (type=="boolean"){
-	    value=inspic.parseBool(value);
-	}
-	if (_.isNaN(value))
-	    return;
-	if ((setter=modelFieldSetters[field])){
-	    setter.call(model,value,e);
-	} else {
-	    set(field,value);
-	} 
+        var setter;
+        var type=typeof(model.defaults[field]);
+        if (type=="number")
+            value=numberize(value);
+        else if (type=="boolean"){
+            value=inspic.parseBool(value);
+        }
+        if (_.isNaN(value))
+            return;
+        if ((setter=modelFieldSetters[field])){
+            setter.call(model,value,e);
+        } else {
+            set(field,value);
+        } 
     }
     controller.setField=setField;
     controller.handleDefaultInputFieldChange=setField;
 
     function setFields(dict){
-	for (var field in dict)
-	    setField(field, dict[field]);
+        for (var field in dict)
+            setField(field, dict[field]);
     }
     controller.setFields=setFields;
 
-    function bayanSizedUrl(url, size){
-	return url.replace(/\?.*$/,'')+'?'+size;
-    }
-    controller.bayanSizedUrl=bayanSizedUrl;
-
     var modelFieldSetters = {
-	//in all these functions, this is equal to model
-	'src' : function(url) {
-	    var newImg = $(new Image()).hide().appendTo('body');
+        //in all these functions, this is equal to model
+        'src' : function(url) {
+            var newImg = $(new Image()).hide().appendTo('body');
 
-	    function handleSuccess(){
-		set('isLoading', false);
-		set('src.width', newImg.width());
-		set('src.height', newImg.height());
-		set('height', newImg.height());
-		set('width', newImg.width());
-		set('src', url);
-		var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir\/[^?]*(\?(thumb|image_preview|view))?$/);
-		if (bayan) {
-		    set('src.bayan', true);
-		    var matchedSize = bayan[4];
-		    set('src.bayan.size', matchedSize || null);
-		} else {
-		    set('src.bayan', false);
-		}
-		newImg.remove();
-	    }
-	    function handleError(){
-		set('isLoading', false);
-		set('src', null);
-		set('src.bayan', false);
-		alert('آدرس تصویر معتبر نیست');
-		newImg.remove();
-	    }
-	    
-	    newImg.load(handleSuccess).error(handleError);
-	    
-	    if (url){
-		set('isLoading', true);
-		newImg.attr('src', url);
-	    } else
-		handleError();
-	},
+            function handleSuccess(){
+                set('isLoading', false);
+                set('src.width', newImg.width());
+                set('src.height', newImg.height());
+                set('height', newImg.height());
+                set('width', newImg.width());
+                set('src', url);
+                var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir\/[^?]*(\?(thumb|image_preview|view))?$/);
+                if (bayan) {
+                    set('src.bayan', true);
+                    var matchedSize = bayan[4];
+                    set('src.bayan.size', matchedSize || null);
+                } else {
+                    set('src.bayan', false);
+                }
+                newImg.remove();
+            }
+            function handleError(){
+                set('isLoading', false);
+                set('src', null);
+                set('src.bayan', false);
+                alert('آدرس تصویر معتبر نیست');
+                newImg.remove();
+            }
+            
+            newImg.load(handleSuccess).error(handleError);
+            
+            if (url){
+                set('isLoading', true);
+                newImg.attr('src', url);
+            } else
+                handleError();
+        },
 
-	'src.bayan.size': function(size){
-	    if (!get('src.bayan'))
-		return;
-	    setField('src',bayanSizedUrl(get('src'), size));
-	},
+        'src.bayan.size': function(size){
+            if (!get('src.bayan'))
+                return;
+            setField('src',inspic.bayanbox(get('src'), size));
+        },
 
-	'width': function(val){
-	    val=numberize(val);
-	    val=Math.round(val);
-	    set('width', val);
-	    if (get('keep_ratio'))
-		set('height', Math.round(val*get('src.height')/get('src.width')));
-	},
-	
-	'height': function(val){
-	    val=numberize(val);
-	    val=Math.round(val);
-	    set('height', val);
-	    if (get('keep_ratio'))
-		set('width', Math.round(val*get('src.width')/get('src.height')));
-	},
+        'width': function(val){
+            val=numberize(val);
+            val=Math.round(val);
+            set('width', val);
+            if (get('keep_ratio'))
+                set('height', Math.round(val*get('src.height')/get('src.width')));
+        },
+        
+        'height': function(val){
+            val=numberize(val);
+            val=Math.round(val);
+            set('height', val);
+            if (get('keep_ratio'))
+                set('width', Math.round(val*get('src.width')/get('src.height')));
+        },
 
-	'keep_ratio': function(val){
-	    set('keep_ratio', val);
-	    if (val)
-		setField('width', get('width'));
-	},
-	
-	'position': function(val){
-	    set('position', val);
-	    var sep=val.split('_');
-	    set('position.clearfix', sep[0]=='block');
-	    set('position.textAlign', sep[0]=='block' ? sep[1] : null);
-	    set('position.float', sep[0]=='block' ? 'none' : sep[1]);
-	    if (!get('margin.adv'))
-		set('margin.base', val=='inline_none' ? 3 : 10);
-	},
-	
-	'adv': function(val){
-	    setField('margin.adv', val);
-	    setField('caption.adv', val);
-	    setField('border.adv', val);
-	    setField('src.adv', val);
-	    set('adv', val);
-	},
-	
-	'margin.adv': function(val){
-	    if (val){
-		var $tmp=$('<div>').css('margin',get('margin'));
-		setField('margin.top', $tmp.css('marginTop'));
-		setField('margin.bottom', $tmp.css('marginBottom'));
-		setField('margin.right', $tmp.css('marginRight'));
-		setField('margin.left', $tmp.css('marginLeft'));
-	    } else {
-		var args=_.map(['margin.top', 'margin.right', 'margin.bottom', 'margin.left', 'position', 'margin.base', 'outerShadow.enable', 'outerShadow.blur', 'outerShadow.x', 'outerShadow.y'], function(field){
-		    return this.get(field);
-		}, this);
-		var base=this.autoMarginInv.apply(this, args);
-		set('margin.base', base);
-	    }
-	    set('margin.adv', val);
-	}
-	
+        'keep_ratio': function(val){
+            set('keep_ratio', val);
+            if (val)
+                setField('width', get('width'));
+        },
+        
+        'position': function(val){
+            set('position', val);
+            var sep=val.split('_');
+            set('position.clearfix', sep[0]=='block');
+            set('position.textAlign', sep[0]=='block' ? sep[1] : null);
+            set('position.float', sep[0]=='block' ? 'none' : sep[1]);
+            if (!get('margin.adv'))
+                set('margin.base', val=='inline_none' ? 3 : 10);
+        },
+        
+        'adv': function(val){
+            setField('margin.adv', val);
+            setField('caption.adv', val);
+            setField('border.adv', val);
+            setField('src.adv', val);
+            set('adv', val);
+        },
+        
+        'margin.adv': function(val){
+            if (val){
+                var $tmp=$('<div>').css('margin',get('margin'));
+                setField('margin.top', $tmp.css('marginTop'));
+                setField('margin.bottom', $tmp.css('marginBottom'));
+                setField('margin.right', $tmp.css('marginRight'));
+                setField('margin.left', $tmp.css('marginLeft'));
+            } else {
+                var args=_.map(['margin.top', 'margin.right', 'margin.bottom', 'margin.left', 'position', 'margin.base', 'outerShadow.enable', 'outerShadow.blur', 'outerShadow.x', 'outerShadow.y'], function(field){
+                    return this.get(field);
+                }, this);
+                var base=this.autoMarginInv.apply(this, args);
+                set('margin.base', base);
+            }
+            set('margin.adv', val);
+        }
+        
     };
     
 })(jQuery);
@@ -3826,181 +3854,181 @@ function inspicEval(expr){
     var mainModel=inspic.model.mainModel;
 
     var ImagePreview = Backbone.View.extend({
-	initialize : function() {
-	    var model = this.model = mainModel;
-	    var img= this.$('.imagePreview img');
-	    var loading = this.$('.loading');
-	    var imagePreview = this.$('.imagePreview');
+        initialize : function() {
+            var model = this.model = mainModel;
+            var img= this.$('.imagePreview img');
+            var loading = this.$('.loading');
+            var imagePreview = this.$('.imagePreview');
 
-	    model.subscribe('src', function(src){
-		var el = $('<img>').attr('src', src);
-		img.replaceWith(el);
-		img = el;// update img variable
-		updateDimensions();
-	    })();
-	    
-	    function updateDimensions() {
-		var width = model.get('width');
-		var height = model.get('height');
-		_.isUndefined(width) || (img.css('width', _.isNumber(width) ? width + 'px' : 'auto'));
-		_.isUndefined(height) || (img.css('height', _.isNumber(height) ? height + 'px' : 'auto'));
-	    }
-	    model.on('change:width change:height', updateDimensions, this);
-	    
-	    model.subscribe('`src` && `isLoading`', function(val){
-		loading[inspicEval(val) ? 'show' : 'hide']();
-	    })();
-	    
-	    model.subscribe('`src` && !(`isLoading`)', function(val){
-		imagePreview[inspicEval(val) ? 'show' : 'hide']();
-	    })();
-	}
+            model.subscribe('src', function(src){
+                var el = $('<img>').attr('src', src);
+                img.replaceWith(el);
+                img = el;// update img variable
+                updateDimensions();
+            })();
+            
+            function updateDimensions() {
+                var width = model.get('width');
+                var height = model.get('height');
+                _.isUndefined(width) || (img.css('width', _.isNumber(width) ? width + 'px' : 'auto'));
+                _.isUndefined(height) || (img.css('height', _.isNumber(height) ? height + 'px' : 'auto'));
+            }
+            model.on('change:width change:height', updateDimensions, this);
+            
+            model.subscribe('`src` && `isLoading`', function(val){
+                loading[inspicEval(val) ? 'show' : 'hide']();
+            })();
+            
+            model.subscribe('`src` && !(`isLoading`)', function(val){
+                imagePreview[inspicEval(val) ? 'show' : 'hide']();
+            })();
+        }
     });
 
     var PositionPreview = Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=mainModel;
-	    var $clearfix=this.$('.inspic_clearfix');
-	    var $margin=this.$('.pic_margin');
-	    var $wrapper=this.$('.pic_wrapper');
-	    var $img=this.$('img');
-	    model.subscribe('position.clearfix', function(val){
-		$clearfix[val ? 'addClass' : 'removeClass']('pic_clearfix');
-	    })();
-	    model.subscribe('position.float', function(val){
-		$margin.css('float', val);
-	    })();
-	    model.subscribe('position.textAlign', function(val){
-		$clearfix.css('text-align', val);
-	    })();
-	    model.subscribe('margin', function(val){
-		$wrapper.css('margin', val);
-	    })();
-	    model.subscribe('outerShadow', function(val){
-		$img.css('box-shadow', val);
-	    })();
-	}
+        initialize: function(){
+            var model=this.model=mainModel;
+            var $clearfix=this.$('.inspic_clearfix');
+            var $margin=this.$('.pic_margin');
+            var $wrapper=this.$('.pic_wrapper');
+            var $img=this.$('img');
+            model.subscribe('position.clearfix', function(val){
+                $clearfix[val ? 'addClass' : 'removeClass']('pic_clearfix');
+            })();
+            model.subscribe('position.float', function(val){
+                $margin.css('float', val);
+            })();
+            model.subscribe('position.textAlign', function(val){
+                $clearfix.css('text-align', val);
+            })();
+            model.subscribe('margin', function(val){
+                $wrapper.css('margin', val);
+            })();
+            model.subscribe('outerShadow', function(val){
+                $img.css('box-shadow', val);
+            })();
+        }
     });
 
 
     var BorderPreview=Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=mainModel;
-	    var $border=this.$('.pic_border');
-	    var $inner=this.$('.pic_inner');
-	    var _this=this;
-	    var p=inspic.pixelize;
-	    model.subscribe('innerShadow', function(val){
-		$inner.css('box-shadow', val);
-	    })();
-	    model.subscribe('borderline', function(val){
-		$border.css('border', val);
-	    })();
-	    model.subscribe('outerShadow', function(val){
-		$border.css('box-shadow', val);
-	    })();
-	    model.subscribe('border.padding', function(val){
-		$border.css('padding', p(val));
-	    })();
-	    model.subscribe('border.background', function(val){
-		$border.css('background-color', val);
-	    })();
-	    model.subscribe('border.radius', function(val){
-		$border.css('border-radius', p(val));
-	    })();
-	    model.subscribe('border.radius.inner', function(val){
-		$inner.css('border-radius', p(val));
-	    })();
-	    model.subscribe('`border.radius.inner` `src`', function(){
-		_this.$('img').css('border-radius', p(model.get('border.radius.inner')));
-	    })();
-	}
+        initialize: function(){
+            var model=this.model=mainModel;
+            var $border=this.$('.pic_border');
+            var $inner=this.$('.pic_inner');
+            var _this=this;
+            var p=inspic.pixelize;
+            model.subscribe('innerShadow', function(val){
+                $inner.css('box-shadow', val);
+            })();
+            model.subscribe('borderline', function(val){
+                $border.css('border', val);
+            })();
+            model.subscribe('outerShadow', function(val){
+                $border.css('box-shadow', val);
+            })();
+            model.subscribe('border.padding', function(val){
+                $border.css('padding', p(val));
+            })();
+            model.subscribe('border.background', function(val){
+                $border.css('background-color', val);
+            })();
+            model.subscribe('border.radius', function(val){
+                $border.css('border-radius', p(val));
+            })();
+            model.subscribe('border.radius.inner', function(val){
+                $inner.css('border-radius', p(val));
+            })();
+            model.subscribe('`border.radius.inner` `src`', function(){
+                _this.$('img').css('border-radius', p(model.get('border.radius.inner')));
+            })();
+        }
     });
 
     var InnerCaptionPreview=Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=mainModel;
-	    var $el=this.$el;
-	    model.subscribe('caption.inner.enable', function(val){
-		$el[val ? 'show' : 'hide']();
-	    })();
-	    model.subscribe('caption.textAlign', function(val){
-		$el.css('text-align', val);
-	    })();
-	    model.subscribe('caption.preview', function(content){
-		$el.html(content);
-	    })();
-	    model.subscribe('caption.vpos', function(val){
-		$el.css({
-		    top: (val=='top' ? '0' : 'auto'),
-		    bottom: (val=='bottom' ? '0' : 'auto')
-		});
-	    })();
-	    model.subscribe('caption.inner.hpos', function(val){
-		$el.css({
-		    left : (val == 'left' || val == 'full') ? '0' : 'auto',
-		    right : (val == 'right' || val == 'full') ? '0' : 'auto'
-		});
-	    })();
-	    model.subscribe('caption.inner.background', function(val){
-		$el.css('background-color', val);
-	    })();
-	    model.subscribe('caption.inner.radius', function(val){
-		$el.css('border-radius', val);
-	    })();
-	}
+        initialize: function(){
+            var model=this.model=mainModel;
+            var $el=this.$el;
+            model.subscribe('caption.inner.enable', function(val){
+                $el[val ? 'show' : 'hide']();
+            })();
+            model.subscribe('caption.textAlign', function(val){
+                $el.css('text-align', val);
+            })();
+            model.subscribe('caption.preview', function(content){
+                $el.html(content);
+            })();
+            model.subscribe('caption.vpos', function(val){
+                $el.css({
+                    top: (val=='top' ? '0' : 'auto'),
+                    bottom: (val=='bottom' ? '0' : 'auto')
+                });
+            })();
+            model.subscribe('caption.inner.hpos', function(val){
+                $el.css({
+                    left : (val == 'left' || val == 'full') ? '0' : 'auto',
+                    right : (val == 'right' || val == 'full') ? '0' : 'auto'
+                });
+            })();
+            model.subscribe('caption.inner.background', function(val){
+                $el.css('background-color', val);
+            })();
+            model.subscribe('caption.inner.radius', function(val){
+                $el.css('border-radius', val);
+            })();
+        }
     });
 
     var OuterCaptionPreview=Backbone.View.extend({
-	initialize: function(){
-	    var model=this.model=mainModel;
-	    var $el=this.$el;
-	    var $wrapper=$el.closest('.pic_wrapper');
-	    var p=inspic.pixelize;
-	    model.subscribe('caption.outer.enable', function(val){
-		$el.css('display', (val ? 'block' : 'none'));
-		//$el[val=='outer' ? 'show': 'hide']();
-	    })();
-	    model.subscribe('caption.textAlign', function(val){
-		$el.css('text-align', val);
-	    })();
-	    model.subscribe('caption.preview', function(content){
-		$el.html(content);
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.border`', function(val){
-		$wrapper.css('border', inspicEval(val) || '');
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.background`', function(val){
-		$wrapper.css('background-color', inspicEval(val) || '');
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.padding`', function(val){
-		$wrapper.css('padding', p(inspicEval(val) || 0));
-	    })();
-	    model.subscribe('`caption.outer.enable` && `caption.outer.radius`', function(val){
-		$wrapper.css('border-radius', p(inspicEval(val || 0)) );
-	    })();
-	    model.subscribe('caption.vpos', function(val){
-		$el[(val=='top' ? 'prependTo' : 'appendTo')]($wrapper);
-	    })();
-	}
+        initialize: function(){
+            var model=this.model=mainModel;
+            var $el=this.$el;
+            var $wrapper=$el.closest('.pic_wrapper');
+            var p=inspic.pixelize;
+            model.subscribe('caption.outer.enable', function(val){
+                $el.css('display', (val ? 'block' : 'none'));
+                //$el[val=='outer' ? 'show': 'hide']();
+            })();
+            model.subscribe('caption.textAlign', function(val){
+                $el.css('text-align', val);
+            })();
+            model.subscribe('caption.preview', function(content){
+                $el.html(content);
+            })();
+            model.subscribe('`caption.outer.enable` && `caption.outer.border`', function(val){
+                $wrapper.css('border', inspicEval(val) || '');
+            })();
+            model.subscribe('`caption.outer.enable` && `caption.outer.background`', function(val){
+                $wrapper.css('background-color', inspicEval(val) || '');
+            })();
+            model.subscribe('`caption.outer.enable` && `caption.outer.padding`', function(val){
+                $wrapper.css('padding', p(inspicEval(val) || 0));
+            })();
+            model.subscribe('`caption.outer.enable` && `caption.outer.radius`', function(val){
+                $wrapper.css('border-radius', p(inspicEval(val || 0)) );
+            })();
+            model.subscribe('caption.vpos', function(val){
+                $el[(val=='top' ? 'prependTo' : 'appendTo')]($wrapper);
+            })();
+        }
     });
 
     function addPreviews(){
-	new ImagePreview({
-	    el : $('#insertPicture .preview')
-	});
-	new BorderPreview({
-	    el: $('#insertPicture .imagePreview')
-	});
-	new PositionPreview({
-	    el: $('#insertPicture .imagePreview')
-	});
-	new InnerCaptionPreview({
-	    el: $('#insertPicture .pic_caption_inner')
-	});
-	new OuterCaptionPreview({
-	    el: $('#insertPicture .pic_caption_outer')
-	});
+        new ImagePreview({
+            el : $('#insertPicture .preview')
+        });
+        new BorderPreview({
+            el: $('#insertPicture .imagePreview')
+        });
+        new PositionPreview({
+            el: $('#insertPicture .imagePreview')
+        });
+        new InnerCaptionPreview({
+            el: $('#insertPicture .pic_caption_inner')
+        });
+        new OuterCaptionPreview({
+            el: $('#insertPicture .pic_caption_outer')
+        });
     }
     inspic.view.addPreviews=addPreviews;
 
@@ -4012,9 +4040,17 @@ function inspicEval(expr){
 	var type=typeof(model.defaults[x]);
 	if (type=='boolean')
 	    ret=(ret ? 1 : '');
-        if (x=='position')
+        return ret;
+    }
+
+    //minify
+    function m(x){
+        var ret=g(x);
+        if (x=='position' || x=='caption.pos')
             ret=ret.charAt(0)+ret.charAt(ret.search('_')+1);
-	return ret;
+        if (x=='href.type' || x=='caption.inner.hpos' || x=='caption.textAlign')
+            ret=ret.charAt(0);
+        return ret;
     }
     
     function genData(model, g){
@@ -4022,7 +4058,7 @@ function inspicEval(expr){
 
 	function getPrefixArray(prefix, fields){
 	    return _.map(fields, function(field){
-		return g(prefix+field);
+		return m(prefix+field);
 	    });
 	}
 
@@ -4030,7 +4066,7 @@ function inspicEval(expr){
 	    ret['src']=getPrefixArray('', ['width', 'height', 'keep_ratio']);
 
 	if (g('href.type')!='none')
-	    ret['hrf']=g('href.type');
+	    ret['hrf']=m('href.type');
 	
 	ret['etc']=getPrefixArray('', ['position','adv']);
 
@@ -4261,7 +4297,15 @@ function inspicEval(expr){
 	    
 	    
 	    set['href.url']= $html.find('[href]').attr('href') || '';
-	    set['href.type']=data['hrf'] || 'none';
+            var tmp=data['hrf'];
+            set['href.type']=( tmp ?
+                               ({
+                                   n:'none',
+                                   s:'src',
+                                   d:'download',
+                                   i:'info',
+                                   u:'url'
+                               })[tmp] : 'none');
 
 	    if (data['etc'])
 		setPrefixArray(data['etc'], '', ['position', 'adv']);
@@ -4300,12 +4344,28 @@ function inspicEval(expr){
 	    var arr=data['cap'];
 	    if (arr){
 		set['caption.enable']=true;
-		var type=arr[0].replace(/_.*^/,'');
 		setPrefixArray(arr, 'caption.', ['pos', 'textAlign', type+'.background.color', type+'.background.alpha']);
+                set['caption.pos']={
+                    it:'inner_top',
+                    ot:'outer_top',
+                    ib:'inner_bottom',
+                    ob:'outer_bottom'
+                }[set['caption.pos']];
+		var type=set['caption.pos'].replace(/_.*^/,'');
+                set['caption.textAlign']=({
+                    r:'right',
+                    l:'left',
+                    c:'center'
+                })[set['caption.textAlign']];
 		arr=arr.splice(4);
-		if (type=='inner')
+		if (type=='inner'){
 		    setPrefixArray(arr, 'caption.inner.', ['hpos']);
-		else{
+                    set['caption.inner.hpos']=({
+                        r:'right',
+                        f:'full',
+                        l:'left'
+                    })[set['caption.inner.hpos']];
+		}else{
 		    setPrefixArray(arr, 'caption.outer.', ['padding', 'radius']);
 		    if (arr.length>2){
 			set['caption.outer.border.enable']=true;
@@ -4344,9 +4404,6 @@ function inspicEval(expr){
             }
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);
-
-            
-               
 	} catch(ex) {
 	    console.log('Exception',ex);
 	    
@@ -4386,11 +4443,11 @@ function inspicEval(expr){
         '</div>';
 
     function open($el, args){
-	$el=$($el).html(body);
-	inspic.init(args.src || '');
-	if (args.html)
-	    inspic.setHtml(args.html);
-	inspic.callback=args.callback;
+        $el=$($el).html(body);
+        inspic.init(args.src || '');
+        if (args.html)
+            inspic.setHtml(args.html);
+        inspic.callback=args.callback;
     }
     inspic.open=open;
 })(jQuery);(function($){

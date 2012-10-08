@@ -45,11 +45,6 @@
     }
     controller.setFields=setFields;
 
-    function bayanSizedUrl(url, size){
-        return url.replace(/\?.*$/,'')+'?'+size;
-    }
-    controller.bayanSizedUrl=bayanSizedUrl;
-
     var modelFieldSetters = {
         //in all these functions, this is equal to model
         'src' : function(url) {
@@ -92,7 +87,7 @@
         'src.bayan.size': function(size){
             if (!get('src.bayan'))
                 return;
-            setField('src',bayanSizedUrl(get('src'), size));
+            setField('src',inspic.bayanbox(get('src'), size));
         },
 
         'width': function(val){
