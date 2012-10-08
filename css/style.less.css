@@ -182,9 +182,9 @@
 	}
 	&.cancel{
 	    margin-left: 3px;
-	.spanButton(#ddd);
+	    .spanButton(#ddd);
+	}
     }
-}
 
 }
 
