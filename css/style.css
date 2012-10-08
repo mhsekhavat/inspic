@@ -183,13 +183,6 @@
 .pic_clearfix {
   display: block !important;
 }
-.pic_clearfix:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
 .pic_margin,
 .pic_border,
 .pic_caption_inner,

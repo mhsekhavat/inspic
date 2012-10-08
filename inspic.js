@@ -2668,7 +2668,7 @@ function inspicEval(expr){
             'caption.textAlign':'center',
             'caption.h1.enable': true,
             'caption.h1.text':'',
-            'caption.h1.type':'',
+            'caption.h1.type':'text',
             'caption.h1.bold':false,
             'caption.h1.italic':false,
             'caption.h1.color.inner':'#eee',
@@ -3625,7 +3625,6 @@ function inspicEval(expr){
                     text : 'عنوان زیرنویس:',
                     visibilityCriteria : 'caption.enable',
                     options : {
-                        'بدون عنوان' : '',
                         'عنوان تصویر' : 'title',
                         'متن' : 'text'
                     },
@@ -3676,6 +3675,7 @@ function inspicEval(expr){
             text : 'درج',
             click : function() {
                 inspic.callback && inspic.callback(inspic.getHtml());
+                console.log(inspic.getHtml());
             }
         }).appendTo('.tab_headers');
         $('<span>', {
@@ -4218,10 +4218,11 @@ function inspicEval(expr){
 	    wrapper.inspic('css', 'border-radius', p(g('caption.outer.radius')));
 	    //FIXME: width of outerCaption should be calculated by model and must not depend on view! 
 	    var width=$('#insertPicture .preview .pic_wrapper').width();
+            console.log(width);
 	    width && wrapper.inspic('css', 'width', p(width));
 	    
 	    var caption = $('<span class="pic_caption_outer">');
-	    caption.text(g('caption'));
+	    caption.html(g('caption').trim());
 	    caption.inspic('css', 'color', g('caption.outer.forecolor'));
 	    caption.inspic('css', 'text-align', g('caption.textAlign'));
 
@@ -4450,8 +4451,9 @@ function inspicEval(expr){
         '</div>';
 
     function open($el, args){
+        console.log(args);
         $el=$($el).html(body);
-        inspic.init(args.src || '');
+        inspic.init(args.src);
         if (args.html)
             inspic.setHtml(args.html);
         inspic.callback=args.callback;
@@ -4462,7 +4464,8 @@ function inspicEval(expr){
         inspic.view.addElements();
         inspic.view.addPreviews();
         inspic.loadCookie();
-        inspic.controller.setField('src', src);
+        if (!_.isUndefined(src))
+            inspic.controller.setField('src', src);
     };
     inspic.init=init;
 })(jQuery);
