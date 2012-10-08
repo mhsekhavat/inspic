@@ -172,10 +172,11 @@
 	    wrapper.inspic('css', 'border-radius', p(g('caption.outer.radius')));
 	    //FIXME: width of outerCaption should be calculated by model and must not depend on view! 
 	    var width=$('#insertPicture .preview .pic_wrapper').width();
+            console.log(width);
 	    width && wrapper.inspic('css', 'width', p(width));
 	    
 	    var caption = $('<span class="pic_caption_outer">');
-	    caption.text(g('caption'));
+	    caption.html(g('caption').trim());
 	    caption.inspic('css', 'color', g('caption.outer.forecolor'));
 	    caption.inspic('css', 'text-align', g('caption.textAlign'));
 
