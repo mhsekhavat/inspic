@@ -124,14 +124,9 @@
 	    if ($img.length){
 		set['src']=$img.attr('src');
 		set['title']=($img.attr('alt') || $img.attr('title') || '');
-                var imgWidth=$img.width();
-                var imgHeight=$img.height();
+                inspic.srcLoadedWidth=$img.width();
+                inspic.srcLoadedHeight=$img.height();
                 var model=inspic.model.mainModel;
-                if (imgWidth || imgHeight){
-                    model.set('keep_ratio', !(imgWidth && imgHeight));
-                    imgWidth && model.set('width', imgWidth);
-                    imgHeight && model.set('height', imgHeight);
-                }
             }
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);

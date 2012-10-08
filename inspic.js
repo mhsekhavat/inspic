@@ -3500,20 +3500,22 @@ function inspicEval(expr){
          */
 
         appendTo('#inspic_caption')
-        (new CheckInputField('caption.enable', {
-            text : 'فعال'
-        }))
-        (new IconSelectInputField('caption.pos', {
-            // text: 'نوع:',
-            visibilityCriteria : 'caption.enable',
-            options : {
-                'خارج پایین' : 'outer_top',
-                'داخل بالا' : 'inner_top',
-                'داخل پایین' : 'inner_bottom',
-                'خارج بالا' : 'outer_bottom'
-            }
-        }))
         (
+            new CheckInputField('caption.enable', {
+                text : 'فعال'
+            })
+        )(
+            new IconSelectInputField('caption.pos', {
+                // text: 'نوع:',
+                visibilityCriteria : 'caption.enable',
+                options : {
+                    'خارج پایین' : 'outer_top',
+                    'داخل بالا' : 'inner_top',
+                    'داخل پایین' : 'inner_bottom',
+                    'خارج بالا' : 'outer_bottom'
+                }
+            })
+        )(
             new IconSelectInputField('caption.inner.hpos', {
                 // text: 'افقی',
                 options : {
@@ -3530,33 +3532,36 @@ function inspicEval(expr){
                                      : 'posBottom');
                     }
                 }
-            }))
-        (new IconSelectInputField('caption.textAlign', {
-            // text: 'چینش متن:',
-            visibilityCriteria : 'caption.enable',
-            options : {
-                'راست' : 'right',
-                'وسط' : 'center',
-                'چپ' : 'left'
-            }
-        }))
-        (new ColorInputField('caption.inner.background.color', {
-            visibilityCriteria : 'caption.inner.enable',
-            // icon: 'paint-can-left.png',
-            // text:'رنگ داخل:',
-            colorPickerClass : 'picker-arrow-paint'
-        }))
-        (new TextInputField('caption.inner.background.alpha', {
-            visibilityCriteria : 'caption.inner.enable',
-            text : 'شفافیت رنگ داخل',
-            icon : 'alpha',
-            spinnerArgs : {
-                step : 0.1,
-                min : 0,
-                max : 1
-            }
-        }))
-        (
+            })
+        )(
+            new IconSelectInputField('caption.textAlign', {
+                // text: 'چینش متن:',
+                visibilityCriteria : 'caption.enable',
+                options : {
+                    'راست' : 'right',
+                    'وسط' : 'center',
+                    'چپ' : 'left'
+                }
+            })
+        )(
+            new ColorInputField('caption.inner.background.color', {
+                visibilityCriteria : 'caption.inner.enable',
+                // icon: 'paint-can-left.png',
+                // text:'رنگ داخل:',
+                colorPickerClass : 'picker-arrow-paint'
+            })
+        )(
+            new TextInputField('caption.inner.background.alpha', {
+                visibilityCriteria : 'caption.inner.enable',
+                text : 'شفافیت رنگ داخل',
+                icon : 'alpha',
+                spinnerArgs : {
+                    step : 0.1,
+                    min : 0,
+                    max : 1
+                }
+            })
+        )(
             appendTo(
                 (function() {
                     var ret = $('<span>');
@@ -3753,8 +3758,15 @@ function inspicEval(expr){
                 set('isLoading', false);
                 set('src.width', newImg.width());
                 set('src.height', newImg.height());
-                set('height', newImg.height());
-                set('width', newImg.width());
+                
+                var loadedH=inspic.srcLoadedHeight, loadedW=inspic.srcLoadedWidth;
+                if (loadedH || loadedW)
+                    set('keep_ratio', !!(loadedH && loadedW))
+                var h=loadedH || newImg.height();
+                var w=loadedW || newImg.width();
+                
+                set('height', h);
+                set('width', w);
                 set('src', url);
                 var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir\/[^?]*(\?(thumb|image_preview|view))?$/);
                 if (bayan) {
@@ -4393,14 +4405,9 @@ function inspicEval(expr){
 	    if ($img.length){
 		set['src']=$img.attr('src');
 		set['title']=($img.attr('alt') || $img.attr('title') || '');
-                var imgWidth=$img.width();
-                var imgHeight=$img.height();
+                inspic.srcLoadedWidth=$img.width();
+                inspic.srcLoadedHeight=$img.height();
                 var model=inspic.model.mainModel;
-                if (imgWidth || imgHeight){
-                    model.set('keep_ratio', !(imgWidth && imgHeight));
-                    imgWidth && model.set('width', imgWidth);
-                    imgHeight && model.set('height', imgHeight);
-                }
             }
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);

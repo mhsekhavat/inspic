@@ -54,8 +54,15 @@
                 set('isLoading', false);
                 set('src.width', newImg.width());
                 set('src.height', newImg.height());
-                set('height', newImg.height());
-                set('width', newImg.width());
+                
+                var loadedH=inspic.srcLoadedHeight, loadedW=inspic.srcLoadedWidth;
+                if (loadedH || loadedW)
+                    set('keep_ratio', !!(loadedH && loadedW))
+                var h=loadedH || newImg.height();
+                var w=loadedW || newImg.width();
+                
+                set('height', h);
+                set('width', w);
                 set('src', url);
                 var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir\/[^?]*(\?(thumb|image_preview|view))?$/);
                 if (bayan) {

@@ -565,20 +565,22 @@
          */
 
         appendTo('#inspic_caption')
-        (new CheckInputField('caption.enable', {
-            text : 'فعال'
-        }))
-        (new IconSelectInputField('caption.pos', {
-            // text: 'نوع:',
-            visibilityCriteria : 'caption.enable',
-            options : {
-                'خارج پایین' : 'outer_top',
-                'داخل بالا' : 'inner_top',
-                'داخل پایین' : 'inner_bottom',
-                'خارج بالا' : 'outer_bottom'
-            }
-        }))
         (
+            new CheckInputField('caption.enable', {
+                text : 'فعال'
+            })
+        )(
+            new IconSelectInputField('caption.pos', {
+                // text: 'نوع:',
+                visibilityCriteria : 'caption.enable',
+                options : {
+                    'خارج پایین' : 'outer_top',
+                    'داخل بالا' : 'inner_top',
+                    'داخل پایین' : 'inner_bottom',
+                    'خارج بالا' : 'outer_bottom'
+                }
+            })
+        )(
             new IconSelectInputField('caption.inner.hpos', {
                 // text: 'افقی',
                 options : {
@@ -595,33 +597,36 @@
                                      : 'posBottom');
                     }
                 }
-            }))
-        (new IconSelectInputField('caption.textAlign', {
-            // text: 'چینش متن:',
-            visibilityCriteria : 'caption.enable',
-            options : {
-                'راست' : 'right',
-                'وسط' : 'center',
-                'چپ' : 'left'
-            }
-        }))
-        (new ColorInputField('caption.inner.background.color', {
-            visibilityCriteria : 'caption.inner.enable',
-            // icon: 'paint-can-left.png',
-            // text:'رنگ داخل:',
-            colorPickerClass : 'picker-arrow-paint'
-        }))
-        (new TextInputField('caption.inner.background.alpha', {
-            visibilityCriteria : 'caption.inner.enable',
-            text : 'شفافیت رنگ داخل',
-            icon : 'alpha',
-            spinnerArgs : {
-                step : 0.1,
-                min : 0,
-                max : 1
-            }
-        }))
-        (
+            })
+        )(
+            new IconSelectInputField('caption.textAlign', {
+                // text: 'چینش متن:',
+                visibilityCriteria : 'caption.enable',
+                options : {
+                    'راست' : 'right',
+                    'وسط' : 'center',
+                    'چپ' : 'left'
+                }
+            })
+        )(
+            new ColorInputField('caption.inner.background.color', {
+                visibilityCriteria : 'caption.inner.enable',
+                // icon: 'paint-can-left.png',
+                // text:'رنگ داخل:',
+                colorPickerClass : 'picker-arrow-paint'
+            })
+        )(
+            new TextInputField('caption.inner.background.alpha', {
+                visibilityCriteria : 'caption.inner.enable',
+                text : 'شفافیت رنگ داخل',
+                icon : 'alpha',
+                spinnerArgs : {
+                    step : 0.1,
+                    min : 0,
+                    max : 1
+                }
+            })
+        )(
             appendTo(
                 (function() {
                     var ret = $('<span>');
