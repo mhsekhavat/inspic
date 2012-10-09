@@ -263,7 +263,7 @@
             'caption.h1': new ComputedField(
                 ['caption.h1.finalText', 'caption.h1.style'],
                 function(         text,              style){
-                    return $('<h1>',{
+                    return $('<span>',{
                         'style':style,
                         'text':text
                     }).inspic('outerHtml');
@@ -274,7 +274,7 @@
                 function(enable,                text,             style){
                     if (!enable)
                         return '';
-                    return $('<p>', {
+                    return '<br>'+$('<span>', {
                         'style': style,
                         'text':text
                     }).inspic('outerHtml');
@@ -289,7 +289,7 @@
                 function(caption, p, h1, styleP, styleH1){
                     if (p || h1)
                         return caption;
-                    return ('<h1 style="'+styleH1+'">{عنوان زیرنویس}</h1><p style="'+styleP+'">{شرح زیرنویس}</p>');
+                    return ('<span style="'+styleH1+'">{عنوان زیرنویس}</span><br><span style="'+styleP+'">{شرح زیرنویس}</span>');
                 }),
             'caption.type': new ComputedField(
                 ['caption.pos'],

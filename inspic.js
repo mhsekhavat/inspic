@@ -2792,7 +2792,7 @@ function inspicEval(expr){
             'caption.h1': new ComputedField(
                 ['caption.h1.finalText', 'caption.h1.style'],
                 function(         text,              style){
-                    return $('<h1>',{
+                    return $('<span>',{
                         'style':style,
                         'text':text
                     }).inspic('outerHtml');
@@ -2803,7 +2803,7 @@ function inspicEval(expr){
                 function(enable,                text,             style){
                     if (!enable)
                         return '';
-                    return $('<p>', {
+                    return '<br>'+$('<span>', {
                         'style': style,
                         'text':text
                     }).inspic('outerHtml');
@@ -2818,7 +2818,7 @@ function inspicEval(expr){
                 function(caption, p, h1, styleP, styleH1){
                     if (p || h1)
                         return caption;
-                    return ('<h1 style="'+styleH1+'">{عنوان زیرنویس}</h1><p style="'+styleP+'">{شرح زیرنویس}</p>');
+                    return ('<span style="'+styleH1+'">{عنوان زیرنویس}</span><br><span style="'+styleP+'">{شرح زیرنویس}</span>');
                 }),
             'caption.type': new ComputedField(
                 ['caption.pos'],
@@ -4384,13 +4384,13 @@ function inspicEval(expr){
 		arr=data['h1'];
 		if (set['caption.h1.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.h1.', formatFields);
-		    set['caption.h1.text']=$html.find('h1').text() || '';
+		    set['caption.h1.text']=$html.find('ipic-cap-in span, ipic-cap-out span').first().text() || '';
 		}
 
 		arr=data['p'];
 		if (set['caption.p.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.p.', formatFields);
-		    set['caption.p.text']=$html.find('p').text() || '';
+		    set['caption.p.text']=$html.find('ipic-cap-in span, ipic-cap-out span').second().text() || '';
 		}
 	    } else
 		set['capion.enable']=false;

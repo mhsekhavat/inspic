@@ -212,10 +212,7 @@
   display: block;
   padding: 5px;
 }
-.ipic-cap-in h1,
-.ipic-cap-out h1,
-.ipic-cap-in p,
-.ipic-cap-out p {
+.ipic-cap-in span, .ipic-cap-out span {
   padding: 0;
   margin: 0;
   font-weight: normal;

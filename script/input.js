@@ -109,13 +109,13 @@
 		arr=data['h1'];
 		if (set['caption.h1.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.h1.', formatFields);
-		    set['caption.h1.text']=$html.find('h1').text() || '';
+		    set['caption.h1.text']=$html.find('ipic-cap-in span, ipic-cap-out span').first().text() || '';
 		}
 
 		arr=data['p'];
 		if (set['caption.p.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.p.', formatFields);
-		    set['caption.p.text']=$html.find('p').text() || '';
+		    set['caption.p.text']=$html.find('ipic-cap-in span, ipic-cap-out span').second().text() || '';
 		}
 	    } else
 		set['capion.enable']=false;
