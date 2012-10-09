@@ -220,7 +220,7 @@ div.colorPicker-swatch {
 .ipic-cap-in,
 .ipic-cap-out,
 .ipic-inner,
-.ipic_wrp {
+.ipic-wrp {
   display: inline-block;
   position: relative;
 }

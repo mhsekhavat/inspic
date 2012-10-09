@@ -188,12 +188,11 @@
 
 }
 
-
 .ipic-cfx {
     display: block !important;
 }
 
-.ipic-mrg, .ipic-bdr, .ipic-cap-in, .ipic-cap-out, .ipic-inner, .ipic_wrp {
+.ipic-mrg, .ipic-bdr, .ipic-cap-in, .ipic-cap-out, .ipic-inner, .ipic-wrp {
     display: inline-block;
     position: relative;
 }
