@@ -12,7 +12,7 @@
     var InputField = Backbone.View.extend({
         tagName : 'span', // tag name of html [container] element
         className : 'inspic_inputfield', // class name of html [container] element
-        inputSelector : 'input', // selects html elements whos value should be set to model
+        inputSelector : 'input', // selects html elements whose value should be set to model
         template : 'text', // default underscore template name
 
         updateValue : function(val) {
@@ -28,7 +28,7 @@
             args || ( args = {});
             var model = this.model = mainModel;
             this.field = field;
-
+            
             !args.events || (this.events = args.events);
 
             this.render(field, args);
@@ -317,7 +317,7 @@
             visibilityCriteria : 'margin.adv'
         }));
 
-        var $margin = $('#insertPicture .preview .pic_margin');
+        var $margin = $('#insertPicture .preview .ipic-mrg');
         $(document).on('focus mouseenter', '[field*="margin"] *', function() {
             $margin.css('backgroundColor', '#fbfd98');
         }).on('blur mouseout', '[field*="margin"] *', function() {
@@ -330,12 +330,6 @@
      * */
 
     function addBorderElements() {
-
-        /*
-         * new InputField('border.adv', 'checkbox', { text: 'پیشرفته',
-         * initialize: function(){ this.$el.css('float','left'); }
-         * }).$el.appendTo('#inspic_border>legend');
-         */
 
         var inner = shadowFields('سایه داخلی:', 'innerShadow.', 'border.adv', 'x,y,alpha'.split(','));
         var borderline = borderFields('borderline.', 'border.adv', ['width']);
@@ -740,7 +734,7 @@
             text : 'درج',
             click : function() {
                 inspic.callback && inspic.callback(inspic.getHtml());
-                console.log(inspic.getHtml());
+                //console.log(inspic.getHtml());
             }
         }).appendTo('.tab_headers');
         $('<span>', {

@@ -2947,7 +2947,7 @@ function inspicEval(expr){
     var InputField = Backbone.View.extend({
         tagName : 'span', // tag name of html [container] element
         className : 'inspic_inputfield', // class name of html [container] element
-        inputSelector : 'input', // selects html elements whos value should be set to model
+        inputSelector : 'input', // selects html elements whose value should be set to model
         template : 'text', // default underscore template name
 
         updateValue : function(val) {
@@ -2963,7 +2963,7 @@ function inspicEval(expr){
             args || ( args = {});
             var model = this.model = mainModel;
             this.field = field;
-
+            
             !args.events || (this.events = args.events);
 
             this.render(field, args);
@@ -3252,7 +3252,7 @@ function inspicEval(expr){
             visibilityCriteria : 'margin.adv'
         }));
 
-        var $margin = $('#insertPicture .preview .pic_margin');
+        var $margin = $('#insertPicture .preview .ipic-mrg');
         $(document).on('focus mouseenter', '[field*="margin"] *', function() {
             $margin.css('backgroundColor', '#fbfd98');
         }).on('blur mouseout', '[field*="margin"] *', function() {
@@ -3265,12 +3265,6 @@ function inspicEval(expr){
      * */
 
     function addBorderElements() {
-
-        /*
-         * new InputField('border.adv', 'checkbox', { text: 'پیشرفته',
-         * initialize: function(){ this.$el.css('float','left'); }
-         * }).$el.appendTo('#inspic_border>legend');
-         */
 
         var inner = shadowFields('سایه داخلی:', 'innerShadow.', 'border.adv', 'x,y,alpha'.split(','));
         var borderline = borderFields('borderline.', 'border.adv', ['width']);
@@ -3675,7 +3669,7 @@ function inspicEval(expr){
             text : 'درج',
             click : function() {
                 inspic.callback && inspic.callback(inspic.getHtml());
-                console.log(inspic.getHtml());
+                //console.log(inspic.getHtml());
             }
         }).appendTo('.tab_headers');
         $('<span>', {
@@ -3901,11 +3895,11 @@ function inspicEval(expr){
         initialize: function(){
             var model=this.model=mainModel;
             var $clearfix=this.$('.inspic_clearfix');
-            var $margin=this.$('.pic_margin');
-            var $wrapper=this.$('.pic_wrapper');
+            var $margin=this.$('.ipic-mrg');
+            var $wrapper=this.$('.ipic-wrp');
             var $img=this.$('img');
             model.subscribe('position.clearfix', function(val){
-                $clearfix[val ? 'addClass' : 'removeClass']('pic_clearfix');
+                $clearfix[val ? 'addClass' : 'removeClass']('ipic-cfx');
             })();
             model.subscribe('position.float', function(val){
                 $margin.css('float', val);
@@ -3926,8 +3920,8 @@ function inspicEval(expr){
     var BorderPreview=Backbone.View.extend({
         initialize: function(){
             var model=this.model=mainModel;
-            var $border=this.$('.pic_border');
-            var $inner=this.$('.pic_inner');
+            var $border=this.$('.ipic-bdr');
+            var $inner=this.$('.ipic-inner');
             var _this=this;
             var p=inspic.pixelize;
             model.subscribe('innerShadow', function(val){
@@ -4036,10 +4030,10 @@ function inspicEval(expr){
             el: $('#insertPicture .imagePreview')
         });
         new InnerCaptionPreview({
-            el: $('#insertPicture .pic_caption_inner')
+            el: $('#insertPicture .ipic-cap-in')
         });
         new OuterCaptionPreview({
-            el: $('#insertPicture .pic_caption_outer')
+            el: $('#insertPicture .ipic-cap-out')
         });
     }
     inspic.view.addPreviews=addPreviews;
@@ -4146,7 +4140,7 @@ function inspicEval(expr){
 
 	//InnerShadow and InnerCaption
 	if ( g('innerShadow.enable') || (g('caption.inner.enable') && g('caption').trim()) ) {
-	    var inner = $('<span class="pic_inner">');
+	    var inner = $('<span class="ipic-inner">');
 	    inner.append(ph);
 	    // InnerShadow
 	    if (g('innerShadow.enable'))
@@ -4156,7 +4150,7 @@ function inspicEval(expr){
 
 	    // InnerCaption
 	    if (g('caption.inner.enable') && g('caption').trim()){
-		var caption = $('<span class="pic_caption_inner">');
+		var caption = $('<span class="ipic-cap-in">');
 		caption.html(g('caption').trim());
 		caption.inspic('css','text-align',g('caption.textAlign'));
 		g('caption.vpos')=='top' && caption.inspic('css','top','0');
@@ -4172,10 +4166,10 @@ function inspicEval(expr){
 	    ph = inner;
 	}
 	
-	//span pic_border
+	//span ipic-bdr
 	if ( ( g('border.padding') && (g('innerShadow.enable') || g('caption.inner.enable')) ) || 
 	     ( !g('border.padding') && g('outerShadow.enable') && g('innerShadow.enable') ) ){
-	    var border= $('<span class="pic_border">');
+	    var border= $('<span class="ipic-bdr">');
 	    border.append(ph);
 	    ph=border;
 	}
@@ -4209,19 +4203,18 @@ function inspicEval(expr){
 	    g('href.target') && ph.attr('target', g('href.target'));
 	}
 	
-	// OuterCaption and pic_wrapper
+	// OuterCaption and ipic-wrp
 	if (g('caption.outer.enable') && g('caption').trim()) {
-	    var wrapper = $('<span class="pic_wrapper">');
+	    var wrapper = $('<span class="ipic-wrp">');
 	    g('caption.outer.border.enable') && wrapper.inspic('css','border', g('caption.outer.border'));
 	    wrapper.inspic('css', 'background-color', g('caption.outer.background'));
 	    wrapper.inspic('css', 'padding', p(g('caption.outer.padding')));
 	    wrapper.inspic('css', 'border-radius', p(g('caption.outer.radius')));
 	    //FIXME: width of outerCaption should be calculated by model and must not depend on view! 
-	    var width=$('#insertPicture .preview .pic_wrapper').width();
-            console.log(width);
+	    var width=$('#insertPicture .preview .ipic-wrp').width();
 	    width && wrapper.inspic('css', 'width', p(width));
 	    
-	    var caption = $('<span class="pic_caption_outer">');
+	    var caption = $('<span class="ipic-cap-out">');
 	    caption.html(g('caption').trim());
 	    caption.inspic('css', 'color', g('caption.outer.forecolor'));
 	    caption.inspic('css', 'text-align', g('caption.textAlign'));
@@ -4235,7 +4228,7 @@ function inspicEval(expr){
 	//Position
 	ph.inspic('css','float', g('position.float'));
 	if (g('position.clearfix')) {
-	    var margin = $('<span class="pic_clearfix">');
+	    var margin = $('<span class="ipic-cfx">');
 	    margin.inspic('css','text-align', g('position.textAlign'));
 	    margin.append(ph);
 	    ph = margin;
@@ -4441,7 +4434,7 @@ function inspicEval(expr){
         '<div class="preview">'+
         '<div class="imagePreview">'+
         '<span> بلاگ رسانه ای است برای متخصصان تا با استفاده از امکانات پیشرفته ، حضور موثرتری در اینترنت داشته باشند. </span>'+
-        '<span class="inspic_clearfix"> <span class="pic_margin"> <span class="pic_wrapper"> <span class="pic_border"> <span class="pic_inner"> <span class="pic_caption_inner"></span> <img> </span> </span> <span class="pic_caption_outer"> </span> </span> </span> </span>'+
+        '<span class="inspic_clearfix"> <span class="ipic-mrg"> <span class="ipic-wrp"> <span class="ipic-bdr"> <span class="ipic-inner"> <span class="ipic-cap-in"></span> <img> </span> </span> <span class="ipic-cap-out"> </span> </span> </span> </span>'+
         '<span> سعی ما در بلاگ بر این است تا به ساده ترین نحو ممکن این فرصت را برای نخبگان، محققان، هنرمندان، اهل قلم و بلاگ نویسان حرفه ای فراهم آوریم تا بتوانند بدون پرداخت هزینه و فارغ از دغدغه های فنی، بر تولید و نشر آثار خود تمرکز کنند. </span>'+
         '</div>'+
         '<div class="loading">'+
@@ -4451,7 +4444,7 @@ function inspicEval(expr){
         '</div>';
 
     function open($el, args){
-        console.log(args);
+        //console.log(args);
         $el=$($el).html(body);
         inspic.init(args.src);
         if (args.html)

@@ -12,7 +12,7 @@
         '<div class="preview">'+
         '<div class="imagePreview">'+
         '<span> بلاگ رسانه ای است برای متخصصان تا با استفاده از امکانات پیشرفته ، حضور موثرتری در اینترنت داشته باشند. </span>'+
-        '<span class="inspic_clearfix"> <span class="pic_margin"> <span class="pic_wrapper"> <span class="pic_border"> <span class="pic_inner"> <span class="pic_caption_inner"></span> <img> </span> </span> <span class="pic_caption_outer"> </span> </span> </span> </span>'+
+        '<span class="inspic_clearfix"> <span class="ipic-mrg"> <span class="ipic-wrp"> <span class="ipic-bdr"> <span class="ipic-inner"> <span class="ipic-cap-in"></span> <img> </span> </span> <span class="ipic-cap-out"> </span> </span> </span> </span>'+
         '<span> سعی ما در بلاگ بر این است تا به ساده ترین نحو ممکن این فرصت را برای نخبگان، محققان، هنرمندان، اهل قلم و بلاگ نویسان حرفه ای فراهم آوریم تا بتوانند بدون پرداخت هزینه و فارغ از دغدغه های فنی، بر تولید و نشر آثار خود تمرکز کنند. </span>'+
         '</div>'+
         '<div class="loading">'+
@@ -22,7 +22,7 @@
         '</div>';
 
     function open($el, args){
-        console.log(args);
+        //console.log(args);
         $el=$($el).html(body);
         inspic.init(args.src);
         if (args.html)

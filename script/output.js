@@ -100,7 +100,7 @@
 
 	//InnerShadow and InnerCaption
 	if ( g('innerShadow.enable') || (g('caption.inner.enable') && g('caption').trim()) ) {
-	    var inner = $('<span class="pic_inner">');
+	    var inner = $('<span class="ipic-inner">');
 	    inner.append(ph);
 	    // InnerShadow
 	    if (g('innerShadow.enable'))
@@ -110,7 +110,7 @@
 
 	    // InnerCaption
 	    if (g('caption.inner.enable') && g('caption').trim()){
-		var caption = $('<span class="pic_caption_inner">');
+		var caption = $('<span class="ipic-cap-in">');
 		caption.html(g('caption').trim());
 		caption.inspic('css','text-align',g('caption.textAlign'));
 		g('caption.vpos')=='top' && caption.inspic('css','top','0');
@@ -126,10 +126,10 @@
 	    ph = inner;
 	}
 	
-	//span pic_border
+	//span ipic-bdr
 	if ( ( g('border.padding') && (g('innerShadow.enable') || g('caption.inner.enable')) ) || 
 	     ( !g('border.padding') && g('outerShadow.enable') && g('innerShadow.enable') ) ){
-	    var border= $('<span class="pic_border">');
+	    var border= $('<span class="ipic-bdr">');
 	    border.append(ph);
 	    ph=border;
 	}
@@ -163,19 +163,18 @@
 	    g('href.target') && ph.attr('target', g('href.target'));
 	}
 	
-	// OuterCaption and pic_wrapper
+	// OuterCaption and ipic-wrp
 	if (g('caption.outer.enable') && g('caption').trim()) {
-	    var wrapper = $('<span class="pic_wrapper">');
+	    var wrapper = $('<span class="ipic-wrp">');
 	    g('caption.outer.border.enable') && wrapper.inspic('css','border', g('caption.outer.border'));
 	    wrapper.inspic('css', 'background-color', g('caption.outer.background'));
 	    wrapper.inspic('css', 'padding', p(g('caption.outer.padding')));
 	    wrapper.inspic('css', 'border-radius', p(g('caption.outer.radius')));
 	    //FIXME: width of outerCaption should be calculated by model and must not depend on view! 
-	    var width=$('#insertPicture .preview .pic_wrapper').width();
-            console.log(width);
+	    var width=$('#insertPicture .preview .ipic-wrp').width();
 	    width && wrapper.inspic('css', 'width', p(width));
 	    
-	    var caption = $('<span class="pic_caption_outer">');
+	    var caption = $('<span class="ipic-cap-out">');
 	    caption.html(g('caption').trim());
 	    caption.inspic('css', 'color', g('caption.outer.forecolor'));
 	    caption.inspic('css', 'text-align', g('caption.textAlign'));
@@ -189,7 +188,7 @@
 	//Position
 	ph.inspic('css','float', g('position.float'));
 	if (g('position.clearfix')) {
-	    var margin = $('<span class="pic_clearfix">');
+	    var margin = $('<span class="ipic-cfx">');
 	    margin.inspic('css','text-align', g('position.textAlign'));
 	    margin.append(ph);
 	    ph = margin;

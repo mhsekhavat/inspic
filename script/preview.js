@@ -38,11 +38,11 @@
         initialize: function(){
             var model=this.model=mainModel;
             var $clearfix=this.$('.inspic_clearfix');
-            var $margin=this.$('.pic_margin');
-            var $wrapper=this.$('.pic_wrapper');
+            var $margin=this.$('.ipic-mrg');
+            var $wrapper=this.$('.ipic-wrp');
             var $img=this.$('img');
             model.subscribe('position.clearfix', function(val){
-                $clearfix[val ? 'addClass' : 'removeClass']('pic_clearfix');
+                $clearfix[val ? 'addClass' : 'removeClass']('ipic-cfx');
             })();
             model.subscribe('position.float', function(val){
                 $margin.css('float', val);
@@ -63,8 +63,8 @@
     var BorderPreview=Backbone.View.extend({
         initialize: function(){
             var model=this.model=mainModel;
-            var $border=this.$('.pic_border');
-            var $inner=this.$('.pic_inner');
+            var $border=this.$('.ipic-bdr');
+            var $inner=this.$('.ipic-inner');
             var _this=this;
             var p=inspic.pixelize;
             model.subscribe('innerShadow', function(val){
@@ -173,10 +173,10 @@
             el: $('#insertPicture .imagePreview')
         });
         new InnerCaptionPreview({
-            el: $('#insertPicture .pic_caption_inner')
+            el: $('#insertPicture .ipic-cap-in')
         });
         new OuterCaptionPreview({
-            el: $('#insertPicture .pic_caption_outer')
+            el: $('#insertPicture .ipic-cap-out')
         });
     }
     inspic.view.addPreviews=addPreviews;

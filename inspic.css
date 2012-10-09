@@ -212,42 +212,42 @@ div.colorPicker-swatch {
   cursor: pointer;
   background-color: #dddddd;
 }
-.pic_clearfix {
+.ipic-cfx {
   display: block !important;
 }
-.pic_margin,
-.pic_border,
-.pic_caption_inner,
-.pic_caption_outer,
-.pic_inner,
-.pic_wrapper {
+.ipic-mrg,
+.ipic-bdr,
+.ipic-cap-in,
+.ipic-cap-out,
+.ipic-inner,
+.ipic_wrp {
   display: inline-block;
   position: relative;
 }
-.pic_inner img, .pic_border img {
+.ipic-inner img, .ipic-bdr img {
   vertical-align: middle;
 }
-.pic_inner img {
+.ipic-inner img {
   border-width: 0;
   z-index: -1;
   position: relative;
 }
-.pic_border {
+.ipic-bdr {
   z-index: 1;
 }
-.pic_caption_inner {
+.ipic-cap-in {
   position: absolute;
   padding: 20px;
   min-width: 30%;
 }
-.pic_caption_outer {
+.ipic-cap-out {
   display: block;
   padding: 5px;
 }
-.pic_caption_inner h1,
-.pic_caption_outer h1,
-.pic_caption_inner p,
-.pic_caption_outer p {
+.ipic-cap-in h1,
+.ipic-cap-out h1,
+.ipic-cap-in p,
+.ipic-cap-out p {
   padding: 0;
   margin: 0;
   font-weight: normal;
