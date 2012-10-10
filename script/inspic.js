@@ -313,6 +313,8 @@ function inspicEval(expr){
     };
 
     inspic.bayanbox=function(url, query){
+        if (!url)
+            return '';
         return url.replace(/\?.*$/,'')+'?'+query;
     };
 
