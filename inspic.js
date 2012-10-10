@@ -2989,6 +2989,8 @@ function inspicEval(expr){
     };
 
     inspic.bayanbox=function(url, query){
+        if (!url)
+            return '';
         return url.replace(/\?.*$/,'')+'?'+query;
     };
 
@@ -4482,7 +4484,7 @@ function inspicEval(expr){
         initialize: function(){
             var model=this.model=mainModel;
             var $el=this.$el;
-            var $wrapper=$el.closest('.pic_wrapper');
+            var $wrapper=$el.closest('.ipic-wrp');
             var p=inspic.pixelize;
             model.subscribe('caption.outer.enable', function(val){
                 $el.css('display', (val ? 'block' : 'none'));

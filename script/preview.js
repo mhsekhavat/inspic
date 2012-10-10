@@ -132,7 +132,7 @@
         initialize: function(){
             var model=this.model=mainModel;
             var $el=this.$el;
-            var $wrapper=$el.closest('.pic_wrapper');
+            var $wrapper=$el.closest('.ipic-wrp');
             var p=inspic.pixelize;
             model.subscribe('caption.outer.enable', function(val){
                 $el.css('display', (val ? 'block' : 'none'));
