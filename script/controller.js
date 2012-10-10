@@ -54,15 +54,17 @@
                 set('isLoading', false);
                 set('src.width', newImg.width());
                 set('src.height', newImg.height());
-                
+
+                //Overriding img width and height in when loading from html string -> input.js
                 var loadedH=inspic.srcLoadedHeight, loadedW=inspic.srcLoadedWidth;
+                inspic.srcLoadedWidth=inspic.srcLoadedHeight=undefined;
                 if (loadedH || loadedW)
                     set('keep_ratio', !!(loadedH && loadedW))
                 var h=loadedH || newImg.height();
                 var w=loadedW || newImg.width();
-                
-                set('height', h);
-                set('width', w);
+                setField('height', h);
+                setField('width', w);
+
                 set('src', url);
                 var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir(:\d+)?\/[^?]*(\?(thumb|image_preview|view))?$/);
                 if (bayan) {
@@ -100,19 +102,29 @@
         'width': function(val){
             val=numberize(val);
             val=Math.round(val);
-            set('width', val);
             if (get('keep_ratio'))
-                set('height', Math.round(val*get('src.height')/get('src.width')));
+                setField('scale', val/get('src.width')*100);
+            set('width', val);
         },
         
         'height': function(val){
             val=numberize(val);
             val=Math.round(val);
-            set('height', val);
             if (get('keep_ratio'))
-                set('width', Math.round(val*get('src.width')/get('src.height')));
+                setField('scale', val/get('src.height')*100);
+            set('height', val);
+                
         },
 
+        'scale': function(val){
+            val=numberize(val);
+            val=Math.round(val);
+            set('keep_ratio', true);
+            set('scale', val);
+            set('width', Math.round(val*get('src.width')/100));
+            set('height', Math.round(val*get('src.height')/100));
+        },
+        
         'keep_ratio': function(val){
             set('keep_ratio', val);
             if (val)

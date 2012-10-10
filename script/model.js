@@ -101,6 +101,7 @@
             'width' : null,
             'height' : null,
             'keep_ratio' : true,
+            'scale': 100,
             'href.type': 'src',
             'href.url': '',
             'href.target': '_blank',

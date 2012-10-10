@@ -26,7 +26,14 @@
 		_.extend(set, fields);
 	    }
 	    
-	    
+            var sz=data['sz'];
+            if (sz){
+                if ((set['keep_ratio']=!_.isArray(sz)))
+                    set['scale']=sz;
+                else
+                    setPrefixArray(sz, '', ['width', 'height']);
+            }
+            
 	    set['href.url']= $html.find('[href]').attr('href') || '';
             var tmp=data['hrf'];
             set['href.type']=( tmp ?
@@ -106,28 +113,31 @@
 		}
 
 		var formatFields=['type', 'bold', 'italic', 'color.'+type, 'size'];
+                var selector='.ipic-cap-in span, .ipic-cap-out span';
 		arr=data['h1'];
 		if (set['caption.h1.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.h1.', formatFields);
-		    set['caption.h1.text']=$html.find('ipic-cap-in span, ipic-cap-out span').first().text() || '';
+		    set['caption.h1.text']=$html.find(selector).first().text() || '';
 		}
 
 		arr=data['p'];
 		if (set['caption.p.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.p.', formatFields);
-		    set['caption.p.text']=$html.find('ipic-cap-in span, ipic-cap-out span').second().text() || '';
+		    set['caption.p.text']=$html.find(selector).second().text() || '';
 		}
 	    } else
 		set['capion.enable']=false;
 
             var $img= $html.find('img[src]').first();
+            inspic.srcLoadedWidth=undefined;
+            inspic.srcLoadedHeight=undefined;
 	    if ($img.length){
 		set['src']=$img.attr('src');
 		set['title']=($img.attr('alt') || $img.attr('title') || '');
                 inspic.srcLoadedWidth=$img.width();
                 inspic.srcLoadedHeight=$img.height();
                 var model=inspic.model.mainModel;
-            }
+            }                 
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);
 	} catch(ex) {

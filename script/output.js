@@ -28,9 +28,8 @@
 	    });
 	}
 
-	if (g('src.width')!=g('width') || g('src.height')!=g('height'))
-	    ret['src']=getPrefixArray('', ['width', 'height', 'keep_ratio']);
-
+        ret['sz']=getPrefixArray('', (g('keep_ratio') ? ['scale'] : ['width', 'height'] ));
+        
 	if (g('href.type')!='none')
 	    ret['hrf']=m('href.type');
 	
