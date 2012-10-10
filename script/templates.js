@@ -13,7 +13,7 @@ var inspic=inspic || {};
         '</script>'+
         
     '<script type="text/template" inspic_tem="text" >'+
-        '<span class="inspic_label"><%=label%></span>'+
+        '<% if (data.icon || data.text) { %> <span class="inspic_label"><%=label%></span> <% } %>'+
         '<input id="<%=id%>" type="text">'+
         '</script>'+
 

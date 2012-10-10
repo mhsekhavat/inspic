@@ -2630,7 +2630,7 @@ var inspic=inspic || {};
         '</script>'+
         
     '<script type="text/template" inspic_tem="text" >'+
-        '<span class="inspic_label"><%=label%></span>'+
+        '<% if (data.icon || data.text) { %> <span class="inspic_label"><%=label%></span> <% } %>'+
         '<input id="<%=id%>" type="text">'+
         '</script>'+
 
@@ -3658,6 +3658,7 @@ function inspicEval(expr){
             new TextInputField('href.url', {
                 width : 'long',
                 textAlign : 'left',
+                visibilityCriteria: '`href.type`=="url"',
                 subscribe : {
                     '`href.type`' : function(substituted) {
                         substituted == '"url"' ? this.$('input').css('display', 'inline-block').focus().select() : this.$('input').hide();

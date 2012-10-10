@@ -252,6 +252,7 @@
             new TextInputField('href.url', {
                 width : 'long',
                 textAlign : 'left',
+                visibilityCriteria: '`href.type`=="url"',
                 subscribe : {
                     '`href.type`' : function(substituted) {
                         substituted == '"url"' ? this.$('input').css('display', 'inline-block').focus().select() : this.$('input').hide();
