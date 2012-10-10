@@ -121,13 +121,15 @@
 		set['capion.enable']=false;
 
             var $img= $html.find('img[src]').first();
+            inspic.srcLoadedWidth=undefined;
+            inspic.srcLoadedHeight=undefined;
 	    if ($img.length){
 		set['src']=$img.attr('src');
 		set['title']=($img.attr('alt') || $img.attr('title') || '');
                 inspic.srcLoadedWidth=$img.width();
                 inspic.srcLoadedHeight=$img.height();
                 var model=inspic.model.mainModel;
-            }
+            }                 
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);
 	} catch(ex) {
