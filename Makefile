@@ -17,8 +17,8 @@ SCRIPTS=script/include/underscore.js \
 	script/preview.js\
 	script/output.js \
 	script/input.js \
-	script/open.js \
-	script/init.js
+	script/init.js \
+	script/open.js
 
 STYLES=	css/colorPicker.css \
 	css/style.css \
