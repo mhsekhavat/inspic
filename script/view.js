@@ -90,7 +90,7 @@
         render : function(field, args) {
             InputField.prototype.render.call(this, field, args);
 
-            var width = args.width || 30;
+            var width = args.width || 50;
             (width == 'long') && ( width = 250);
 
             this.$('input').css({

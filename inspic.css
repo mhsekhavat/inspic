@@ -51,15 +51,11 @@ div.colorPicker-swatch {
   /* the input field */
 
 }
-#insertPicture input, #insertPicture img, #insertPicture select {
+#insertPicture input,
+#insertPicture img,
+#insertPicture select,
+#insertPicture label {
   vertical-align: middle;
-}
-#insertPicture input {
-  margin: 0;
-}
-#insertPicture input[type="text"] {
-  direction: ltr;
-  text-align: center;
 }
 #insertPicture .tab_headers {
   margin-right: 6px;
@@ -146,48 +142,48 @@ div.colorPicker-swatch {
 #insertPicture .iconSelect .iconSelectItem.selected {
   background-color: white;
 }
+#insertPicture input {
+  float: left;
+  margin: 0;
+}
+#insertPicture input[type="text"] {
+  direction: ltr;
+  text-align: center;
+  height: 21px;
+  border: 1px solid #bebebe;
+  border-radius: 4px;
+}
+#insertPicture input[type="text"].spinner {
+  border-radius: 0 4px 4px 0;
+  background: #ddd;
+}
 #insertPicture .inspic_spinner {
+  display: block;
+  float: left;
+  vertical-align: middle;
   position: relative;
+  left: 1px;
+}
+#insertPicture .inspic_spinner a {
   width: 11px;
-  height: 5px;
-  display: inline-block;
-  vertical-align: middle;
+  height: 11px;
+  display: block;
+  clear: both;
+  border: 1px solid #bebebe;
 }
-#insertPicture .inspic_spinner > span {
-  position: absolute;
-  line-height: 0;
-  right: 0;
-  padding: 2px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  display: inline-block;
-  background-color: #ffffff;
-  width: 7px;
-  height: 5px;
-  vertical-align: middle;
-}
-#insertPicture .inspic_spinner > span[disabled="disabled"] {
-  cursor: default;
-}
-#insertPicture .inspic_spinner > span.inspic_dn {
-  top: 2px;
-  border-radius: 0 0 3px 3px;
-  background-image: url("images/icon/bullet_arrow_down.png");
+#insertPicture .inspic_spinner .up {
+  background-image: url("images/icon/up.png");
   background-position: center center;
   background-repeat: no-repeat;
+  border-radius: 4px 0 0 0;
 }
-#insertPicture .inspic_spinner > span.inspic_up {
-  bottom: 2px;
-  border-radius: 3px 3px 0 0;
-  background-image: url("images/icon/bullet_arrow_up.png");
+#insertPicture .inspic_spinner .dn {
+  background-image: url("images/icon/dn.png");
   background-position: center center;
   background-repeat: no-repeat;
-}
-#insertPicture .inspic_spinner > span:hover {
-  background-color: #F2E9D5;
-}
-#insertPicture .inspic_spinner > span:hover[disabled="disabled"] {
-  background-color: #ffffff;
+  position: relative;
+  top: -1px;
+  border-radius: 0 0 0 4px;
 }
 #insertPicture .inspic_button.submit {
   background-color: #e0fae7;

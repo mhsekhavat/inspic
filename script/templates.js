@@ -44,9 +44,8 @@ var inspic=inspic || {};
 
     '<script type="text/template" id="inspic_tem_spinner">'+
         '<span class="inspic_spinner">'+
-        '&nbsp;'+
-        '<span class="inspic_up"></span>'+
-        '<span class="inspic_dn"></span>'+
+        '<a href="#" class="up"></a>'+
+        '<a href="#" class="dn"></a>'+
         '</span>'+
         '</script>';
 

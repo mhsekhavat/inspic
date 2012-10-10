@@ -12,16 +12,8 @@
     padding: 6px;
     background-color:#EDEDED;
 
-    input,img,select{
+    input,img,select,label{
 	vertical-align:middle;
-    }
-
-    input{
-	margin:0;
-	&[type="text"] {
-	    direction: ltr;
-	    text-align: center;
-	}
     }
 
     @tabBorderColor: #bbb;
@@ -118,45 +110,47 @@
 	    }
 	}
     }
-    
+
+    @inputBorderColor: #bebebe;
+    @inputRadius: 4px;
+    input{
+	float:left;
+	margin:0;
+	&[type="text"] {
+	    direction: ltr;
+	    text-align: center;
+	    height: 21px;
+	    border: 1px solid @inputBorderColor;
+	    border-radius: @inputRadius;
+	    &.spinner{
+		border-radius: 0 @inputRadius @inputRadius 0;
+		background: #ddd;
+	    }
+	}
+    }
+
     .inspic_spinner{
-	position:relative;
-	width:11px;
-	height: 5px;
-	display:inline-block;
+	display:block;
+	float:left;
 	vertical-align:middle;
-	>span{
-	    position:absolute;
-	    line-height:0;
-	    right:0;
-	    padding:2px;
-	    cursor:pointer;
-	    border: 1px solid #ccc;
-	    display: inline-block;
-	    @back:#fff;
-	    background-color: @back;
-	    width: 7px;
-	    height: 5px;
-	    vertical-align: middle;
-	    &[disabled="disabled"]{
-		cursor:default;
-	    }
-	    &.inspic_dn{
-		top:2px;
-		border-radius: 0 0 3px 3px;
-		.icon("bullet_arrow_down.png");
-	    }
-	    &.inspic_up{
-		bottom:2px;
-		border-radius: 3px 3px 0 0;
-		.icon("bullet_arrow_up.png");
-	    }
-	    &:hover{
-		background-color: #F2E9D5;
-		&[disabled="disabled"]{
-		    background-color:@back;
-		}
-	    }
+	position: relative;
+	left:1px;
+	a{
+	    width: 11px;
+	    height: 11px;
+	    display: block;
+	    clear: both;
+	    border: 1px solid @inputBorderColor;
+	}
+	.up{
+	    .icon('up.png');
+	    border-radius: @inputRadius 0 0 0;
+	}
+	.dn{
+	    .icon('dn.png');
+	    position:relative;
+	    top:-1px;
+	    border-radius: 0 0 0 @inputRadius;
 	}
     }
 

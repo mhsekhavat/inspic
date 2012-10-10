@@ -2661,9 +2661,8 @@ var inspic=inspic || {};
 
     '<script type="text/template" id="inspic_tem_spinner">'+
         '<span class="inspic_spinner">'+
-        '&nbsp;'+
-        '<span class="inspic_up"></span>'+
-        '<span class="inspic_dn"></span>'+
+        '<a href="#" class="up"></a>'+
+        '<a href="#" class="dn"></a>'+
         '</span>'+
         '</script>';
 
@@ -2787,8 +2786,8 @@ function inspicEval(expr){
         $.each(this, function(){
             var $text=$(this);
             var $spinner=$(spinnerTem);
-            var $up=$spinner.find('.inspic_up');
-            var $dn=$spinner.find('.inspic_dn');
+            var $up=$spinner.find('.up');
+            var $dn=$spinner.find('.dn');
 
             function updateDisablity(){
                 var val=parseFloat($text.val());
@@ -2816,7 +2815,8 @@ function inspicEval(expr){
             });
 
             $text.width($text.width()-11);
-            $text.after($spinner);
+            $text.addClass('spinner');
+            $text.before($spinner);
 
             function mousePress($el, func){
                 var i1=NaN,i2=NaN;
@@ -3491,7 +3491,7 @@ function inspicEval(expr){
         render : function(field, args) {
             InputField.prototype.render.call(this, field, args);
 
-            var width = args.width || 30;
+            var width = args.width || 50;
             (width == 'long') && ( width = 250);
 
             this.$('input').css({

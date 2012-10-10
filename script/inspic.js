@@ -113,8 +113,8 @@ function inspicEval(expr){
         $.each(this, function(){
             var $text=$(this);
             var $spinner=$(spinnerTem);
-            var $up=$spinner.find('.inspic_up');
-            var $dn=$spinner.find('.inspic_dn');
+            var $up=$spinner.find('.up');
+            var $dn=$spinner.find('.dn');
 
             function updateDisablity(){
                 var val=parseFloat($text.val());
@@ -142,7 +142,8 @@ function inspicEval(expr){
             });
 
             $text.width($text.width()-11);
-            $text.after($spinner);
+            $text.addClass('spinner');
+            $text.before($spinner);
 
             function mousePress($el, func){
                 var i1=NaN,i2=NaN;
