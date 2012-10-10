@@ -181,7 +181,19 @@
                 visibilityCriteria : '`src.bayan` && `src`'
             })
         )(
-            function() {
+            function(){
+                var slider=$('<input>', {
+                    type:'range',
+                    min: '0',
+                    max: '10',
+                    progress: 'true'
+                });
+                $(function(){
+                    slider.rangeinput();
+                });
+                return slider;
+            }()
+/*            function() {
                 var wrapper = $('<span>');
                 var scroller = inspic.scroller(function(val) {
                     inspic.controller.setField('width', val * 1000);
@@ -197,7 +209,7 @@
                 wrapper.addClass('inspic_inputfield');
                 wrapper.append(scroller);
                 return wrapper;
-            }()
+            }()*/
         )(
             new TextInputField('width', {
                 visibilityCriteria : '`src.adv` && `src`',

@@ -42,6 +42,14 @@ div.colorPicker-swatch {
   direction: rtl;
   padding: 6px;
   background-color: #EDEDED;
+  /* slider root element */
+
+  /* progress bar (enabled with progress: true) */
+
+  /* drag handle */
+
+  /* the input field */
+
 }
 #insertPicture input, #insertPicture img, #insertPicture select {
   vertical-align: middle;
@@ -211,6 +219,52 @@ div.colorPicker-swatch {
 #insertPicture .inspic_button.cancel:hover {
   cursor: pointer;
   background-color: #dddddd;
+}
+#insertPicture .slider {
+  background: url(images/icon/slider.png) no-repeat;
+  height: 15px;
+  position: relative;
+  cursor: pointer;
+  width: 104px;
+  float: left;
+  clear: right;
+  margin-top: 10px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-box-shadow: inset 0 0 8px #000;
+}
+#insertPicture .progress {
+  height: 15px;
+  /*left: 10px;
+	width: 90px;*/
+
+  position: relative;
+  background-color: #C5FF00;
+  display: none;
+  opacity: 0.6;
+}
+#insertPicture .handle {
+  background: #ffffff url("http://jquerytools.org/media/img/gradient/h30.png") repeat-x 0 0;
+  height: 8px;
+  width: 8px;
+  top: 2px;
+  position: absolute;
+  display: block;
+  margin-top: 1px;
+  border: 1px solid #000;
+  cursor: move;
+  border-radius: 3px;
+}
+#insertPicture .range {
+  border: 1px inset #ddd;
+  float: left;
+  font-size: 20px;
+  margin: 0 0 0 15px;
+  padding: 3px 0;
+  text-align: center;
+  width: 50px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 .ipic-cfx {
   display: block !important;

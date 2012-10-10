@@ -1,5 +1,3 @@
-.PHONY:all deploy
-
 all: inspic.js inspic.css
 	echo successed
 
@@ -9,6 +7,7 @@ deploy: all
 SCRIPTS=script/include/underscore.js \
 	script/include/backbone.js \
 	script/include/jquery.colorPicker.js \
+	script/include/rangeinput.js \
 	script/templates.js \
 	script/inspic.js \
 	script/model.js \
@@ -38,3 +37,4 @@ css/icons.css: css/icons.less.css css/include.less
 sm_icons.css: inspic.css
 	spritemapper inspic.css
 
+.PHONY:all deploy
