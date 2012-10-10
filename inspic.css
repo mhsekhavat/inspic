@@ -54,7 +54,8 @@ div.colorPicker-swatch {
 #insertPicture input,
 #insertPicture img,
 #insertPicture select,
-#insertPicture label {
+#insertPicture label,
+#insertPicture .inspic_inputfield {
   vertical-align: middle;
 }
 #insertPicture .tab_headers {
@@ -143,30 +144,47 @@ div.colorPicker-swatch {
   background-color: white;
 }
 #insertPicture input {
-  float: left;
+  padding: 3px;
+  float: right;
+  height: 21px;
   margin: 0;
 }
 #insertPicture input[type="text"] {
   direction: ltr;
   text-align: center;
-  height: 21px;
   border: 1px solid #bebebe;
-  border-radius: 4px;
+  border-radius: 4px 0 0 4px;
+  box-shadow: 0 0 2px #bebebe inset;
 }
 #insertPicture input[type="text"].spinner {
+  border-radius: 0;
+}
+#insertPicture .inspic_label {
+  height: 19px;
+  display: inline-block;
+  border: 1px solid #bebebe;
+  vertical-align: middle;
+  position: relative;
+  padding: 4px;
+  left: -1px;
+  float: right;
+  font-size: 12px;
   border-radius: 0 4px 4px 0;
   background: #ddd;
 }
+#insertPicture .inspic_label label {
+  display: inline-block;
+}
 #insertPicture .inspic_spinner {
   display: block;
-  float: left;
+  float: right;
   vertical-align: middle;
   position: relative;
   left: 1px;
 }
 #insertPicture .inspic_spinner a {
-  width: 11px;
-  height: 11px;
+  width: 13px;
+  height: 13px;
   display: block;
   clear: both;
   border: 1px solid #bebebe;

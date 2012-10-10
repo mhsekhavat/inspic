@@ -1,6 +1,7 @@
 var inspic=inspic || {};
 (function($){
     var head='<script type="text/template" inspic_tem="label">'+
+        '<% if (data.icon || data.text){ %>'+
         '<label for="<%=id%>">'+
         '<% if (data.icon) {%>'+
         '<span class="inspic16 <%=data.icon%>" title="<%=data.text%>"></span>'+
@@ -8,10 +9,11 @@ var inspic=inspic || {};
         '<%=data.text%>'+
         '<% } %>'+
         '</label>'+
+        '<% } %>'+
         '</script>'+
-
+        
     '<script type="text/template" inspic_tem="text" >'+
-        '<%=label%>'+
+        '<span class="inspic_label"><%=label%></span>'+
         '<input id="<%=id%>" type="text">'+
         '</script>'+
 

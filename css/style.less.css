@@ -12,7 +12,7 @@
     padding: 6px;
     background-color:#EDEDED;
 
-    input,img,select,label{
+    input,img,select,label,.inspic_inputfield{
 	vertical-align:middle;
     }
 
@@ -113,31 +113,51 @@
 
     @inputBorderColor: #bebebe;
     @inputRadius: 4px;
+    @inputHeight: 30px;
+
     input{
-	float:left;
+	padding: 3px;
+	float:right;
+	height: @inputHeight - 9;
 	margin:0;
 	&[type="text"] {
 	    direction: ltr;
 	    text-align: center;
-	    height: 21px;
 	    border: 1px solid @inputBorderColor;
-	    border-radius: @inputRadius;
+	    border-radius: @inputRadius 0 0 @inputRadius;
+	    box-shadow: 0 0 2px @inputBorderColor inset;
 	    &.spinner{
-		border-radius: 0 @inputRadius @inputRadius 0;
-		background: #ddd;
+		border-radius: 0;
 	    }
 	}
     }
-
+    
+    .inspic_label{
+	height: @inputHeight - 11;
+	display:inline-block;
+	border: 1px solid @inputBorderColor;
+	vertical-align:middle;
+	position: relative;
+	padding:4px;
+	left: -1px;
+	float:right;
+	font-size: 12px;
+	border-radius: 0 @inputRadius @inputRadius 0;
+	background: #ddd;
+	label{
+	    display: inline-block;
+	}
+    }
+   
     .inspic_spinner{
 	display:block;
-	float:left;
+	float:right;
 	vertical-align:middle;
 	position: relative;
 	left:1px;
 	a{
-	    width: 11px;
-	    height: 11px;
+	    width: @inputHeight / 2 - 2;
+	    height: @inputHeight / 2 - 2;
 	    display: block;
 	    clear: both;
 	    border: 1px solid @inputBorderColor;

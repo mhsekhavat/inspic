@@ -143,7 +143,7 @@ function inspicEval(expr){
 
             $text.width($text.width()-11);
             $text.addClass('spinner');
-            $text.before($spinner);
+            $text.after($spinner);
 
             function mousePress($el, func){
                 var i1=NaN,i2=NaN;
