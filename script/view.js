@@ -184,10 +184,10 @@
             function() {
                 var wrapper = $('<span>');
                 var scroller = inspic.scroller(function(val) {
-                    inspic.controller.setField('width', val * 1000);
+                    inspic.controller.setField('scale', val * 100);
                 });
-                mainModel.subscribe('width', function(width) {
-                    scroller.setScrollerValue(width / 1000);
+                mainModel.subscribe('scale', function(scale) {
+                    scroller.setScrollerValue(Math.max(Math.min(scale/100, 1), 0));
                 })();
                 mainModel.subscribe('src', function(val) {
                     wrapper.css('display', (val ? 'inline-block' : 'none'));

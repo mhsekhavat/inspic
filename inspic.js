@@ -2630,6 +2630,7 @@ function inspicEval(expr){
             'width' : null,
             'height' : null,
             'keep_ratio' : true,
+            'scale': 100,
             'href.type': 'src',
             'href.url': '',
             'href.target': '_blank',
@@ -3119,10 +3120,10 @@ function inspicEval(expr){
             function() {
                 var wrapper = $('<span>');
                 var scroller = inspic.scroller(function(val) {
-                    inspic.controller.setField('width', val * 1000);
+                    inspic.controller.setField('scale', val * 100);
                 });
-                mainModel.subscribe('width', function(width) {
-                    scroller.setScrollerValue(width / 1000);
+                mainModel.subscribe('scale', function(scale) {
+                    scroller.setScrollerValue(Math.max(Math.min(scale/100, 1), 0));
                 })();
                 mainModel.subscribe('src', function(val) {
                     wrapper.css('display', (val ? 'inline-block' : 'none'));
@@ -3752,15 +3753,17 @@ function inspicEval(expr){
                 set('isLoading', false);
                 set('src.width', newImg.width());
                 set('src.height', newImg.height());
-                
+
+                //Overriding img width and height in when loading from html string -> input.js
                 var loadedH=inspic.srcLoadedHeight, loadedW=inspic.srcLoadedWidth;
+                inspic.srcLoadedWidth=inspic.srcLoadedHeight=undefined;
                 if (loadedH || loadedW)
                     set('keep_ratio', !!(loadedH && loadedW))
                 var h=loadedH || newImg.height();
                 var w=loadedW || newImg.width();
-                
-                set('height', h);
-                set('width', w);
+                setField('height', h);
+                setField('width', w);
+
                 set('src', url);
                 var bayan = url.match(/^(https?:\/\/)?(www\.)?bayanbox\.ir(:\d+)?\/[^?]*(\?(thumb|image_preview|view))?$/);
                 if (bayan) {
@@ -3798,19 +3801,29 @@ function inspicEval(expr){
         'width': function(val){
             val=numberize(val);
             val=Math.round(val);
-            set('width', val);
             if (get('keep_ratio'))
-                set('height', Math.round(val*get('src.height')/get('src.width')));
+                setField('scale', val/get('src.width')*100);
+            set('width', val);
         },
         
         'height': function(val){
             val=numberize(val);
             val=Math.round(val);
-            set('height', val);
             if (get('keep_ratio'))
-                set('width', Math.round(val*get('src.width')/get('src.height')));
+                setField('scale', val/get('src.height')*100);
+            set('height', val);
+                
         },
 
+        'scale': function(val){
+            val=numberize(val);
+            val=Math.round(val);
+            set('keep_ratio', true);
+            set('scale', val);
+            set('width', Math.round(val*get('src.width')/100));
+            set('height', Math.round(val*get('src.height')/100));
+        },
+        
         'keep_ratio': function(val){
             set('keep_ratio', val);
             if (val)
@@ -4068,9 +4081,8 @@ function inspicEval(expr){
 	    });
 	}
 
-	if (g('src.width')!=g('width') || g('src.height')!=g('height'))
-	    ret['src']=getPrefixArray('', ['width', 'height', 'keep_ratio']);
-
+        ret['sz']=getPrefixArray('', (g('keep_ratio') ? ['scale'] : ['width', 'height'] ));
+        
 	if (g('href.type')!='none')
 	    ret['hrf']=m('href.type');
 	
@@ -4301,7 +4313,14 @@ function inspicEval(expr){
 		_.extend(set, fields);
 	    }
 	    
-	    
+            var sz=data['sz'];
+            if (sz){
+                if ((set['keep_ratio']=!_.isArray(sz)))
+                    set['scale']=sz;
+                else
+                    setPrefixArray(sz, '', ['width', 'height']);
+            }
+            
 	    set['href.url']= $html.find('[href]').attr('href') || '';
             var tmp=data['hrf'];
             set['href.type']=( tmp ?
@@ -4381,28 +4400,31 @@ function inspicEval(expr){
 		}
 
 		var formatFields=['type', 'bold', 'italic', 'color.'+type, 'size'];
+                var selector='.ipic-cap-in span, .ipic-cap-out span';
 		arr=data['h1'];
 		if (set['caption.h1.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.h1.', formatFields);
-		    set['caption.h1.text']=$html.find('ipic-cap-in span, ipic-cap-out span').first().text() || '';
+		    set['caption.h1.text']=$html.find(selector).first().text() || '';
 		}
 
 		arr=data['p'];
 		if (set['caption.p.enable']=_.isArray(arr)){
 		    setPrefixArray(arr, 'caption.p.', formatFields);
-		    set['caption.p.text']=$html.find('ipic-cap-in span, ipic-cap-out span').second().text() || '';
+		    set['caption.p.text']=$html.find(selector).second().text() || '';
 		}
 	    } else
 		set['capion.enable']=false;
 
             var $img= $html.find('img[src]').first();
+            inspic.srcLoadedWidth=undefined;
+            inspic.srcLoadedHeight=undefined;
 	    if ($img.length){
 		set['src']=$img.attr('src');
 		set['title']=($img.attr('alt') || $img.attr('title') || '');
                 inspic.srcLoadedWidth=$img.width();
                 inspic.srcLoadedHeight=$img.height();
                 var model=inspic.model.mainModel;
-            }
+            }                 
 	    inspic.model.mainModel.set(inspic.model.mainModel.defaults);
 	    inspic.controller.setFields(set);
 	} catch(ex) {
@@ -4421,6 +4443,15 @@ function inspicEval(expr){
     inspic.loadCookie=loadCookie;
 })(jQuery); 
 (function($){
+    function init(src){
+        inspic.view.addElements();
+        inspic.view.addPreviews();
+        inspic.loadCookie();
+        if (!_.isUndefined(src))
+            inspic.controller.setField('src', src);
+    };
+    inspic.init=init;
+})(jQuery);(function($){
     var body='<div id="insertPicture">'+
         '<div class="tab_headers"></div>'+
         '<div class="tabs">'+
@@ -4452,13 +4483,4 @@ function inspicEval(expr){
         inspic.callback=args.callback;
     }
     inspic.open=open;
-})(jQuery);(function($){
-    function init(src){
-        inspic.view.addElements();
-        inspic.view.addPreviews();
-        inspic.loadCookie();
-        if (!_.isUndefined(src))
-            inspic.controller.setField('src', src);
-    };
-    inspic.init=init;
 })(jQuery);
