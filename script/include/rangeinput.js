@@ -140,7 +140,7 @@
 		// private variables
 		var self = this,  
 			 css = conf.css, 
-			 root = $("<div><div/><a href='#'/></div>").data("rangeinput", self),	
+			 root = $("<span><span/><a href='#'/></span>").data("rangeinput", self),	
 			 vertical,		
 			 value,			// current value
 			 origo,			// handle's start point
@@ -151,7 +151,7 @@
 		input.before(root);	
 		
 		var handle = root.addClass(css.slider).find("a").addClass(css.handle), 	
-			 progress = root.find("div").addClass(css.progress);
+			 progress = root.find("span").addClass(css.progress);
 		
 		// get (HTML5) attributes into configuration
 		$.each("min,max,step,value".split(","), function(i, key) {
@@ -172,7 +172,7 @@
 		
 		// Replace built-in range input (type attribute cannot be changed)
 		if (input.attr("type") == 'range') {			
-			var def = input.clone().wrap("<div/>").parent().html(),
+			var def = input.clone().wrap("<span/>").parent().html(),
 				 clone = $(def.replace(/type/i, "type=text data-orig-type"));
 				 
 			clone.val(conf.value);

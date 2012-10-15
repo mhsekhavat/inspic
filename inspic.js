@@ -2291,7 +2291,7 @@
 		// private variables
 		var self = this,  
 			 css = conf.css, 
-			 root = $("<div><div/><a href='#'/></div>").data("rangeinput", self),	
+			 root = $("<span><span/><a href='#'/></span>").data("rangeinput", self),	
 			 vertical,		
 			 value,			// current value
 			 origo,			// handle's start point
@@ -2302,7 +2302,7 @@
 		input.before(root);	
 		
 		var handle = root.addClass(css.slider).find("a").addClass(css.handle), 	
-			 progress = root.find("div").addClass(css.progress);
+			 progress = root.find("span").addClass(css.progress);
 		
 		// get (HTML5) attributes into configuration
 		$.each("min,max,step,value".split(","), function(i, key) {
@@ -2323,7 +2323,7 @@
 		
 		// Replace built-in range input (type attribute cannot be changed)
 		if (input.attr("type") == 'range') {			
-			var def = input.clone().wrap("<div/>").parent().html(),
+			var def = input.clone().wrap("<span/>").parent().html(),
 				 clone = $(def.replace(/type/i, "type=text data-orig-type"));
 				 
 			clone.val(conf.value);
@@ -2663,8 +2663,8 @@ var inspic=inspic || {};
 
     '<script type="text/template" id="inspic_tem_spinner">'+
         '<span class="inspic_spinner">'+
-        '<a href="#" class="up"></a>'+
-        '<a href="#" class="dn"></a>'+
+        '<a class="up"></a>'+
+        '<a class="dn"></a>'+
         '</span>'+
         '</script>';
 
@@ -3580,49 +3580,28 @@ function inspicEval(expr){
                     'متوسط' : 'image_preview',
                     'کامل' : 'view'
                 },
-<<<<<<< HEAD
-                visibilityCriteria : '`src.bayan` && `src`'
-            })
-        )(
-            function(){
-                var slider=$('<input>', {
-                    type:'range',
-                    min: '0',
-                    max: '10',
-                    progress: 'true'
-                });
-                $(function(){
-                    slider.rangeinput();
-                });
-                return slider;
-            }()
-/*            function() {
-=======
                 visCrit : '`src.bayan` && `src`'
             }),
-            (function() {
->>>>>>> master
-                var wrapper = $('<span>');
-                var scroller = inspic.scroller(function(val) {
-                    inspic.controller.setField('scale', val * 100);
-                });
-                mainModel.subscribe('scale', function(scale) {
-                    scroller.setScrollerValue(Math.max(Math.min(scale/100, 1), 0));
-                })();
-                mainModel.subscribe('src', function(val) {
-                    wrapper.css('display', (val ? 'inline-block' : 'none'));
-                })();
+            new (InputField.extend({
+                render: function(field, args){
+                    InputField.prototype.render.call(this, field, args);
+                    var _this=this;
+                    this.$('input').attr({
+                        min:'0',
+                        max:'100',
+                        progress:'true'
+                    }).rangeinput().change(function(e, value){
+                        inspic.controller.handleDefaultInputFieldChange(field, value, _this, e);
+                    });
+                },
+                updateValue: function(val){
 
-                wrapper.text('مقیاس: ');
-                wrapper.addClass('inspic_inputfield');
-                wrapper.append(scroller);
-                return wrapper;
-<<<<<<< HEAD
-            }()*/
-        )(
-=======
-            })(),
->>>>>>> master
+                    var rangeInput=this.$('input').data('rangeinput');
+                    rangeInput && rangeInput.setValue(val);
+                }
+            }))('scale',{
+                text: 'مقیاس'
+            }),
             new TextInputField('width', {
                 visCrit : '`src.adv` && `src`',
                 text : 'پهنا:'
@@ -3660,7 +3639,6 @@ function inspicEval(expr){
             new TextInputField('href.url', {
                 width : 'long',
                 textAlign : 'left',
-                visibilityCriteria: '`href.type`=="url"',
                 subscribe : {
                     '`href.type`' : function(substituted) {
                         substituted == '"url"' ? this.$('input').css('display', 'inline-block').focus().select() : this.$('input').hide();

@@ -125,7 +125,7 @@
 	    text-align: center;
 	    border: 1px solid @inputBorderColor;
 	    border-radius: @inputRadius 0 0 @inputRadius;
-	    box-shadow: 0 0 2px @inputBorderColor inset;
+	    /*box-shadow: 0 0 2px @inputBorderColor inset;*/
 	    &.spinner{
 		border-radius: 0;
 	    }
@@ -161,6 +161,12 @@
 	    display: block;
 	    clear: both;
 	    border: 1px solid @inputBorderColor;
+	    outline: 0;
+	    box-shadow: 0 0 3px rgba(0,0,0,.3) inset;
+	    cursor:pointer;
+	    &[disabled="disabled"]{
+		cursor:default;
+	    }
 	}
 	.up{
 	    .icon('up.png');
@@ -203,55 +209,61 @@
 
     /* slider root element */
     .slider {
-	background:url(images/icon/slider.png) no-repeat;
 	height:15px;
 	position:relative;
 	cursor:pointer;
-	width:104px;
+	width:100px;
 	float:left;
-	clear:right;
-	margin-top:10px;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	-moz-box-shadow:inset 0 0 8px #000;
+	display: inline-block;
+	margin: 6px 20px 0px 20px;
+	
+	/* progress bar (enabled with progress: true) */
+	.progress {
+	    height:5px;
+	    width: 100%;
+	    top:5px;
+	    left: 0;
+	    position:absolute;
+	    background-color:#bbb;
+	    border: 1px solid #666;
+	    box-shadow: 0 0 2px rgba(0,0,0,.5) inset;
+	    border-radius: 3px;
+	    display:inline-block;
+	    opacity:0.6;
+	}
+	/* drag handle */
+	.handle {
+	    background:#fff url("http://jquerytools.org/media/img/gradient/h30.png") repeat-x 0 0;
+	    height:8px;
+	    width:8px;
+	    top:2px;
+	    position:absolute;
+	    display:block;
+	    margin-top:1px;
+	    border:1px solid #000;
+	    border-radius: 3px;
+	}
+	&:before, &:after{
+	    content: " ";
+	    display: inline-block;
+	    position: absolute;
+	    top: 0px;
+	    width: 17px;
+	    height: 17px;
+	    left: 23px;
+	}
+	&:before{
+	    .icon("sliderRight.png");
+	    right: -23px;
+	}
+	&:after{
+	    .icon("sliderLeft.png");
+	    left:-17px;
+	}
     }
-
-    /* progress bar (enabled with progress: true) */
-    .progress {
-	height:15px;
-	/*left: 10px;
-	width: 90px;*/
-	position:relative;
-	background-color:#C5FF00;
-	display:none;
-	opacity:0.6;
-    }
-
-    /* drag handle */
-    .handle {
-	background:#fff url("http://jquerytools.org/media/img/gradient/h30.png") repeat-x 0 0;
-	height:8px;
-	width:8px;
-	top:2px;
-	position:absolute;
-	display:block;
-	margin-top:1px;
-	border:1px solid #000;
-	cursor:move;
-	border-radius: 3px;
-    }
-
-    /* the input field */
-    .range {
-	border:1px inset #ddd;
-	float:left;
-	font-size:20px;
-	margin:0 0 0 15px;
-	padding:3px 0;
-	text-align:center;
-	width:50px;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
+    .range{
+	width: 50px;
+	margin-left: 10px;
     }
 }
 

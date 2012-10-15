@@ -176,35 +176,26 @@
                 },
                 visCrit : '`src.bayan` && `src`'
             }),
-            function() {
-                var slider=$('<input>', {
-                    type:'range',
-                    min: '0',
-                    max: '10',
-                    progress: 'true'
-                });
-                $(function(){
-                    slider.rangeinput();
-                });
-                return slider;
-            }()
-/*            function() {
-                var wrapper = $('<span>');
-                var scroller = inspic.scroller(function(val) {
-                    inspic.controller.setField('scale', val * 100);
-                });
-                mainModel.subscribe('scale', function(scale) {
-                    scroller.setScrollerValue(Math.max(Math.min(scale/100, 1), 0));
-                })();
-                mainModel.subscribe('src', function(val) {
-                    wrapper.css('display', (val ? 'inline-block' : 'none'));
-                })();
+            new (InputField.extend({
+                render: function(field, args){
+                    InputField.prototype.render.call(this, field, args);
+                    var _this=this;
+                    this.$('input').attr({
+                        min:'0',
+                        max:'100',
+                        progress:'true'
+                    }).rangeinput().change(function(e, value){
+                        inspic.controller.handleDefaultInputFieldChange(field, value, _this, e);
+                    });
+                },
+                updateValue: function(val){
 
-                wrapper.text('مقیاس: ');
-                wrapper.addClass('inspic_inputfield');
-                wrapper.append(scroller);
-                return wrapper;
-            })() */,
+                    var rangeInput=this.$('input').data('rangeinput');
+                    rangeInput && rangeInput.setValue(val);
+                }
+            }))('scale',{
+                text: 'مقیاس'
+            }),
             new TextInputField('width', {
                 visCrit : '`src.adv` && `src`',
                 text : 'پهنا:'
