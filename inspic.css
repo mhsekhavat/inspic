@@ -30,20 +30,37 @@ div.colorPicker-swatch {
   cursor: pointer;
   line-height: 12px;
 }
+/*---------------------------------------------------
+    LESS Elements 0.6
+  ---------------------------------------------------
+    A set of useful LESS mixins by Dmitry Fadeyev
+    Special thanks for mixin suggestions to:
+      Kris Van Herzeele,
+      Benoit Adam,
+      Portenart Emile-Victor,
+      Ryan Faerman
+
+    More info at: http://lesselements.com
+-----------------------------------------------------*/
+.jqibox.inspic .jqimessage {
+  padding: 0px;
+}
+.jqibox.inspic .jqiclose {
+  z-index: 1000;
+}
 #insertPicture {
-  margin-left: auto;
-  margin-right: auto;
-  border-style: solid;
-  border-width: 2px;
-  width: 750px;
   position: relative;
   font-family: "tahoma";
   font-size: 12px;
   direction: rtl;
-  padding: 6px;
-  background-color: #EDEDED;
+  line-height: normal;
   /* slider root element */
 
+  /* .range is applied to input which has slider */
+
+}
+#insertPicture * {
+  outline: 0;
 }
 #insertPicture input,
 #insertPicture img,
@@ -53,57 +70,72 @@ div.colorPicker-swatch {
   vertical-align: middle;
 }
 #insertPicture .tab_headers {
-  margin-right: 6px;
+  /*background: -moz-linear-gradient(90deg, #DDDDDD 0%, #FAFAFA) repeat scroll 0 0 transparent;*/
+
+  background: #dddddd;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #dddddd), color-stop(1, #fafafa));
+  background: -ms-linear-gradient(bottom, #dddddd, #fafafa);
+  background: -moz-linear-gradient(center bottom, #dddddd 0%, #fafafa 100%);
+  padding: 6px 6px 0 5px;
   position: relative;
   top: 1px;
 }
 #insertPicture .tab_headers span[for] {
   display: inline-block;
-  padding: 5px 7px;
+  padding: 8px 12px;
   margin-right: 3px;
-  background-color: #f3f3f3;
+  background: #eeeeee;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #ffffff));
+  background: -ms-linear-gradient(bottom, #eeeeee, #ffffff);
+  background: -moz-linear-gradient(center bottom, #eeeeee 0%, #ffffff 100%);
   border-style: solid;
-  border-color: #bbbbbb;
+  border-color: #ddd;
   border-width: 1px 1px 0 1px;
   border-radius: 5px 5px 0 0;
 }
 #insertPicture .tab_headers span[for]:hover {
   cursor: pointer;
-  background-color: #f4f4f4;
 }
 #insertPicture .tab_headers span[for]:hover[disabled="disabled"] {
   cursor: default;
-  background-color: #f3f3f3;
 }
 #insertPicture .tab_headers span[for].selected, #insertPicture .tab_headers span[for].selected:hover {
-  background-color: white;
+  background: -moz-linear-gradient(-90deg, #ffffff 0%, #ffffff) repeat scroll 0 0 transparent;
   border-bottom: 1px solid white;
   z-index: 2;
 }
 #insertPicture .tab_headers .inspic_inputfield {
   float: left;
+  padding: 0;
+  margin: 0;
+  height: auto;
+}
+#insertPicture .tab_headers .inspic_inputfield label {
+  display: none;
+}
+#insertPicture .tab_headers .inspic_inputfield .iconCheck {
+  width: 24px;
+  height: 24px;
+  background-image: url("images/icon/adv.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  margin-left: 5px;
+  margin-top: 0;
+  border-radius: 3px;
+  border: 1px solid #bbb;
+  padding: 1px;
+  background-color: #fff;
+}
+#insertPicture .tab_headers .inspic_inputfield .iconCheck.checked {
+  background-color: #dadada;
 }
 #insertPicture .tabs > div {
-  border: 1px solid #bbbbbb;
-  background-color: white;
   padding: 4px;
   border-radius: 5px;
   height: 120px;
 }
 #insertPicture .tabs > div > legend {
   width: 100%;
-}
-#insertPicture .preview {
-  background-color: white;
-  border-radius: 5px;
-  display: inline-block;
-  height: 400px;
-  width: 750px;
-  overflow: auto;
-}
-#insertPicture .inspic_inputfield {
-  display: inline-block;
-  padding: 5px;
 }
 #insertPicture .inspic_preview {
   position: relative;
@@ -125,7 +157,7 @@ div.colorPicker-swatch {
   background-repeat: no-repeat;
   border-radius: 3px;
   border-right: 1px solid #ddd;
-  padding: 3px;
+  padding: 6px;
 }
 #insertPicture .iconSelect .iconSelectItem.first {
   border: 0;
@@ -154,13 +186,31 @@ div.colorPicker-swatch {
 #insertPicture input[type="text"].spinner {
   border-radius: 0;
 }
+#insertPicture select {
+  height: 30px;
+  padding: 3px 0;
+}
+#insertPicture .inspic_inputfield {
+  margin: 10px 0 0 8px;
+  display: inline-block;
+  height: 30px;
+}
+#insertPicture .inspic_inputfield.border {
+  border: 1px solid #bebebe;
+  border-radius: 4px;
+  padding: 5px;
+  height: auto;
+}
+#insertPicture .inspic_inputfield label {
+  display: inline-block;
+}
 #insertPicture .inspic_label {
   height: 19px;
   display: inline-block;
   border: 1px solid #bebebe;
   vertical-align: middle;
   position: relative;
-  padding: 4px;
+  padding: 4px 6px;
   left: -1px;
   float: right;
   font-size: 12px;
@@ -168,7 +218,7 @@ div.colorPicker-swatch {
   background: #ddd;
 }
 #insertPicture .inspic_label label {
-  display: inline-block;
+  margin-top: 0;
 }
 #insertPicture .inspic_spinner {
   display: block;
@@ -183,7 +233,6 @@ div.colorPicker-swatch {
   display: block;
   clear: both;
   border: 1px solid #bebebe;
-  outline: 0;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3) inset;
   cursor: pointer;
 }
@@ -205,35 +254,17 @@ div.colorPicker-swatch {
   border-radius: 0 0 0 4px;
 }
 #insertPicture .inspic_button.submit {
-  background-color: #e0fae7;
-  border: 1px solid #71d088;
-  color: #198f36;
-  display: inline-block;
+  border: 1px solid #aaa;
+  padding: 4px 17px 6px;
   float: left;
-  padding: 5px;
-  position: relative;
-  bottom: 3px;
-  border-radius: 3px;
-}
-#insertPicture .inspic_button.submit:hover {
-  cursor: pointer;
-  background-color: #b5f2c4;
-}
-#insertPicture .inspic_button.cancel {
-  margin-left: 3px;
-  background-color: #f7f7f7;
-  border: 1px solid #aaaaaa;
-  color: #5e5e5e;
   display: inline-block;
-  float: left;
-  padding: 5px;
-  position: relative;
-  bottom: 3px;
   border-radius: 3px;
-}
-#insertPicture .inspic_button.cancel:hover {
   cursor: pointer;
-  background-color: #dddddd;
+  color: #444;
+  background: #ffffff;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #dddddd), color-stop(1, #ffffff));
+  background: -ms-linear-gradient(bottom, #dddddd, #ffffff);
+  background: -moz-linear-gradient(center bottom, #dddddd 0%, #ffffff 100%);
 }
 #insertPicture .slider {
   height: 15px;
@@ -296,6 +327,23 @@ div.colorPicker-swatch {
 #insertPicture .range {
   width: 50px;
   margin-left: 10px;
+}
+#insertPicture .iconCheck {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: url("images/icon/unchecked.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+  margin-top: 4px;
+}
+#insertPicture .iconCheck.checked {
+  background-image: url("images/icon/checked.png");
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 .ipic-cfx {
   display: block !important;

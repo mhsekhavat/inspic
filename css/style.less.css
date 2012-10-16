@@ -1,59 +1,84 @@
 @import "css/include.less";
+@import "css/elements.less";
+
+.jqibox.inspic {
+    .jqimessage{
+	padding: 0px;
+    }
+    .jqiclose{
+	z-index: 1000;
+    }
+}
+
 #insertPicture {
-    margin-left: auto;
-    margin-right: auto;
-    border-style: solid;
-    border-width: 2px;
-    width: 750px;
+    * {
+outline: 0;
+}
     position: relative;
     font-family: "tahoma";
     font-size: 12px;
     direction: rtl;
-    padding: 6px;
-    background-color:#EDEDED;
-
+    line-height: normal;
+    
     input,img,select,label,.inspic_inputfield{
 	vertical-align:middle;
     }
 
     @tabBorderColor: #bbb;
     .tab_headers {
-	margin-right: 6px;
+	/*background: -moz-linear-gradient(90deg, #DDDDDD 0%, #FAFAFA) repeat scroll 0 0 transparent;*/
+	.gradient(#ddd ,#ddd, #fafafa);
+	padding: 6px 6px 0 5px;
 	position: relative;
 	top:1px;
 	span[for]{
 	    display: inline-block;
-	    padding: 5px 7px;
+	    padding: 8px 12px;
 	    margin-right: 3px;
-	    @backColor:#f3f3f3;
-	    background-color: @backColor;
+	    .gradient(#eee, #eee, #fff);
 	    border-style: solid;
-	    border-color: @tabBorderColor;
+	    border-color: #ddd;
 	    border-width: 1px 1px 0 1px;
 	    border-radius: 5px 5px 0 0;
 	    &:hover{
 		cursor:pointer;
-		background-color: #f4f4f4;
 		&[disabled="disabled"]{
 		    cursor:default;
-		    background-color: @backColor;
 		}
 	    }
 	    &.selected, &.selected:hover{
-		background-color: white;
+		background: -moz-linear-gradient(-90deg, #FFFFFF 0%, #FFFFFF) repeat scroll 0 0 transparent;
 		border-bottom: 1px solid white;
 		z-index:2;
 	    }
 	}
 	.inspic_inputfield{
 	    float:left;
+	    padding: 0;
+	    margin: 0;
+	    height: auto;
+	    label{
+		display: none;
+	    }
+	    .iconCheck{
+		width:24px;
+		height:24px;
+		.icon("adv.png");
+		margin-left: 5px;
+		margin-top: 0;
+		border-radius: 3px;
+		border: 1px solid #bbb;
+		padding: 1px;
+		background-color: #fff;
+		&.checked{
+		    background-color: #dadada;
+		}
+	    }
 	}
     }
 
     .tabs{
 	> div {
-	    border: 1px solid @tabBorderColor;
-	    background-color: white;
 	    padding: 4px;
 	    border-radius: 5px;
 	    height: 120px;
@@ -63,19 +88,7 @@
 	}
     }
 
-    .preview{
-	background-color:white;
-	border-radius: 5px;
-	display: inline-block;
-	height: 400px;
-	width: 750px;
-	overflow: auto;
-    }
 
-    .inspic_inputfield{
-	display: inline-block;
-	padding: 5px;
-    }
 
     .inspic_preview {
 	position: relative;
@@ -97,7 +110,7 @@
 	    background-repeat:no-repeat;
 	    border-radius:3px;
 	    border-right:1px solid #ddd;
-	    padding:3px;
+	    padding:6px;
 	    &.first{
 		border:0;
 	    }
@@ -131,6 +144,26 @@
 	    }
 	}
     }
+
+    select{
+	height: @inputHeight;
+	padding: 3px 0;
+    }
+    
+    .inspic_inputfield{
+	margin: 10px 0 0 8px;
+	display: inline-block;
+	height: @inputHeight;
+	&.border{
+	    border: 1px solid @inputBorderColor;
+	    border-radius: @inputRadius;
+	    padding: 5px;
+	    height: auto;
+	}
+	label{
+	    display: inline-block;
+	}
+    }
     
     .inspic_label{
 	height: @inputHeight - 11;
@@ -138,14 +171,14 @@
 	border: 1px solid @inputBorderColor;
 	vertical-align:middle;
 	position: relative;
-	padding:4px;
+	padding:4px 6px;
 	left: -1px;
 	float:right;
 	font-size: 12px;
 	border-radius: 0 @inputRadius @inputRadius 0;
 	background: #ddd;
 	label{
-	    display: inline-block;
+	    margin-top: 0;
 	}
     }
    
@@ -161,7 +194,6 @@
 	    display: block;
 	    clear: both;
 	    border: 1px solid @inputBorderColor;
-	    outline: 0;
 	    box-shadow: 0 0 3px rgba(0,0,0,.3) inset;
 	    cursor:pointer;
 	    &[disabled="disabled"]{
@@ -198,11 +230,14 @@
 
     .inspic_button{
 	&.submit{
-	    .spanButton(#b5f2c4);
-	}
-	&.cancel{
-	    margin-left: 3px;
-	    .spanButton(#ddd);
+	    border: 1px solid #aaa;
+	    padding: 4px 17px 6px;
+	    float: left;
+	    display: inline-block;
+	    border-radius: 3px;
+	    cursor: pointer;
+	    color: #444;
+	    .gradient(#fff, #ddd, #fff);
 	}
     }
 
@@ -261,9 +296,24 @@
 	    left:-17px;
 	}
     }
+    /* .range is applied to input which has slider */
     .range{
 	width: 50px;
 	margin-left: 10px;
+    }
+
+    .iconCheck{
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	.icon('unchecked.png');
+	width: 20px;
+	height: 20px;
+	margin-left: 2px;
+	margin-top: 4px;
+	&.checked{
+	    .icon('checked.png');
+	}
     }
 }
 

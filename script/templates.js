@@ -31,6 +31,11 @@ var inspic=inspic || {};
         '<%=label%>'+
         '</script>'+
 
+    '<script type="text/template" inspic_tem="iconCheck">'+
+        '<a id=<%=id%> class="iconCheck"></a>'+
+        '<%=label%>'+
+        '</script>'+
+    
     '<script type="text/template" inspic_tem="empty">'+
         '</script>'+
 

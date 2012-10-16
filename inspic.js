@@ -2648,6 +2648,11 @@ var inspic=inspic || {};
         '<%=label%>'+
         '</script>'+
 
+    '<script type="text/template" inspic_tem="iconCheck">'+
+        '<a id=<%=id%> class="iconCheck"></a>'+
+        '<%=label%>'+
+        '</script>'+
+    
     '<script type="text/template" inspic_tem="empty">'+
         '</script>'+
 
@@ -2680,7 +2685,7 @@ var inspic=inspic || {};
  */
 var inspic = inspic || {};
 
-console=console || {
+var console=console || {
     log: function(){;}
 }
 
@@ -2888,7 +2893,7 @@ function inspicEval(expr){
                         else
                             $this.removeAttr('checked');
                     } else {
-                        $this.val(value);
+                        $this.val(value).attr('value', value);
                     }
 
                 });
@@ -3535,12 +3540,27 @@ function inspicEval(expr){
         template : 'checkbox'
     });
 
+    var IconCheckInputField = InputField.extend({
+        template: 'iconCheck',
+        inputSelector: '.iconCheck',
+        updateValue: function(val){
+            this.$inputSelector[val ? 'addClass' : 'removeClass']('checked');
+        },
+        events: {
+            'click .iconCheck' : function(e){
+                inspic.controller.handleDefaultInputFieldChange(this.field, !this.$inputSelector.hasClass('checked'), e);
+            }
+        }
+    });
+    
     var ColorInputField = InputField.extend({
+        className: InputField.prototype.className+' border',
         render : function(field, args) {
             InputField.prototype.render.call(this, field, args);
             this.$('input').colorPicker();
             args.colorPickerClass && this.$('.colorPicker-picker').addClass(args.colorPickerClass);
         }
+
     });
 
     /* *************************************************************************************************************
@@ -3585,17 +3605,15 @@ function inspicEval(expr){
             new (InputField.extend({
                 render: function(field, args){
                     InputField.prototype.render.call(this, field, args);
-                    var _this=this;
                     this.$('input').attr({
                         min:'0',
                         max:'100',
                         progress:'true'
                     }).rangeinput().change(function(e, value){
-                        inspic.controller.handleDefaultInputFieldChange(field, value, _this, e);
+                        inspic.controller.handleDefaultInputFieldChange(field, value, e);
                     });
                 },
                 updateValue: function(val){
-
                     var rangeInput=this.$('input').data('rangeinput');
                     rangeInput && rangeInput.setValue(val);
                 }
@@ -3610,7 +3628,7 @@ function inspicEval(expr){
                 visCrit : '`src.adv` && `src`',
                 text : 'ارتفاع:'
             }),
-            new CheckInputField('keep_ratio', {
+            new IconCheckInputField('keep_ratio', {
                 visCrit : '`src.adv` && `src`',
                 text : 'حفظ تناسب ابعاد'
             })
@@ -3831,7 +3849,7 @@ function inspicEval(expr){
                 text : 'italic',
                 icon : 'italic'
             })], {
-                visCrit : crit('boldItalic')
+                visCrit : crit('boldItalic') + ' && `caption.enable`'
             }),
             colorInner : new ColorInputField(prefix + 'color.inner', {
                 visCrit : crit('color') + ' && `caption.inner.enable`',
@@ -3842,7 +3860,7 @@ function inspicEval(expr){
                 colorPickerClass : 'picker-arrow-text'
             }),
             size : new TextInputField(prefix + 'size', {
-                visCrit : crit('size'),
+                visCrit : crit('size') + ' && `caption.enable`',
                 text : 'اندازه فونت',
                 icon : 'fontsize'
             })
@@ -3858,7 +3876,7 @@ function inspicEval(expr){
         }
 
         return {
-            enable : new CheckInputField(prefix + 'enable', {
+            enable : new IconCheckInputField(prefix + 'enable', {
                 text : enableTitle || 'خط'
             }),
             style : new IconSelectInputField(prefix + 'style', {
@@ -3930,7 +3948,7 @@ function inspicEval(expr){
                 visCrit : crit('color'),
                 colorPickerClass : 'picker-arrow-line'
             }),
-            enable : new CheckInputField(prefix + 'enable', {
+            enable : new IconCheckInputField(prefix + 'enable', {
                 'text' : text
             })
         };
@@ -3952,7 +3970,7 @@ function inspicEval(expr){
          */
 
         appendTo('#inspic_caption',[
-            new CheckInputField('caption.enable', {
+            new IconCheckInputField('caption.enable', {
                 text : 'فعال'
             }),
             new IconSelectInputField('caption.pos', {
@@ -4076,7 +4094,7 @@ function inspicEval(expr){
             h1Format.size,
             h1Format.boldItalic,
             '<br>',
-            new CheckInputField('caption.p.enable', {
+            new IconCheckInputField('caption.p.enable', {
                 text : 'شرح:',
                 visCrit : 'caption.enable'
             }),
@@ -4108,14 +4126,7 @@ function inspicEval(expr){
                     //console.log(inspic.getHtml());
                 }
             }),
-            $('<span>', {
-                'class' : 'inspic_button cancel',
-                text : 'انصراف',
-                click : function() {
-                    inspic.callback && inspic.callback();
-                }
-            }),
-            new CheckInputField('adv', {
+            new IconCheckInputField('adv', {
                 text : 'نمایش تنظیمات پیشرفته'
             })
         ]);

@@ -5,7 +5,7 @@
  */
 var inspic = inspic || {};
 
-console=console || {
+var console=console || {
     log: function(){;}
 }
 
@@ -213,7 +213,7 @@ function inspicEval(expr){
                         else
                             $this.removeAttr('checked');
                     } else {
-                        $this.val(value);
+                        $this.val(value).attr('value', value);
                     }
 
                 });
