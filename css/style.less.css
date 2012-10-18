@@ -26,7 +26,6 @@ outline: 0;
 
     @tabBorderColor: #bbb;
     .tab_headers {
-	/*background: -moz-linear-gradient(90deg, #DDDDDD 0%, #FAFAFA) repeat scroll 0 0 transparent;*/
 	.gradient(#ddd ,#ddd, #fafafa);
 	padding: 6px 6px 0 5px;
 	position: relative;
