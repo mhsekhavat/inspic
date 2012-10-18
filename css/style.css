@@ -1,15 +1,3 @@
-/*---------------------------------------------------
-    LESS Elements 0.6
-  ---------------------------------------------------
-    A set of useful LESS mixins by Dmitry Fadeyev
-    Special thanks for mixin suggestions to:
-      Kris Van Herzeele,
-      Benoit Adam,
-      Portenart Emile-Victor,
-      Ryan Faerman
-
-    More info at: http://lesselements.com
------------------------------------------------------*/
 .jqibox.inspic .jqimessage {
   padding: 0px;
 }
@@ -38,8 +26,6 @@
   vertical-align: middle;
 }
 #insertPicture .tab_headers {
-  /*background: -moz-linear-gradient(90deg, #DDDDDD 0%, #FAFAFA) repeat scroll 0 0 transparent;*/
-
   background: #dddddd;
   background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #dddddd), color-stop(1, #fafafa));
   background: -ms-linear-gradient(bottom, #dddddd, #fafafa);
@@ -67,7 +53,8 @@
 #insertPicture .tab_headers span[for]:hover[disabled="disabled"] {
   cursor: default;
 }
-#insertPicture .tab_headers span[for].selected, #insertPicture .tab_headers span[for].selected:hover {
+#insertPicture .tab_headers span[for].selected,
+#insertPicture .tab_headers span[for].selected:hover {
   background: -moz-linear-gradient(-90deg, #ffffff 0%, #ffffff) repeat scroll 0 0 transparent;
   border-bottom: 1px solid white;
   z-index: 2;
@@ -271,7 +258,8 @@
   border: 1px solid #000;
   border-radius: 3px;
 }
-#insertPicture .slider:before, #insertPicture .slider:after {
+#insertPicture .slider:before,
+#insertPicture .slider:after {
   content: " ";
   display: inline-block;
   position: absolute;
@@ -325,7 +313,8 @@
   display: inline-block;
   position: relative;
 }
-.ipic-inner img, .ipic-bdr img {
+.ipic-inner img,
+.ipic-bdr img {
   vertical-align: middle;
 }
 .ipic-inner img {
@@ -345,7 +334,8 @@
   display: block;
   padding: 5px;
 }
-.ipic-cap-in span, .ipic-cap-out span {
+.ipic-cap-in span,
+.ipic-cap-out span {
   padding: 0;
   margin: 0;
   font-weight: normal;

@@ -4026,7 +4026,7 @@ function inspicEval(expr){
                 }
             }),
             appendTo(
-                function() {
+                (function() {
                     var ret = $('<span>');
                     inspic.model.mainModel.subscribe(
                         'caption.outer.enable',
@@ -4036,7 +4036,7 @@ function inspicEval(expr){
                                     : 'none');
                         })();
                     return ret;
-                }(),
+                })(),[
                 outerBorder.enable,
                 outerBorder.style,
                 outerBorder.color,
@@ -4068,7 +4068,7 @@ function inspicEval(expr){
                         max : 1
                     }
                 })
-            ),
+            ]),
             '<br>',
             new SelectInputField('caption.h1.type',{
                 text : 'عنوان زیرنویس:',
@@ -4123,7 +4123,6 @@ function inspicEval(expr){
                 text : 'درج',
                 click : function() {
                     inspic.callback && inspic.callback(inspic.getHtml());
-                    //console.log(inspic.getHtml());
                 }
             }),
             new IconCheckInputField('adv', {
