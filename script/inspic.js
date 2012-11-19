@@ -7,7 +7,7 @@ var inspic = inspic || {};
 
 var console=console || {
     log: function(){;}
-}
+};
 
 function inspicEval(expr){
     //console.log(expr);

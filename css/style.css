@@ -87,7 +87,7 @@
 #insertPicture .tabs > div {
   padding: 4px;
   border-radius: 5px;
-  height: 120px;
+  min-height: 120px;
 }
 #insertPicture .tabs > div > legend {
   width: 100%;

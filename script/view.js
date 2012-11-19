@@ -650,7 +650,7 @@
                 new TextInputField('caption.outer.background.alpha', {
                     visCrit : '`caption.outer.border.enable` && `caption.adv`',
                     text : 'شفافیت رنگ داخل',
-                    icon : 'transparency',
+                    icon : 'alpha',
                     spinnerArgs : {
                         step : 0.1,
                         min : 0,
